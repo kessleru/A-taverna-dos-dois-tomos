@@ -39,7 +39,7 @@ const PIPS: Record<number, [number, number][]> = {
 
 function Face({ numero }: { numero: number }) {
   return (
-    <div className="grid h-16 w-16 grid-cols-3 grid-rows-3 gap-1 rounded-lg bg-moeda p-2 shadow-carta">
+    <div className="grid h-16 w-16 shrink-0 grid-cols-3 grid-rows-3 gap-1 rounded-lg bg-moeda p-2 shadow-carta">
       {Array.from({ length: 9 }).map((_, indice) => {
         const linha = Math.floor(indice / 3);
         const coluna = indice % 3;
