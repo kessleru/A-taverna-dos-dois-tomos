@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { dadoDaIncerteza } from '../../data/rodada';
 import { Botao } from '../ui/Botao';
 
@@ -48,6 +50,8 @@ function Face({ numero }: { numero: number }) {
   );
 }
 
+const DURACAO_ROLAGEM_MS = 1200;
+
 interface Dado3DProps {
   ultimoDado?: number;
   onRolar: () => void;
@@ -55,19 +59,48 @@ interface Dado3DProps {
 }
 
 export function Dado3D({ ultimoDado, onRolar, avancar }: Dado3DProps) {
+  const [rolando, setRolando] = useState(false);
+  const [faceAnimada, setFaceAnimada] = useState(1);
+
+  useEffect(() => {
+    if (!rolando) return;
+    const intervalo = setInterval(() => setFaceAnimada((f) => (f % 6) + 1), 90);
+    const fim = setTimeout(() => {
+      clearInterval(intervalo);
+      setRolando(false);
+      onRolar();
+    }, DURACAO_ROLAGEM_MS);
+    return () => {
+      clearInterval(intervalo);
+      clearTimeout(fim);
+    };
+  }, [rolando, onRolar]);
+
   return (
     <div className="flex flex-col items-center gap-6 text-center">
       <h2 className="font-titulo text-2xl text-moeda">Dado da Incerteza</h2>
       <p className="max-w-md text-papel/80">{dadoDaIncerteza.explicacao}</p>
-      {ultimoDado ? (
+
+      {rolando && (
+        <motion.div
+          animate={{ rotate: [0, 360], scale: [1, 1.15, 1] }}
+          transition={{ duration: 0.4, repeat: Infinity, ease: 'linear' }}
+        >
+          <Face numero={faceAnimada} />
+        </motion.div>
+      )}
+
+      {!rolando && ultimoDado && (
         <>
-          <Face numero={ultimoDado} />
+          <motion.div initial={{ scale: 0.5, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 300 }}>
+            <Face numero={ultimoDado} />
+          </motion.div>
           <p className="font-titulo text-xl">{dadoDaIncerteza.faces[ultimoDado].titulo}</p>
           <Botao onClick={avancar}>Avançar →</Botao>
         </>
-      ) : (
-        <Botao onClick={onRolar}>🎲 Rolar o dado</Botao>
       )}
+
+      {!rolando && !ultimoDado && <Botao onClick={() => setRolando(true)}>🎲 Rolar o dado</Botao>}
     </div>
   );
 }

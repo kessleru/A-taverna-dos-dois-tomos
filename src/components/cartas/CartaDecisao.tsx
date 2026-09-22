@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { artesDecisoes, orbeDecisao, type ArteCarta } from '../../data/artes';
 import type { Escolha } from '../../data/rodada';
 import { CartaBase } from './CartaBase';
@@ -28,21 +29,27 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
   const arte: ArteCarta = trancada ? { ...arteOriginal, cores: ['#555', '#222'] } : arteOriginal;
   const orbe = id === 'bricolagem' ? '🔧' : orbeDecisao[id];
 
+  const tamanhoEfetivo = emDestaque ? 'grande' : tamanho;
+
   return (
-    <div
-      style={{
-        transform: `rotate(${rotacao}deg) translateY(${emDestaque ? -16 : 0}px) scale(${emDestaque ? 1.05 : 1})`,
-        transition: 'transform 300ms ease',
-      }}
+    <motion.div
+      layout
+      animate={
+        emDestaque
+          ? { rotate: [rotacao, rotacao + 360, 0], y: -16, scale: 1.15 }
+          : { rotate: rotacao, y: 0, scale: 1 }
+      }
+      transition={{ type: 'spring', stiffness: 200, damping: 22 }}
+      style={emDestaque ? { filter: 'drop-shadow(0 0 18px var(--moeda))' } : undefined}
     >
       <CartaBase
         corPrincipal={cor}
-        tamanho={tamanho}
+        tamanho={tamanhoEfetivo}
         onClick={trancada ? undefined : onClick}
         layoutId={`decisao-${id}`}
         frente={
           <div className={trancada ? 'relative grayscale' : 'relative'}>
-            <MolduraCarta tipo="decisao" nome={nome} orbe={orbe} arte={arte} corPrincipal={cor} tamanho={tamanho}>
+            <MolduraCarta tipo="decisao" nome={nome} orbe={orbe} arte={arte} corPrincipal={cor} tamanho={tamanhoEfetivo}>
               <p className="text-[10px] text-tinta/60">{teoria}</p>
               <p className="mt-1 font-medium">{resumo}</p>
             </MolduraCarta>
@@ -52,6 +59,6 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
           </div>
         }
       />
-    </div>
+    </motion.div>
   );
 }
