@@ -1,0 +1,17 @@
+:root {
+  --noite: #241e4e;
+  --noite-profunda: #17123a;
+  --papel: #fff8e7;
+  --tinta: #2b2340;
+  --artigo-a: #f86624;
+  --artigo-b: #2ec4b6;
+  --moeda: #f9c80e;
+  --planejar: #6c8ef5;
+  --adaptar: #5cc98a;
+  --bricolagem: #c08552;
+  --dano: #ea3546;
+  --fosforo: #ffb000;
+
+  --raio-carta: 20px;
+  --sombra-carta: 0 24px 48px -12px rgb(0 0 0 / 0.55);
+}

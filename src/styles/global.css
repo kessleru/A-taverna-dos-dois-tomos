@@ -1,0 +1,40 @@
+@import '@fontsource/bungee';
+@import '@fontsource/rubik/500.css';
+@import '@fontsource/rubik/700.css';
+@import '@fontsource/ibm-plex-mono';
+
+@import './tokens.css';
+@import './cartas.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--noite);
+  color: var(--papel);
+  font-family: 'Rubik', sans-serif;
+  font-weight: 500;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

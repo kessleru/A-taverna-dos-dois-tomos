@@ -1,0 +1,7 @@
+/* Holo, foil e bordas animadas das cartas — preenchido na Iteração 3 (sistema de cartas). */
+
+@property --angulo {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
