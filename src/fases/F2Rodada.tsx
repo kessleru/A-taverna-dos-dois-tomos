@@ -9,6 +9,7 @@ import { Dado3D } from '../components/rodada/Dado3D';
 import { BalaoArtigo } from '../components/rodada/BalaoArtigo';
 import { SeloRealidade } from '../components/rodada/SeloRealidade';
 import { Desbloqueio } from '../components/rodada/Desbloqueio';
+import { CartaEvento } from '../components/cartas/CartaEvento';
 import { Botao } from '../components/ui/Botao';
 import type { FaseProps } from '../types';
 
@@ -72,17 +73,13 @@ export function F2Rodada({ avancar: avancarFase, rodada }: F2RodadaProps) {
       {estado.passo === 'evento' &&
         (() => {
           const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa)!;
-          const sim = evento.condicao(estado.escolhas, estado.ind);
-          const desfecho = sim ? evento.seSim : evento.seNao;
+          const sucesso = evento.condicao(estado.escolhas, estado.ind);
+          const desfecho = sucesso ? evento.seSim : evento.seNao;
           return (
-            <div className="flex flex-col gap-4">
-              <span className="font-mono text-sm uppercase tracking-wide text-moeda">Evento · {evento.nome}</span>
-              <h2 className="font-titulo text-2xl">{desfecho.titulo}</h2>
-              <p className="text-lg text-papel/90">{desfecho.texto}</p>
-              <p className="text-sm text-papel/60">{evento.conceito}</p>
-              <div>
-                <Botao onClick={avancar}>Avançar →</Botao>
-              </div>
+            <div className="flex flex-col items-center gap-4">
+              <CartaEvento depoisDaEtapa={evento.depoisDaEtapa} nome={evento.nome} desfecho={desfecho} sucesso={sucesso} />
+              <p className="max-w-md text-center text-sm text-papel/60">{evento.conceito}</p>
+              <Botao onClick={avancar}>Avançar →</Botao>
             </div>
           );
         })()}

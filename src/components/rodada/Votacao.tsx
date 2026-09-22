@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import type { Escolha, Etapa } from '../../data/rodada';
+import { CartaDecisao } from '../cartas/CartaDecisao';
 
 interface VotacaoProps {
   etapa: Etapa;
@@ -7,14 +8,9 @@ interface VotacaoProps {
   onEscolher: (escolha: Escolha) => void;
 }
 
-const CORES: Record<Escolha, string> = {
-  planejar: 'var(--planejar)',
-  adaptar: 'var(--adaptar)',
-  combinar: 'var(--moeda)',
-};
-
-const ICONES: Record<Escolha, string> = { planejar: '📋', adaptar: '🧭', combinar: '🔀' };
 const NOMES: Record<Escolha, string> = { planejar: 'Planejar', adaptar: 'Adaptar', combinar: 'Combinar' };
+const TEORIAS: Record<Escolha, string> = { planejar: 'Causation', adaptar: 'Effectuation', combinar: 'As duas juntas' };
+const ROTACOES = [-8, 0, 8];
 
 export function Votacao({ etapa, combinarLiberado, onEscolher }: VotacaoProps) {
   const opcoes: Escolha[] = etapa.combinar && combinarLiberado ? ['planejar', 'adaptar', 'combinar'] : ['planejar', 'adaptar'];
@@ -29,26 +25,21 @@ export function Votacao({ etapa, combinarLiberado, onEscolher }: VotacaoProps) {
   }, [opcoes, onEscolher]);
 
   return (
-    <div className="flex flex-col gap-6">
-      <h2 className="font-titulo text-2xl text-moeda">{etapa.perguntaParaTurma}</h2>
-      <div className="flex flex-wrap gap-4">
-        {opcoes.map((escolha) => {
+    <div className="flex flex-col gap-8">
+      <h2 className="text-center font-titulo text-2xl text-moeda">{etapa.perguntaParaTurma}</h2>
+      <div className="flex flex-wrap items-end justify-center gap-4">
+        {opcoes.map((escolha, indice) => {
           const opcao = escolha === 'combinar' ? etapa.combinar! : etapa[escolha];
           return (
-            <button
+            <CartaDecisao
               key={escolha}
+              id={escolha}
+              nome={NOMES[escolha]}
+              teoria={TEORIAS[escolha]}
+              resumo={opcao.texto}
               onClick={() => onEscolher(escolha)}
-              className="w-64 rounded-carta border-2 p-4 text-left transition-transform hover:-translate-y-1"
-              style={{ borderColor: CORES[escolha], boxShadow: 'var(--sombra-carta)' }}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{ICONES[escolha]}</span>
-                <span className="font-titulo text-lg" style={{ color: CORES[escolha] }}>
-                  {NOMES[escolha]}
-                </span>
-              </div>
-              <p className="mt-2 text-sm text-papel/85">{opcao.texto}</p>
-            </button>
+              rotacao={ROTACOES[indice] ?? 0}
+            />
           );
         })}
       </div>

@@ -8,11 +8,16 @@ import { F2Rodada } from './fases/F2Rodada';
 import { F3Resultado } from './fases/F3Resultado';
 import { F4Artigos } from './fases/F4Artigos';
 import { F5Fusao } from './fases/F5Fusao';
+import { Vitrine } from './fases/Vitrine';
 
 export default function App() {
   const { fase, avancar, voltar, primeiraFase, ultimaFase } = useNavegacao();
   const rodada = useRodada();
   const faseProps = { avancar, voltar, primeiraFase, ultimaFase };
+
+  if (window.location.hash === '#vitrine') {
+    return <Vitrine />;
+  }
 
   return (
     <div className="relative h-screen w-screen">
