@@ -44,7 +44,7 @@ export function MolduraCarta({ tipo, nome, orbe, arte, corPrincipal, tamanho = '
     >
       {/* orbe */}
       <div
-        className="absolute -left-2 -top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-papel/80 font-titulo text-sm text-papel"
+        className="absolute -left-2 -top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-pergaminho/80 font-titulo text-sm text-pergaminho"
         style={{ background: corPrincipal, boxShadow: '0 4px 10px rgb(0 0 0 / 0.4)' }}
       >
         {orbe}
@@ -52,7 +52,7 @@ export function MolduraCarta({ tipo, nome, orbe, arte, corPrincipal, tamanho = '
 
       {/* fita do nome */}
       <div
-        className="relative z-10 -mx-1 mb-2 rounded px-2 py-1 text-center font-titulo text-[11px] leading-tight text-papel"
+        className="relative z-10 -mx-1 mb-2 rounded px-2 py-1 text-center font-titulo text-[11px] leading-tight text-pergaminho"
         style={{ background: `linear-gradient(90deg, transparent, ${corPrincipal}, transparent)` }}
       >
         {nome}
@@ -69,7 +69,7 @@ export function MolduraCarta({ tipo, nome, orbe, arte, corPrincipal, tamanho = '
       {/* placa de tipo */}
       <div className="relative z-10 -mt-2 flex justify-center">
         <span
-          className="flex items-center gap-1 rounded-full border border-papel/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-papel"
+          className="flex items-center gap-1 rounded-full border border-pergaminho/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-pergaminho"
           style={{ background: '#17123aee' }}
         >
           <span className="h-1.5 w-1.5 rounded-full" style={{ background: COR_GEMA[arte.raridade], boxShadow: arte.raridade === 'lendaria' ? '0 0 6px 2px #F9C80E' : undefined }} />
@@ -78,7 +78,7 @@ export function MolduraCarta({ tipo, nome, orbe, arte, corPrincipal, tamanho = '
       </div>
 
       {/* área de texto */}
-      <div className="relative mt-2 flex-1 overflow-hidden rounded-md bg-papel px-2 py-2 text-[11px] leading-snug text-tinta">
+      <div className="relative mt-2 flex-1 overflow-hidden rounded-md bg-pergaminho px-2 py-2 text-[11px] leading-snug text-tinta">
         {children}
       </div>
     </div>

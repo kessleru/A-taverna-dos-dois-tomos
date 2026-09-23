@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 export function Titulo({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <h1 className={`font-titulo text-[clamp(2.5rem,6vw,5rem)] leading-tight text-papel ${className}`}>
+    <h1 className={`titulo-ouro font-titulo text-[104px] font-bold leading-[1.05] tracking-[0.04em] ${className}`}>
       {children}
     </h1>
   );

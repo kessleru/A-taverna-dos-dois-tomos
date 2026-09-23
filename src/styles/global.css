@@ -1,7 +1,10 @@
-@import '@fontsource/bungee';
-@import '@fontsource/rubik/500.css';
-@import '@fontsource/rubik/700.css';
-@import '@fontsource/ibm-plex-mono';
+@import '@fontsource/cinzel/600.css';
+@import '@fontsource/cinzel/700.css';
+@import '@fontsource/alegreya/500.css';
+@import '@fontsource/alegreya/700.css';
+@import '@fontsource/alegreya/500-italic.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/700.css';
 
 @import './tokens.css';
 @import './cartas.css';
@@ -22,11 +25,21 @@ body,
 }
 
 body {
-  background: var(--noite);
-  color: var(--papel);
-  font-family: 'Rubik', sans-serif;
+  background: #000;
+  color: var(--pergaminho);
+  font-family: 'Alegreya', serif;
   font-weight: 500;
   overflow: hidden;
+}
+
+/* Títulos em ouro (07-tipografia.md §3): gradiente + contorno para aguentar qualquer fundo. */
+.titulo-ouro {
+  background: linear-gradient(180deg, var(--ouro-claro) 0%, var(--ouro) 55%, var(--ouro-escuro) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(20 13 8 / 0.5);
+  filter: drop-shadow(0 4px 0 rgb(0 0 0 / 0.45)) drop-shadow(0 0 24px rgb(232 182 74 / 0.35));
 }
 
 @media (prefers-reduced-motion: reduce) {

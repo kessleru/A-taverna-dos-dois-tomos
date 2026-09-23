@@ -1,27 +1,45 @@
 import type { Config } from 'tailwindcss';
 
+// color-mix deixa o Tailwind aplicar opacidade (text-pergaminho/70) sobre um
+// token CSS em hex; com 'var(--x)' puro as classes com /NN não eram geradas.
+// Precisa ser função: o Tailwind 3 não sabe ler <alpha-value> dentro de color-mix.
+const cor =
+  (token: string) =>
+  ({ opacityValue }: { opacityValue?: string }) =>
+    opacityValue === undefined
+      ? `var(--${token})`
+      : `color-mix(in srgb, var(--${token}) calc(${opacityValue} * 100%), transparent)`;
+
+const tokens = [
+  'madeira-profunda',
+  'madeira',
+  'madeira-clara',
+  'pergaminho',
+  'tinta',
+  'ouro',
+  'ouro-claro',
+  'ouro-escuro',
+  'brasa',
+  'planejar',
+  'adaptar',
+  'bricolagem',
+  'tomo-a',
+  'tomo-b',
+  'clientes',
+  'dano',
+  'cura',
+  'runa',
+];
+
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
-      colors: {
-        noite: 'var(--noite)',
-        'noite-profunda': 'var(--noite-profunda)',
-        papel: 'var(--papel)',
-        tinta: 'var(--tinta)',
-        'artigo-a': 'var(--artigo-a)',
-        'artigo-b': 'var(--artigo-b)',
-        moeda: 'var(--moeda)',
-        planejar: 'var(--planejar)',
-        adaptar: 'var(--adaptar)',
-        bricolagem: 'var(--bricolagem)',
-        dano: 'var(--dano)',
-        fosforo: 'var(--fosforo)',
-      },
+      colors: Object.fromEntries(tokens.map((token) => [token, cor(token)])),
       fontFamily: {
-        titulo: ['Bungee', 'cursive'],
-        texto: ['Rubik', 'sans-serif'],
-        mono: ['"IBM Plex Mono"', 'monospace'],
+        titulo: ['Cinzel', 'serif'],
+        texto: ['Alegreya', 'serif'],
+        sistema: ['"JetBrains Mono"', 'monospace'],
       },
       borderRadius: {
         carta: 'var(--raio-carta)',

@@ -31,27 +31,27 @@ export function F1Briefing({ som, ...props }: F1BriefingProps) {
   return (
     <section className="mx-auto flex h-full max-w-3xl flex-col gap-6 overflow-y-auto px-6 py-10">
       <Titulo className="text-4xl">{briefing.missao.titulo}</Titulo>
-      <p className="text-lg text-papel/90">{briefing.missao.texto}</p>
+      <p className="text-lg text-pergaminho/90">{briefing.missao.texto}</p>
 
-      <h2 className="mt-4 font-titulo text-2xl text-moeda">{briefing.conselheiros.titulo}</h2>
-      <p className="text-sm text-papel/60">Clique para virar cada conselheiro e clique de novo para saber mais.</p>
+      <h2 className="mt-4 font-titulo text-2xl text-ouro">{briefing.conselheiros.titulo}</h2>
+      <p className="text-sm text-pergaminho/60">Clique para virar cada conselheiro e clique de novo para saber mais.</p>
       <div className="flex flex-wrap justify-center gap-6">
         {conteudo.artigos.map((artigo) => (
           <CartaArtigo key={artigo.id} artigo={artigo} virada={!!viradas[artigo.id]} onClick={() => clicarConselheiro(artigo.id)} />
         ))}
       </div>
       {artigoExpandido && (
-        <div className="rounded-carta border border-moeda/40 bg-noite-profunda/60 p-4 text-sm text-papel/90">
+        <div className="rounded-carta border border-ouro/40 bg-madeira-profunda/60 p-4 text-sm text-pergaminho/90">
           <p>
-            <strong className="text-moeda">Estratégia:</strong> {artigoExpandido.estrategia}
+            <strong className="text-ouro">Estratégia:</strong> {artigoExpandido.estrategia}
           </p>
           <p className="mt-2">
-            <strong className="text-moeda">Solução:</strong> {artigoExpandido.solucao}
+            <strong className="text-ouro">Solução:</strong> {artigoExpandido.solucao}
           </p>
         </div>
       )}
 
-      <h2 className="mt-4 font-titulo text-2xl text-moeda">{briefing.jeitosDeDecidir.titulo}</h2>
+      <h2 className="mt-4 font-titulo text-2xl text-ouro">{briefing.jeitosDeDecidir.titulo}</h2>
       <div className="flex flex-wrap justify-center gap-4">
         {briefing.jeitosDeDecidir.cartas.map((carta) => (
           <CartaDecisao
@@ -65,8 +65,8 @@ export function F1Briefing({ som, ...props }: F1BriefingProps) {
         ))}
       </div>
 
-      <h2 className="mt-4 font-titulo text-2xl text-moeda">{briefing.regras.titulo}</h2>
-      <ol className="list-decimal space-y-1 pl-5 text-papel/90">
+      <h2 className="mt-4 font-titulo text-2xl text-ouro">{briefing.regras.titulo}</h2>
+      <ol className="list-decimal space-y-1 pl-5 text-pergaminho/90">
         {briefing.regras.itens.map((item) => (
           <li key={item}>{item}</li>
         ))}

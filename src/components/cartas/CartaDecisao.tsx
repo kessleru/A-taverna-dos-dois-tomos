@@ -7,7 +7,7 @@ import { MolduraCarta } from './MolduraCarta';
 const CORES: Record<Escolha | 'bricolagem', string> = {
   planejar: 'var(--planejar)',
   adaptar: 'var(--adaptar)',
-  combinar: 'var(--moeda)',
+  combinar: 'var(--ouro)',
   bricolagem: 'var(--bricolagem)',
 };
 
@@ -40,7 +40,7 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
           : { rotate: rotacao, y: 0, scale: 1 }
       }
       transition={{ type: 'spring', stiffness: 200, damping: 22 }}
-      style={emDestaque ? { filter: 'drop-shadow(0 0 18px var(--moeda))' } : undefined}
+      style={emDestaque ? { filter: 'drop-shadow(0 0 18px var(--ouro))' } : undefined}
     >
       <CartaBase
         corPrincipal={cor}

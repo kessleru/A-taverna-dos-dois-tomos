@@ -17,7 +17,7 @@ export function CartaArtigo({
   onClick?: () => void;
 }) {
   const arte = artesArtigos[artigo.id as 'A' | 'B'];
-  const cor = artigo.id === 'A' ? 'var(--artigo-a)' : 'var(--artigo-b)';
+  const cor = artigo.id === 'A' ? 'var(--tomo-a)' : 'var(--tomo-b)';
 
   return (
     <CartaBase

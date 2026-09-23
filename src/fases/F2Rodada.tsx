@@ -43,7 +43,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
   if (estado.terminou) {
     return (
       <section className="mx-auto flex h-full max-w-3xl flex-col items-center justify-center gap-6 px-6 text-center">
-        <h2 className="font-titulo text-3xl text-moeda">Rodada concluída!</h2>
+        <h2 className="font-titulo text-3xl text-ouro">Rodada concluída!</h2>
         <Botao onClick={avancarFase}>Ver o resultado →</Botao>
       </section>
     );
@@ -58,7 +58,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
       <div className="flex items-center justify-between">
         <TrilhaEtapas etapaAtual={estado.etapa} escolhas={estado.escolhas} />
         <div className="flex gap-3">
-          <BarraIndicador icone="💰" rotulo="Caixa" valor={estado.ind.caixa} cor="var(--moeda)" />
+          <BarraIndicador icone="💰" rotulo="Caixa" valor={estado.ind.caixa} cor="var(--ouro)" />
           <BarraIndicador icone="👥" rotulo="Clientes" valor={estado.ind.clientes} cor="var(--adaptar)" />
           <BarraIndicador icone="🔥" rotulo="Moral" valor={estado.ind.moral} cor="var(--dano)" />
         </div>
@@ -78,7 +78,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
 
       {estado.passo === 'artigos' && (
         <div className="flex flex-col gap-4">
-          <h2 className="font-titulo text-2xl text-moeda">O que dizem os artigos</h2>
+          <h2 className="font-titulo text-2xl text-ouro">O que dizem os artigos</h2>
           <div className="flex flex-col gap-4 sm:flex-row">
             <BalaoArtigo letra="A" texto={etapa.artigoA} />
             <BalaoArtigo letra="B" texto={etapa.artigoB} />
@@ -98,7 +98,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
           return (
             <div className="flex flex-col items-center gap-4">
               <CartaEvento depoisDaEtapa={evento.depoisDaEtapa} nome={evento.nome} desfecho={desfecho} sucesso={sucesso} />
-              <p className="max-w-md text-center text-sm text-papel/60">{evento.conceito}</p>
+              <p className="max-w-md text-center text-sm text-pergaminho/60">{evento.conceito}</p>
               <Botao onClick={avancar}>Avançar →</Botao>
             </div>
           );

@@ -79,7 +79,7 @@ export function F5Fusao(props: FaseProps) {
       {!orbitando && (
         <>
           <Titulo className="text-4xl">Aprendizados</Titulo>
-          <ol className="w-full space-y-2 pl-5 text-lg text-papel/90">
+          <ol className="w-full space-y-2 pl-5 text-lg text-pergaminho/90">
             <AnimatePresence>
               {conteudo.aprendizados.slice(0, aprendizadoAtual + 1).map((item, indice) => (
                 <motion.li
@@ -98,7 +98,7 @@ export function F5Fusao(props: FaseProps) {
           {!creditos && (
             <button
               onClick={proximoAprendizado}
-              className="rounded-full bg-moeda px-8 py-3 text-lg font-bold text-tinta shadow-carta hover:brightness-110"
+              className="rounded-full bg-ouro px-8 py-3 text-lg font-bold text-tinta shadow-carta hover:brightness-110"
             >
               {aprendizadoAtual < conteudo.aprendizados.length - 1 ? 'Próximo aprendizado →' : 'Ver créditos →'}
             </button>
@@ -108,21 +108,21 @@ export function F5Fusao(props: FaseProps) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full space-y-4 border-t border-papel/15 pt-6 text-center text-sm text-papel/70"
+              className="w-full space-y-4 border-t border-pergaminho/15 pt-6 text-center text-sm text-pergaminho/70"
             >
               <div>
-                <p className="font-titulo text-moeda">Equipe</p>
+                <p className="font-titulo text-ouro">Equipe</p>
                 <p>{conteudo.equipe.membros.join(' · ')}</p>
               </div>
               <div>
-                <p className="font-titulo text-moeda">Referências</p>
+                <p className="font-titulo text-ouro">Referências</p>
                 {conteudo.artigos.map((artigo) => (
                   <p key={artigo.id} className="mx-auto max-w-xl">
                     {artigo.referenciaABNT}
                   </p>
                 ))}
               </div>
-              <p className="text-xs text-papel/40">Créditos de assets em public/assets/CREDITOS.md</p>
+              <p className="text-xs text-pergaminho/40">Créditos de assets em public/assets/CREDITOS.md</p>
             </motion.div>
           )}
         </>

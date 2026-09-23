@@ -4,7 +4,7 @@ export function Fundo() {
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(circle at 50% 40%, var(--noite) 0%, var(--noite-profunda) 100%)',
+          background: 'radial-gradient(circle at 50% 40%, var(--madeira) 0%, var(--madeira-profunda) 100%)',
         }}
       />
       <svg className="absolute inset-0 h-full w-full opacity-[0.06]">
@@ -18,7 +18,7 @@ export function Fundo() {
       <div
         className="absolute inset-0 opacity-60"
         style={{
-          boxShadow: 'inset 0 0 220px 60px var(--noite-profunda)',
+          boxShadow: 'inset 0 0 220px 60px var(--madeira-profunda)',
         }}
       />
     </div>

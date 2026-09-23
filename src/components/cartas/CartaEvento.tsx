@@ -29,21 +29,21 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
       >
         <CenaArte arte={arte} nome={nome} />
         <span
-          className="absolute -left-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-papel/80 text-sm"
+          className="absolute -left-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-pergaminho/80 text-sm"
           style={{ background: cor }}
         >
           {arte.icone}
         </span>
       </div>
       <div className="flex flex-1 flex-col justify-center gap-1 p-4">
-        <span className="font-mono text-[10px] uppercase tracking-wide text-papel/50">Evento · {nome}</span>
+        <span className="font-sistema text-[10px] uppercase tracking-wide text-pergaminho/50">Evento · {nome}</span>
         <h3 className="font-titulo text-lg" style={{ color: cor }}>
           {desfecho.titulo}
         </h3>
-        <p className="text-sm text-papel/85">{desfecho.texto}</p>
+        <p className="text-sm text-pergaminho/85">{desfecho.texto}</p>
         <div className="mt-1 flex gap-2">
           {Object.entries(desfecho.efeito).map(([chave, valor]) => (
-            <span key={chave} className="rounded-full bg-papel/10 px-2 py-0.5 text-[10px]">
+            <span key={chave} className="rounded-full bg-pergaminho/10 px-2 py-0.5 text-[10px]">
               {ROTULOS[chave]} {valor! > 0 ? `+${valor}` : valor}
             </span>
           ))}

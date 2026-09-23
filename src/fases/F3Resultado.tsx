@@ -38,14 +38,14 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 180, damping: 16 }}
         className="flex h-40 w-40 shrink-0 items-center justify-center rounded-full border-4 text-7xl"
-        style={{ borderColor: 'var(--moeda)', boxShadow: '0 0 32px -4px var(--moeda), inset 0 0 0 6px #17123a' }}
+        style={{ borderColor: 'var(--ouro)', boxShadow: '0 0 32px -4px var(--ouro), inset 0 0 0 6px #17123a' }}
       >
         {perfil?.emoji ?? '❔'}
       </motion.div>
 
       <div className="text-center">
-        <p className="font-titulo text-3xl text-moeda">{perfil?.nome ?? 'Rodada incompleta'}</p>
-        <p className="mt-2 max-w-lg text-papel/80">{perfil?.texto ?? 'Complete as 4 decisões para ver o perfil da turma.'}</p>
+        <p className="font-titulo text-3xl text-ouro">{perfil?.nome ?? 'Rodada incompleta'}</p>
+        <p className="mt-2 max-w-lg text-pergaminho/80">{perfil?.texto ?? 'Complete as 4 decisões para ver o perfil da turma.'}</p>
         <p className="mt-3 font-titulo text-2xl">
           <ContadorAnimado valor={total} /> pontos
         </p>
@@ -63,7 +63,7 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
         </p>
       </div>
 
-      <h2 className="font-titulo text-2xl text-moeda">Vocês vs. a startup real</h2>
+      <h2 className="font-titulo text-2xl text-ouro">Vocês vs. a startup real</h2>
       <ol className="w-full space-y-2">
         {caminhoReal.map((passo, indice) => {
           const escolhaTurma = escolhas[indice];
@@ -72,21 +72,21 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
             <li
               key={passo.etapa}
               className={`relative flex items-center justify-between overflow-hidden rounded-carta border p-3 ${
-                igual ? 'border-moeda/60 bg-moeda/10' : 'border-papel/15'
+                igual ? 'border-ouro/60 bg-ouro/10' : 'border-pergaminho/15'
               }`}
             >
               {igual && (
                 <motion.span
-                  className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-moeda"
+                  className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 bg-ouro"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   style={{ transformOrigin: 'left' }}
                 />
               )}
-              <span className="relative z-10 w-32 text-sm text-papel/70">{passo.etapa}</span>
+              <span className="relative z-10 w-32 text-sm text-pergaminho/70">{passo.etapa}</span>
               <span className="relative z-10">{escolhaTurma ? ICONE_ESCOLHA[escolhaTurma] : '—'}</span>
               <span className="relative z-10">{igual ? '✨🔗✨' : ''}</span>
-              <span className="relative z-10 text-sm" style={{ color: 'var(--artigo-b)' }}>
+              <span className="relative z-10 text-sm" style={{ color: 'var(--tomo-b)' }}>
                 {passo.logica}
               </span>
             </li>

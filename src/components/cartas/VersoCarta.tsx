@@ -11,7 +11,7 @@ export function VersoCarta({ corPrincipal, tamanho = 'grande' }: { corPrincipal:
       }}
     >
       <span
-        className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-moeda font-titulo text-xl text-moeda"
+        className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-ouro font-titulo text-xl text-ouro"
         style={{ background: '#17123acc' }}
       >
         SA

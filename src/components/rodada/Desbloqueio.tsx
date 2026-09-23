@@ -10,7 +10,7 @@ export function Desbloqueio({ desbloqueado, avancar }: { desbloqueado: boolean; 
           {Array.from({ length: 14 }).map((_, indice) => (
             <motion.span
               key={indice}
-              className="absolute left-1/2 top-16 text-moeda"
+              className="absolute left-1/2 top-16 text-ouro"
               initial={{ x: 0, y: 0, opacity: 1 }}
               animate={{
                 x: Math.cos((indice / 14) * Math.PI * 2) * 90,
@@ -33,7 +33,7 @@ export function Desbloqueio({ desbloqueado, avancar }: { desbloqueado: boolean; 
         {desbloqueado ? '🔓' : '🔒'}
       </motion.div>
 
-      <p className={`max-w-md text-lg font-bold ${desbloqueado ? 'text-moeda' : 'text-papel/70'}`}>
+      <p className={`max-w-md text-lg font-bold ${desbloqueado ? 'text-ouro' : 'text-pergaminho/70'}`}>
         {desbloqueado ? mensagensCombinar.desbloqueou : mensagensCombinar.trancada}
       </p>
       <Botao onClick={avancar}>Avançar →</Botao>

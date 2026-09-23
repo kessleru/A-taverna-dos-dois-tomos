@@ -49,7 +49,7 @@ export function F0Abertura({ avancar, som }: F0AberturaProps) {
 
   return (
     <section className="flex h-full flex-col items-center justify-center gap-8 px-6 text-center">
-      <p className="h-20 font-mono text-fosforo">
+      <p className="h-20 font-sistema text-runa">
         {LINHAS.slice(0, linhaAtual).map((linha) => (
           <span key={linha}>
             {linha}
@@ -66,7 +66,7 @@ export function F0Abertura({ avancar, som }: F0AberturaProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, x: glitch ? [0, -4, 4, -2, 2, 0] : 0 }}
             transition={{ duration: 0.4 }}
-            style={{ textShadow: '0 0 24px var(--moeda), 0 0 48px var(--artigo-a)' }}
+            style={{ textShadow: '0 0 24px var(--ouro), 0 0 48px var(--tomo-a)' }}
           >
             <Titulo>Startup Arena</Titulo>
           </motion.div>
