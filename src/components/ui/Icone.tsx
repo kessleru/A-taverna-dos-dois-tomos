@@ -1,5 +1,9 @@
-// Ícone de public/assets/icones/ (game-icons.net) pintado com a cor do texto.
-// Usa mask-image porque um SVG em <img> não herda currentColor.
+import { ICONES } from './icones';
+
+// Ícone do game-icons.net pintado com a cor do texto (fill="currentColor").
+// É SVG embutido, e não mask-image: o Chrome escala máscaras errado dentro de
+// elementos com zoom, como as cartas. O HTML injetado vem só dos SVGs do
+// próprio repositório (empacotados no build), nunca de dados de usuário.
 interface IconeProps {
   nome: string;
   className?: string;
@@ -8,23 +12,13 @@ interface IconeProps {
 }
 
 export function Icone({ nome, className = '', titulo }: IconeProps) {
-  const url = `url(${import.meta.env.BASE_URL}assets/icones/${nome}.svg)`;
   return (
     <span
       role={titulo ? 'img' : undefined}
       aria-label={titulo}
       aria-hidden={titulo ? undefined : true}
-      className={`inline-block shrink-0 bg-current ${className}`}
-      style={{
-        WebkitMaskImage: url,
-        maskImage: url,
-        WebkitMaskSize: 'contain',
-        maskSize: 'contain',
-        WebkitMaskRepeat: 'no-repeat',
-        maskRepeat: 'no-repeat',
-        WebkitMaskPosition: 'center',
-        maskPosition: 'center',
-      }}
+      className={`inline-block shrink-0 [&>svg]:block [&>svg]:h-full [&>svg]:w-full ${className}`}
+      dangerouslySetInnerHTML={{ __html: ICONES[nome] ?? '' }}
     />
   );
 }

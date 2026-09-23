@@ -1,6 +1,6 @@
 # 10 — Briefing (F1) como quadro de missões da taverna
 
-> Proposta aprovada (22/09/2026). Em implementação: peças base e folhas 1 e 2 prontas; folhas 3 e 4 ainda com o conteúdo antigo.
+> Proposta aprovada (22/09/2026). Em implementação: peças base e folhas 1 a 3 prontas; folha 4 ainda com o conteúdo antigo.
 > Complementa o §4 de [03-historia.md](03-historia.md), que define o conteúdo das quatro telas da F1, e usa a base visual da iteração 1 (palco, tokens, fontes, Grimório).
 
 ## 1. Problema

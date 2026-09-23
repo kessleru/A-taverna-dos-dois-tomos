@@ -59,7 +59,7 @@ deckbuilder UI sampler"; `texturas/holo*` e `texturas/estrelas.webp` do
 
 **PREENCHER:** autor, site e licença de cada pacote (vieram sem arquivo de licença).
 
-## Ícones (`icones/`)
+## Ícones (`src/assets/icones/`)
 
 De [game-icons.net](https://game-icons.net), licença
 [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) (crédito

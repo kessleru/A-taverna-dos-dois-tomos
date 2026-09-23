@@ -5,9 +5,9 @@ import { navegarFolha, type Direcao } from '../engine/folhas';
 import { Botao } from '../components/ui/Botao';
 import { QuadroMadeira } from '../components/ui/QuadroMadeira';
 import { Pergaminho } from '../components/ui/Pergaminho';
-import { CartaDecisao } from '../components/cartas/CartaDecisao';
 import { FolhaMissao } from './briefing/FolhaMissao';
 import { FolhaTomos } from './briefing/FolhaTomos';
+import { FolhaDecisoes } from './briefing/FolhaDecisoes';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -69,7 +69,7 @@ export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
           <motion.div key={folha} className="absolute inset-0" exit={{ opacity: 0, transition: { duration: 0.2 } }}>
             {folha === 0 && <FolhaMissao />}
             {folha === 1 && <FolhaTomos som={som} />}
-            {folha === 2 && <FolhaDecisoesProvisoria />}
+            {folha === 2 && <FolhaDecisoes />}
             {folha === 3 && <FolhaRegrasProvisoria />}
           </motion.div>
         </AnimatePresence>
@@ -93,25 +93,8 @@ export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
   );
 }
 
-// ── Folhas 3 e 4: conteúdo antigo dentro do quadro até serem refeitas
+// ── Folha 4: conteúdo antigo dentro do quadro até ser refeita
 // (blocos seguintes do 10-briefing-quadro.md). ────────────────────────────
-
-function FolhaDecisoesProvisoria() {
-  return (
-    <div className="flex h-full items-center justify-center gap-6">
-      {briefing.jeitosDeDecidir.cartas.map((carta) => (
-        <CartaDecisao
-          key={carta.id}
-          id={carta.id as 'planejar' | 'adaptar' | 'combinar' | 'bricolagem'}
-          nome={carta.nome}
-          teoria={carta.teoria}
-          resumo={carta.resumo}
-          trancada={carta.id === 'combinar'}
-        />
-      ))}
-    </div>
-  );
-}
 
 function FolhaRegrasProvisoria() {
   return (

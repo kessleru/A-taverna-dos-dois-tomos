@@ -40,7 +40,7 @@ Falta registrar a ferramenta usada em `public/assets/CREDITOS.md`.
 
 Procurar por: `scroll` e `quill` (Planejar), `compass` (Adaptar), `hammer` e `toolbox` (Bricolagem), `crossed-swords` (Combinar), `coins` (Caixa), `flag` ou `banner` (Clientes), `flame` (Moral), `dice-twenty-faces` (d20), `open-book` (tomos), `padlock` e `chain` (Combinar trancada), `candle` e `lantern` (ambiente), `wax-seal` (selo).
 
-Baixados em `public/assets/icones/`, com o quadrado preto de fundo removido e `fill="currentColor"`: importar como texto (`?raw`) ou componente para herdar a cor do tema (como `<img>` o SVG não herda cor). Autores e uso de cada um em `public/assets/CREDITOS.md`.
+Em `src/assets/icones/`, com o quadrado preto de fundo removido e `fill="currentColor"`, embutidos no bundle e desenhados pelo componente `Icone` (SVG inline, herda a cor do texto). Autores e uso de cada um em `public/assets/CREDITOS.md`.
 
 ## 4. Sons (quase feito)
 

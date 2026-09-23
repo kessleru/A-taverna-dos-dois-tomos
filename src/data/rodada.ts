@@ -45,11 +45,13 @@ export const briefing = {
   },
   jeitosDeDecidir: {
     titulo: 'Existem jeitos diferentes de decidir',
+    // Folha 3 do briefing (03-historia.md §4).
+    fala: 'Toda decisão vai ser entre duas cartas. A terceira... vocês vão ter que forjar.',
     cartas: [
       { id: 'planejar', icone: '📋', nome: 'Planejar', teoria: 'Causation', resumo: 'Defina a meta, estude o mercado, faça o plano e execute.' },
       { id: 'adaptar', icone: '🧭', nome: 'Adaptar', teoria: 'Effectuation', resumo: 'Comece pelo que você tem, arrisque só o que pode perder e faça parcerias.' },
       { id: 'bricolagem', icone: '🔧', nome: 'Bricolagem', teoria: 'Bricolage', resumo: 'Faça com o que está à mão. Aparece dentro do Adaptar, na fundação.' },
-      { id: 'combinar', icone: '🔒', nome: 'Combinar', teoria: 'Carta secreta', resumo: 'Trancada. Descubram como desbloquear durante o jogo.' },
+      { id: 'combinar', icone: '🔒', nome: 'Combinar', teoria: 'Carta secreta', resumo: 'Trancada. Descubram como forjá-la durante o jogo.' },
     ],
   },
   regras: {

@@ -12,8 +12,6 @@ const FIXAS = [
   'cenario/quadro-tabuas.webp',
   'cartas/verso.webp',
   'personagens/taverneiro.webp',
-  'icones/quill-ink.svg',
-  'icones/wax-seal.svg',
 ].map((arquivo) => base + arquivo);
 
 const DAS_CARTAS = [

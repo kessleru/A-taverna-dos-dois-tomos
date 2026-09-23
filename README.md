@@ -13,9 +13,10 @@ public/
   assets/cartas/     arte das cartas (WebP)
   assets/cenario/    fundo da taverna e tampo da mesa (WebP)
   assets/personagens/ retratos (WebP)
-  assets/icones/     ícones SVG do game-icons.net, cor via currentColor
+  assets/molduras/   molduras de carta; assets/ui/ cristal e orbe; assets/texturas/ holo
   sfx/               efeitos (.ogg) e música de fundo
 src/
+  assets/icones/     ícones SVG do game-icons.net, embutidos no bundle (cor via currentColor)
   data/              textos e dados do jogo
   engine/            motor da rodada, navegação e som
   components/        cartas, HUD, rodada, UI

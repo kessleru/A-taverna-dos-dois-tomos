@@ -3,6 +3,7 @@ import { artesDecisoes, orbeDecisao, type ArteCarta } from '../../data/artes';
 import type { Escolha } from '../../data/rodada';
 import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
+import { Icone } from '../ui/Icone';
 
 const CORES: Record<Escolha | 'bricolagem', string> = {
   planejar: 'var(--planejar)',
@@ -48,13 +49,26 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
         onClick={trancada ? undefined : onClick}
         layoutId={`decisao-${id}`}
         frente={
-          <div className={trancada ? 'relative grayscale' : 'relative'}>
-            <MolduraCarta tipo="decisao" nome={nome} orbe={orbe} arte={arte} corPrincipal={cor} tamanho={tamanhoEfetivo}>
-              <p className="text-[10px] text-tinta/60">{teoria}</p>
-              <p className="mt-1 font-medium">{resumo}</p>
-            </MolduraCarta>
+          <div className="relative">
+            <div className={trancada ? 'grayscale' : undefined}>
+              <MolduraCarta tipo="decisao" nome={nome} orbe={orbe} arte={arte} corPrincipal={cor} tamanho={tamanhoEfetivo}>
+                <p className="text-[10px] text-tinta/60">{teoria}</p>
+                <p className="mt-1 font-medium">{resumo}</p>
+              </MolduraCarta>
+            </div>
+            {/* Trancada: correntes de ferro cruzando a carta e cadeado dourado no
+                centro (01-tema-e-hud.md §8.3), fora do filtro cinza da carta. */}
             {trancada && (
-              <div className="absolute inset-0 flex items-center justify-center text-4xl">🔒</div>
+              <div className="absolute inset-0 flex items-center justify-center" aria-label="Carta trancada">
+                <Icone
+                  nome="crossed-chains"
+                  className="absolute inset-[4%] text-[#2e2a27] [filter:drop-shadow(0_0_1px_#d8d0c6)_drop-shadow(0_6px_6px_rgb(0_0_0/0.8))]"
+                />
+                <Icone
+                  nome="padlock"
+                  className="relative h-[34%] w-[34%] text-ouro [filter:drop-shadow(0_0_2px_#3a2400)_drop-shadow(0_6px_8px_rgb(0_0_0/0.9))]"
+                />
+              </div>
             )}
           </div>
         }
