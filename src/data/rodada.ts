@@ -11,9 +11,15 @@ export type Escolha = 'planejar' | 'adaptar' | 'combinar';
 // BRIEFING — "Como jogar em 60 segundos" (F1, 4 telas)
 // ─────────────────────────────────────────────────────────────
 export const briefing = {
+  // Folha 1 do quadro de missões (docs/redesign/03-historia.md §4 e 10-briefing-quadro.md §4).
   missao: {
     titulo: 'Vocês agora são fundadoras de uma startup',
-    texto: 'Uma farmacêutica percebeu que muitos pacientes com câncer interrompem a quimioterapia por causa de feridas na pele. Ela quer criar um produto para isso. A história é real: é a Healthy Skin, estudada no Artigo B.',
+    texto: 'Sentem-se, fundadoras. Esta noite vocês vão reviver uma história real: a de uma farmacêutica que viu pacientes com câncer interromperem a quimioterapia por causa de feridas na pele, e decidiu criar um produto para isso.',
+    notas: [
+      { titulo: 'Quando', texto: '2016, no Brasil' },
+      { titulo: 'A guilda', texto: 'Vocês, as três fundadoras' },
+      { titulo: 'A fonte', texto: 'Artigo B. "Healthy Skin" é o nome que o artigo dá à startup real.' },
+    ],
   },
   conselheiros: {
     titulo: 'Dois conselheiros vão ajudar vocês',
