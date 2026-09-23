@@ -24,7 +24,7 @@ Inspiração: o tutorial do Hearthstone (setas e destaques guiados pelo Innkeepe
 
 - **Holofote:** SVG em tela cheia com `<mask>`: retângulo preto a 70% com um buraco arredondado (margem de 16 px) em volta do alvo. O buraco anima de um alvo para o outro com spring.
 - **Seta desenhada:** caminho SVG curvo (Bézier quadrática do balão até a borda do alvo), traço dourado de 6 px com brilho, desenhado com `pathLength` de 0 a 1 em 400 ms, ponta que "salta" no fim.
-- **Balão:** pergaminho com o retrato do Taverneiro, texto em Alegreya 36 px digitado rápido, e `→ continuar` em mono no canto.
+- **Balão:** pergaminho com o retrato do Taverneiro, texto em Alegreya 36 px digitado rápido, e "→ continuar" em Alegreya itálico no canto.
 - **Mão fantasma:** ícone de mão que desliza até o alvo e "clica" (escala 0,9 → 1).
 - **Anel pulsante:** círculo que expande e some em volta do alvo, repetindo a cada 1,2 s.
 

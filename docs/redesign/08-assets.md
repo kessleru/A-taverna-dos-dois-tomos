@@ -72,11 +72,11 @@ O que ainda falta para o briefing e as próximas iterações. Imagens: salvar os
 
 Usar o **estilo base** da seção 2 antes de cada prompt, exceto no favicon e nas texturas, que já dizem o estilo.
 
-| Arquivo | Tamanho | Para quê | Prompt | Prioridade |
+| Arquivo | Proporção e tamanho | Para quê | Prompt | Prioridade |
 |---|---|---|---|---|
-| `favicon.png` | 512×512, fundo transparente | Ícone da aba do navegador (hoje dá erro 404) | `Game icon of two closed leather-bound tomes stacked at a slight angle, sealed together with a red wax seal, bold simple shapes readable at 32 pixels, warm gold and brown colors, flat painterly style, transparent background, no text` | P0 |
-| `quadro-tabuas.webp` | 2048×1024 | Tábuas do quadro de missões (F1); hoje é CSS | `Front view of a wall made of vertical dark oak planks, worn wood grain, small dark gaps between planks, even warm lighting, seamless horizontally, no objects, no text, texture only` | P2 (o CSS já funciona) |
-| `pergaminho.webp` | 1024×1024 | Fundo dos papéis pregados (F1, F3, F4); hoje é CSS | `Seamless texture of aged light parchment paper, subtle fibers, faint stains only near the edges, even lighting, flat, no text, no writing, no folds` | P2 (o CSS já funciona) |
+| `favicon.png` | 1:1, 512×512, fundo transparente | Ícone da aba do navegador (hoje dá erro 404) | `Game icon of two closed leather-bound tomes stacked at a slight angle, sealed together with a red wax seal, bold simple shapes readable at 32 pixels, warm gold and brown colors, flat painterly style, transparent background, no text` | P0 |
+| `quadro-tabuas.webp` | 2:1, 2048×1024 | Tábuas do quadro de missões (F1); hoje é CSS | `Front view of a wall made of vertical dark oak planks, worn wood grain, small dark gaps between planks, even warm lighting, seamless horizontally, no objects, no text, texture only` | P2 (o CSS já funciona) |
+| `pergaminho.webp` | 1:1, 1024×1024 | Fundo dos papéis pregados (F1, F3, F4); hoje é CSS | `Seamless texture of aged light parchment paper, subtle fibers, faint stains only near the edges, even lighting, flat, no text, no writing, no folds` | P2 (o CSS já funciona) |
 
 ### Sons
 

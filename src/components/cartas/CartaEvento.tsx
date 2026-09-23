@@ -36,7 +36,7 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
         </span>
       </div>
       <div className="flex flex-1 flex-col justify-center gap-1 p-4">
-        <span className="font-sistema text-[10px] uppercase tracking-wide text-pergaminho/50">Evento · {nome}</span>
+        <span className="font-texto text-[10px] uppercase tracking-wide text-pergaminho/50">Evento · {nome}</span>
         <h3 className="font-titulo text-lg" style={{ color: cor }}>
           {desfecho.titulo}
         </h3>

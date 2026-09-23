@@ -24,7 +24,7 @@ function AvisoDeSom({ mudo }: { mudo: boolean }) {
       primeiro.current = false;
       return;
     }
-    notificar(mudo ? 'som desligado' : 'som ligado');
+    notificar(mudo ? 'Som desligado.' : 'Som ligado.');
   }, [mudo, notificar]);
   return null;
 }

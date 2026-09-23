@@ -32,7 +32,6 @@ const tokens = [
   'cera',
   'dano',
   'cura',
-  'runa',
 ];
 
 export default {
@@ -43,7 +42,6 @@ export default {
       fontFamily: {
         titulo: ['Cinzel', 'serif'],
         texto: ['Alegreya', 'serif'],
-        sistema: ['"JetBrains Mono"', 'monospace'],
       },
       borderRadius: {
         carta: 'var(--raio-carta)',

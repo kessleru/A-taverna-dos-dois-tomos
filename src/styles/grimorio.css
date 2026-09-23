@@ -1,85 +1,58 @@
-/* O Grimório: único elemento com estética de terminal (01-tema-e-hud.md §5). */
+/* O Grimório: a página do livro de registros da taverna, escrita a pena
+   (01-tema-e-hud.md §5). */
 
 .grimorio {
   position: relative;
-  padding: 44px 36px 26px;
-  background: var(--runa-fundo);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border: 2px solid var(--runa);
-  border-radius: 6px;
+  padding: 60px 52px 36px 56px;
+  border-radius: 4px;
+  color: var(--tinta);
+  background: radial-gradient(ellipse at 30% 20%, #fbf4de 0%, var(--pergaminho) 45%, #e0cb9c 100%);
   box-shadow:
-    0 0 18px rgb(127 232 255 / 0.35),
-    inset 0 0 24px rgb(127 232 255 / 0.12);
-  color: var(--runa);
-  font-family: 'JetBrains Mono', monospace;
+    inset 0 0 50px rgb(140 95 40 / 0.35),
+    0 24px 40px -16px rgb(0 0 0 / 0.75);
+  font-family: 'Alegreya', serif;
   font-weight: 500;
-  font-size: 30px;
+  font-size: 34px;
   line-height: 1.4;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-shadow: 0 0 8px rgb(127 232 255 / 0.6);
-  overflow: hidden;
 }
 
 .grimorio-compacto {
-  padding: 36px 24px 16px;
-  font-size: 28px;
+  padding: 48px 32px 22px 36px;
+  font-size: 30px;
 }
 
-/* Linhas de varredura sutis. */
+/* Moldura dupla em ouro velho, como a margem de um manuscrito. */
 .grimorio::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 12px;
+  border: 2px solid var(--ouro-escuro);
+  outline: 1px solid rgb(156 107 30 / 0.5);
+  outline-offset: -7px;
+  border-radius: 2px;
   pointer-events: none;
-  background: repeating-linear-gradient(to bottom, rgb(127 232 255 / 0.06) 0 2px, transparent 2px 5px);
 }
 
-.grimorio-aba {
+/* Marcador de pano vermelho pendurado no topo da página. */
+.grimorio-marcador {
   position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  letter-spacing: 0.24em;
-  opacity: 0.85;
-  white-space: nowrap;
+  top: -8px;
+  left: 44px;
+  padding: 10px 18px 20px;
+  background: linear-gradient(180deg, #b52a37, var(--cera) 60%, #7a1520);
+  color: var(--pergaminho);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  filter: drop-shadow(0 3px 2px rgb(0 0 0 / 0.4));
 }
 
-.grimorio-canto {
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 0 solid var(--runa);
-}
-
-.grimorio-canto-no {
-  top: 6px;
-  left: 6px;
-  border-top-width: 4px;
-  border-left-width: 4px;
-}
-
-.grimorio-canto-ne {
-  top: 6px;
-  right: 6px;
-  border-top-width: 4px;
-  border-right-width: 4px;
-}
-
-.grimorio-canto-so {
-  bottom: 6px;
-  left: 6px;
-  border-bottom-width: 4px;
-  border-left-width: 4px;
-}
-
-.grimorio-canto-se {
-  bottom: 6px;
-  right: 6px;
-  border-bottom-width: 4px;
-  border-right-width: 4px;
+.grimorio-compacto .grimorio-marcador {
+  left: 32px;
+  font-size: 16px;
+  padding: 8px 14px 16px;
 }
 
 .grimorio-linha {
@@ -87,12 +60,22 @@
   white-space: pre-wrap;
 }
 
-.grimorio-cursor {
-  animation: grimorio-piscar 1s steps(1) infinite;
+/* Pena que acompanha o texto enquanto ele é escrito. */
+.grimorio-pena {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin-left: 0.15em;
+  vertical-align: -0.2em;
+  color: var(--ouro-escuro);
+  animation: grimorio-escrever 0.45s ease-in-out infinite alternate;
 }
 
-@keyframes grimorio-piscar {
-  50% {
-    opacity: 0;
+@keyframes grimorio-escrever {
+  from {
+    transform: translate(0, 0) rotate(-6deg);
+  }
+  to {
+    transform: translate(2px, -3px) rotate(4deg);
   }
 }

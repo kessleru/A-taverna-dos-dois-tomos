@@ -17,7 +17,7 @@ export function CenaSituacao({ etapa, avancar }: { etapa: Etapa; avancar: () => 
       </motion.div>
 
       <div className="flex flex-col gap-4">
-        <span className="font-sistema text-sm uppercase tracking-wide text-ouro">{etapa.fase}</span>
+        <span className="font-texto text-sm uppercase tracking-wide text-ouro">{etapa.fase}</span>
         <h2 className="font-titulo text-4xl">{etapa.titulo}</h2>
         <p className="text-lg text-pergaminho/85">{etapa.situacao}</p>
         <div>

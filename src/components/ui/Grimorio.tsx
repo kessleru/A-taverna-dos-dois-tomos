@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { CARACTERES_POR_SEGUNDO, digitar } from '../../engine/digitacao';
+import { Icone } from './Icone';
 
 interface GrimorioProps {
   linhas: string[];
@@ -34,23 +35,20 @@ export function Grimorio({ linhas, instantaneo = false, compacto = false, aoConc
     if (completo) aoConcluirRef.current?.();
   }, [completo]);
 
-  const cursor = <span className="grimorio-cursor">█</span>;
+  // A pena acompanha o texto enquanto ele é escrito e some no fim.
+  const pena = completo ? null : <Icone nome="quill-ink" className="grimorio-pena" />;
 
   return (
     <div className={`grimorio ${compacto ? 'grimorio-compacto' : ''} ${className}`}>
-      <span className="grimorio-aba">[ GRIMÓRIO ]</span>
-      <span className="grimorio-canto grimorio-canto-no" />
-      <span className="grimorio-canto grimorio-canto-ne" />
-      <span className="grimorio-canto grimorio-canto-so" />
-      <span className="grimorio-canto grimorio-canto-se" />
+      <span className="grimorio-marcador">Grimório</span>
       {/* Leitor de tela recebe o texto inteiro, não letra por letra. */}
       <p className="sr-only">{linhas.join('. ')}</p>
       <div aria-hidden>
-        {visiveis.length === 0 && <p className="grimorio-linha">› {cursor}</p>}
+        {visiveis.length === 0 && <p className="grimorio-linha">{pena}</p>}
         {visiveis.map((linha, i) => (
           <p key={i} className="grimorio-linha">
-            › {linha}
-            {i === visiveis.length - 1 && cursor}
+            {linha}
+            {i === visiveis.length - 1 && pena}
           </p>
         ))}
       </div>

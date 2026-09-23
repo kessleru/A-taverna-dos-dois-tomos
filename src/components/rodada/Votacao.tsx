@@ -71,7 +71,7 @@ export function Votacao({ etapa, combinarLiberado, onEscolher }: VotacaoProps) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="font-sistema text-sm uppercase tracking-widest text-pergaminho/60"
+          className="font-texto text-sm uppercase tracking-widest text-pergaminho/60"
         >
           🥁 revelando...
         </motion.p>

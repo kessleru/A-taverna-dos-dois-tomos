@@ -4,7 +4,7 @@
 
 A apresentação acontece numa **taverna medieval à noite**. A turma é a **guilda fundadora** sentada à grande mesa de madeira. Sobre a mesa estão **dois tomos**, os dois artigos, cada um com um narrador. Lareira, velas e brasas flutuando dão o clima. A referência mais próxima é o tabuleiro do Hearthstone: uma mesa física, cartas com peso, uma voz que recebe o jogador.
 
-O **terminal** entra como o **Grimório**: um painel arcano de vidro escuro, com borda de runas, que "digita" em fonte monoespaçada tudo o que o sistema registra (ganhos, perdas, desbloqueios, números dos artigos). É o estilo das "janelas de sistema" dos animes de fantasia, **sem nenhuma referência a isekai ou reencarnação**: no jogo ele é só o grimório mágico da taverna.
+O **Grimório** é o livro de registros da taverna: uma página de pergaminho onde uma pena escreve, na hora, tudo o que o jogo registra (ganhos, perdas, desbloqueios, números dos artigos). **O tema é só medieval:** nada de terminal, fonte monoespaçada ou janelas de "sistema", e nenhuma referência a isekai ou reencarnação.
 
 Regra de ouro: **a fantasia veste, a história real conta.** Situações, números, instituições e citações continuam reais. A fantasia fica na arte, nas molduras, nos ícones, nos narradores e nos efeitos.
 
@@ -17,7 +17,7 @@ Regra de ouro: **a fantasia veste, a história real conta.** Situações, númer
 | Os dois artigos | **Os Dois Tomos**: Tomo A "O Mapa dos 20 Anos" e Tomo B "Canvas em Movimento" |
 | Autores do Artigo A | **O Cartógrafo**, que percorreu 38 crônicas escritas em 21 anos |
 | Autores do Artigo B | **A Cronista**, que acompanhou uma única guilda de 2016 a 2024 |
-| Sistema, log | **O Grimório** (voz neutra, monoespaçada) |
+| Sistema, log | **O Grimório** (voz neutra, escrita a pena) |
 | A turma | **A Guilda** ("vocês são as fundadoras da Healthy Skin") |
 | Situação da etapa | **Carta de Desafio** |
 | Eventos | **Cartas do Destino** |
@@ -41,7 +41,7 @@ A forma da gema repete a informação da cor, para quem tem daltonismo e para qu
 
 ## 3. Paleta
 
-Substitui `src/styles/tokens.css`. Fundo quente e escuro de madeira, texto em pergaminho, destaques em ouro. O ciano arcano só aparece no Grimório, para o "terminal" se destacar do resto.
+Substitui `src/styles/tokens.css`. Fundo quente e escuro de madeira, texto em pergaminho, destaques em ouro. Tudo na mesma família quente: madeira, pergaminho, ouro e cera.
 
 | Token | Valor | Uso |
 |---|---|---|
@@ -59,7 +59,6 @@ Substitui `src/styles/tokens.css`. Fundo quente e escuro de madeira, texto em pe
 | `--tomo-b` | `#2FC7B8` | Artigo B (combina com a arte turquesa já pronta) |
 | `--clientes` | `#9B7BFF` | violeta, diferente das lógicas |
 | `--dano` / `--cura` | `#E0374A` / `#5ED17A` | perdas / ganhos |
-| `--runa` / `--runa-fundo` | `#7FE8FF` / `rgb(8 20 32 / .82)` | Grimório |
 
 ---
 
@@ -78,9 +77,9 @@ No lugar do parallax com o mouse (no projetor ninguém mexe o mouse), a imagem f
 
 ## 5. O Grimório (`Grimorio.tsx`)
 
-- **Visual:** vidro `--runa-fundo` com `backdrop-filter: blur(8px)`, borda de 2 px `--runa` com brilho, cantos em colchete (L), aba `[ GRIMÓRIO ]` em mono maiúsculo, linhas de varredura sutis a 6%.
-- **Texto:** JetBrains Mono 28–32 px, cor `--runa` com brilho, digitado a ~40 caracteres/s, cursor `█` piscando, cada linha começa com `›`.
-- **Notificação:** entra deslizando da direita com um "ping" e fica 3 s. Exemplos: `› CAIXA −15   MORAL −10`, `› CARTA FORJADA: COMBINAR`, `› consultar tomo A → 38 estudos · 2001–2022`.
+- **Visual:** página de pergaminho com moldura dupla em ouro velho, como a margem de um manuscrito, e um marcador de pano vermelho pendurado no topo com o nome "Grimório" em Cinzel.
+- **Texto:** Alegreya 30–34 px em `--tinta`, escrito a ~40 caracteres/s, com uma pena (`quill-ink`) acompanhando o fim do texto enquanto escreve; a pena some quando termina. Frases normais, sem caixa alta.
+- **Notificação:** entra deslizando da direita com um "ping" e fica 3 s. Exemplos: "Caixa −15, Moral −10.", "Carta forjada: Combinar.", "Tomo A: 38 estudos, de 2001 a 2022."
 - **Onde aparece:** boot da abertura, log da rodada, números dos artigos na F1 e na F4.
 
 ---
@@ -98,7 +97,7 @@ Palco fixo de 1920×1080 ([04](04-visibilidade.md)).
 │ │GRAFO │        │               │ Remédio ou cosmético?           │  │-TA   │ │
 │ └──────┘        └──────────────────────────────────────────────────┘  └──────┘ │
 │ TAPEÇARIA        LEITURA DO MAPA:  [MICRO …]  [MESO …]  [MACRO …]    GRIMÓRIO │
-│ ▣▣▣                                                                  › log…   │
+│ ▣▣▣                                                                  registro │
 │ ▣▣▣              ┌──────────┐            ┌──────────┐                        │
 │ ▣▣▣              │ 1        │            │ 2        │   ← MÃO: 2 cartas      │
 │                  │ PLANEJAR │            │ ADAPTAR  │                        │
@@ -114,11 +113,11 @@ Duas cartas grandes, bem separadas e numeradas, para a turma votar levantando a 
 
 | Componente | Descrição | Tamanho em 1080p |
 |---|---|---|
-| `OrboIndicador` ×3 (substitui `BarraIndicador`) | Globo de vidro com líquido que ondula (SVG), número em mono no centro e rótulo em Cinzel embaixo. Caixa dourada, Clientes violeta, Moral brasa | globo 120 px, número 48 px |
+| `OrboIndicador` ×3 (substitui `BarraIndicador`) | Globo de vidro com líquido que ondula (SVG), número em Cinzel no centro e rótulo em Cinzel embaixo. Caixa dourada, Clientes violeta, Moral brasa | globo 120 px, número 48 px |
 | `MapaJornada` (substitui `TrilhaEtapas`) | Estrada pintada com 4 marcos. O atual pulsa; os concluídos mostram o sigilo da carta jogada e um selo se bateu com a história real | 480×72 px |
 | `Tapecaria` | Grade 3×3 dos blocos do Canvas, no canto; cresce na consequência | 240 px, 720 px ampliada |
 | `Grimorio` | Log e notificações | 460×200 px |
-| Dica de teclas | Rodapé: `→ avançar · Z ampliar · T tutorial`, mono 20 px a 40% | — |
+| Dica de teclas | Rodapé: `→ avançar · Z ampliar · T tutorial`, Alegreya 22 px a 50% | — |
 
 - Todo ganho ou perda aparece como número de 72 px saindo do globo (verde subindo, vermelho caindo com tremor) e fica 1,5 s na tela.
 - Abaixo de 15, o globo racha e pulsa em `--dano` com "Quase quebrou!".
@@ -146,7 +145,7 @@ As molduras são **CSS e SVG** (nítidas em qualquer escala, cor por prop, sem t
 │  └────────────────────────────────────┘ │
 │   💰 🔥               ▣ ▣               │ ← pistas + blocos do Canvas
 └────────────────────────────────────────┘
-              [ CAUSATION ]                ← placa da teoria, mono 20 px
+              [ CAUSATION ]                ← placa da teoria, Alegreya itálico 22 px
 ```
 
 ### 8.2 Tipos
@@ -192,5 +191,5 @@ Uma só, usada em todas: **página de tomo virando** (rotação 3D de uma págin
 
 - Nenhuma tela usa os tokens antigos (`--noite`) nem Bungee/Rubik.
 - Cada lógica é reconhecível por cor, sigilo, forma da gema e nome, inclusive em escala de cinza.
-- O Grimório é o único elemento com estética de terminal e aparece em todas as fases.
+- Nenhum elemento tem estética de terminal (fonte mono, ciano, cursor). O Grimório aparece em todas as fases.
 - A vitrine (`#vitrine`) mostra todos os tipos de carta em todos os estados.

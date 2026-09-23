@@ -7,11 +7,11 @@ import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
 const BOOT = [
-  'abrindo a taverna...',
-  'tomo A: 38 estudos · 21 anos',
-  'tomo B: 1 startup · 8 anos',
-  '2 caminhos: planejar ou improvisar',
-  'acendendo as velas',
+  'Abrindo as portas da taverna...',
+  'Tomo A: 38 estudos em 21 anos.',
+  'Tomo B: uma startup, 8 anos.',
+  'Dois caminhos: planejar ou improvisar.',
+  'Acendendo as velas.',
 ];
 
 interface F0AberturaProps extends FaseProps {

@@ -80,7 +80,7 @@ Tempo total ~1,8 s. Som: dado rolando, tics, acorde da faixa.
 |---|---|
 | Sempre | Velas oscilando, brasas subindo, deriva lenta do fundo |
 | Entre fases | Página de tomo virando (rotação 3D com sombra), 900 ms |
-| F0 Abertura | Grimório digitando, runas acendendo em volta, título surgindo de brasas com varredura de luz |
+| F0 Abertura | Pena escrevendo no Grimório, velas acendendo, título surgindo de brasas com varredura de luz |
 | F3 Resultado | Contagem da pontuação, medalha do rank "forjada" (brilho de metal quente esfriando), estandarte do título desenrolando, fio de ouro ligando as escolhas iguais |
 | F5 Créditos | Pergaminho desenrolando e subindo |
 

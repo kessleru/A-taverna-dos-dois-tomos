@@ -12,6 +12,11 @@ const PROIBIDOS: RegExp[] = [
   /Bungee|Rubik|IBM Plex/,
   /\b(?:text|bg|border|from|to|via|ring|fill|stroke|shadow)-(?:noite|papel|moeda|fosforo|artigo-a|artigo-b)\b/,
   /\bfont-mono\b/,
+  // Tema só medieval: nada da estética de terminal (fonte mono, ciano da runa).
+  /jetbrains/i,
+  /\bfont-sistema\b/,
+  /--runa\b|runa-fundo/,
+  /\b(?:text|bg|border|from|to|via|ring|fill|stroke|shadow)-runa\b/,
 ];
 
 describe('tema da taverna', () => {

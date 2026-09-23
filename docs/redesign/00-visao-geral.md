@@ -5,13 +5,13 @@
 
 | Arquivo | Tópico |
 |---|---|
-| [01-tema-e-hud.md](01-tema-e-hud.md) | Taverna, Grimório (terminal), paleta, mesa, cartas, HUD |
+| [01-tema-e-hud.md](01-tema-e-hud.md) | Taverna, Grimório (livro de registros), paleta, mesa, cartas, HUD |
 | [02-jogabilidade.md](02-jogabilidade.md) | O que muda na rodada (pouco na regra, muito na experiência) |
 | [03-historia.md](03-historia.md) | Narradores, roteiro de cada etapa, como os artigos entram |
 | [04-visibilidade.md](04-visibilidade.md) | Palco fixo, tamanhos mínimos, foco, ampliação de cartas |
 | [05-tutorial.md](05-tutorial.md) | Tour com holofote, setas e balões |
 | [06-animacoes.md](06-animacoes.md) | Catálogo de animações e como implementar |
-| [07-tipografia.md](07-tipografia.md) | Serifada medieval + monoespaçada de terminal |
+| [07-tipografia.md](07-tipografia.md) | Duas serifadas medievais: títulos e texto |
 | [08-assets.md](08-assets.md) | Imagens para gerar (com prompts), ícones, sons |
 | [09-referencias.md](09-referencias.md) | Jogos e programas pesquisados |
 | [10-briefing-quadro.md](10-briefing-quadro.md) | F1 como quadro de missões da taverna (proposta aprovada) |
@@ -20,13 +20,14 @@
 
 ## 1. Entendimento
 
-**Pedido:** tema de fantasia medieval de taverna (estilo Hearthstone) com toque de terminal; HUD melhor; jogo mais divertido; história mais imersiva e que explique os artigos; cartas grandes e ampliáveis para a turma toda; tutorial visual com setas; muitas animações; tipografia serifada + monoespaçada; pesquisa de referências.
+**Pedido:** tema de fantasia medieval de taverna (estilo Hearthstone); HUD melhor; jogo mais divertido; história mais imersiva e que explique os artigos; cartas grandes e ampliáveis para a turma toda; tutorial visual com setas; muitas animações; tipografia serifada; pesquisa de referências.
 
 **Respostas às perguntas:**
 - A apresentação pode ter de 20 a 25 minutos.
 - A turma inteira joga como a guilda fundadora.
 - A história segue o caso real (Healthy Skin); a fantasia fica no visual.
-- Nada de isekai ou reencarnação. Anime de fantasia entra só como referência de estilo (janelas de "sistema" sobre o jogo).
+- Nada de isekai ou reencarnação.
+- **Só medieval (decisão de 23/09):** o toque de terminal pedido no início saiu. Nada de fonte monoespaçada, ciano, cursor ou janelas de "sistema"; o Grimório virou um livro de registros escrito a pena.
 - A turma vota **só levantando a mão**, com **poucas opções por vez**.
 - **Desenvolvimento simples:** a regra muda pouco; história, arte e animação podem ser ricas.
 
@@ -68,7 +69,7 @@
 
 | Fase | Tempo | O que acontece |
 |---|---|---|
-| F0 Abertura | 0:45 | O Grimório (terminal arcano) digita a abertura, as runas acendem, o título surge |
+| F0 Abertura | 0:45 | O Grimório escreve a abertura a pena, as velas acendem, o título surge |
 | F1 A Taverna | 3:00 | Missão; o Cartógrafo e a Cronista apresentam os tomos; as cartas de decisão |
 | Tutorial | 1:30 | Tour com holofote e setas sobre a mesa da rodada |
 | F2 A Crônica | 9:00 | 4 etapas de ~2:15 |

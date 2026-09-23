@@ -1,6 +1,6 @@
 # 10 — Briefing (F1) como quadro de missões da taverna
 
-> Proposta aprovada para implementar (22/09/2026). Ainda não codificada.
+> Proposta aprovada (22/09/2026). Em implementação: peças base e folha 1 prontas; folhas 2 a 4 ainda com o conteúdo antigo.
 > Complementa o §4 de [03-historia.md](03-historia.md), que define o conteúdo das quatro telas da F1, e usa a base visual da iteração 1 (palco, tokens, fontes, Grimório).
 
 ## 1. Problema
@@ -36,7 +36,7 @@ Reaproveita a paleta da iteração 1 e acrescenta só tons de madeira e cera:
 | `--cera` (novo) | `#9E1F2B` | selo de cera |
 | `--ouro` (existe) | `#E8B64A` | capitular, ornamentos |
 
-Tipografia (já instalada): **Cinzel** nos títulos dos papéis, **Alegreya** no texto (36 px no texto essencial, 28 px nas etiquetas), **Alegreya itálico** nas falas dos narradores. O Grimório (mono) não aparece dentro do quadro; ele só mostra os números dos tomos numa notificação, como previsto em 03 §4.
+Tipografia (já instalada): **Cinzel** nos títulos dos papéis, **Alegreya** no texto (36 px no texto essencial, 28 px nas etiquetas), **Alegreya itálico** nas falas dos narradores. O Grimório não aparece dentro do quadro; ele só mostra os números dos tomos numa notificação, como previsto em 03 §4.
 
 ## 4. Layout
 
@@ -90,7 +90,7 @@ A F1 passa a ter **quatro folhas**, trocadas com `→` e `←` dentro da própri
 - As duas `CartaArtigo` escaladas 1,5× (390 px de largura), pregadas nas extremidades; as falas dos narradores (texto de 03 §4) em notas de pergaminho entre elas, em Alegreya itálico 32 px, assinadas com o nome do narrador e dos autores (Kogut, Mello e Skorupski, 2023 / Costa, Nelson e Pedroso, 2025).
 - Uma plaquinha de título no canto superior esquerdo do quadro ("Os Dois Tomos").
 - **Clique na carta virada:** vira (como hoje). **Clique de novo:** a nota do narrador troca para a **estratégia** e a **solução** do artigo (texto atual de `conteudo.ts`), com o mesmo tamanho de letra. Outro clique volta para a fala.
-- Ao virar cada carta, o Grimório notifica os números do tomo (`› tomo A: 38 estudos · 2001–2022`).
+- Ao virar cada carta, o Grimório notifica os números do tomo ("Tomo A: 38 estudos, de 2001 a 2022.").
 
 ### Folha 3 — Os jeitos de decidir
 

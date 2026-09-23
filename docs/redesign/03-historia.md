@@ -17,24 +17,24 @@ Regras de tom:
 |---|---|---|---|
 | **O Cartógrafo** (Tomo A) | Kogut, Mello e Skorupski (2023). "Percorri 38 crônicas escritas entre 2001 e 2022." | Em padrões: "Nos meus mapas...", "Em 17 de 19 crônicas...". Nunca fala de uma empresa só | Retrato âmbar (arte atual `artigo-A`), balão com borda `--tomo-a` |
 | **A Cronista** (Tomo B) | Costa, Nelson e Pedroso (2025). "Acompanhei uma única guilda, de 2016 a 2024, e ouvi suas fundadoras por 270 minutos." | Em fatos e citações: "Em 2019...", "Ela me contou...". Nunca generaliza | Retrato turquesa, balão com borda `--tomo-b` |
-| **O Grimório** | O sistema | Mono, maiúsculas, sem emoção: `› MORAL −10` | Painel ciano ([01](01-tema-e-hud.md) §5) |
+| **O Grimório** | O livro de registros | Frases curtas e neutras, escritas a pena: "Moral −10." | Página de pergaminho com marcador vermelho ([01](01-tema-e-hud.md) §5) |
 | **O Taverneiro** | Anfitrião do tutorial | Caloroso e breve, como o Innkeeper do Hearthstone: "Puxem uma cadeira!" | Retrato próprio, só no tutorial |
 
 ---
 
 ## 3. F0 — Abertura
 
-O Grimório acorda na tela escura e digita:
+O Grimório se abre na tela escura e a pena escreve:
 
 ```
-› abrindo a taverna...
-› tomo A: 38 estudos · 21 anos
-› tomo B: 1 startup · 8 anos
-› 2 caminhos: planejar ou improvisar
-› acendendo as velas_
+Abrindo as portas da taverna...
+Tomo A: 38 estudos em 21 anos.
+Tomo B: uma startup, 8 anos.
+Dois caminhos: planejar ou improvisar.
+Acendendo as velas.
 ```
 
-As runas da borda acendem, brasas sobem, e surge o título **A Taverna dos Dois Tomos** em Cinzel dourado. Botão **Entrar na taverna** (destrava o áudio).
+As velas acendem, brasas sobem, e surge o título **A Taverna dos Dois Tomos** em Cinzel dourado. Botão **Entrar na taverna** (destrava o áudio).
 
 ---
 
@@ -127,7 +127,7 @@ Cada etapa tem os campos: `situacao`, `perguntaParaTurma`, as duas opções (e a
 - **Crônica:** *"Incubadas na Eretz.bio, do Hospital Albert Einstein, e com apoio do PIPE Fapesp. Na pandemia, abriram televendas e WhatsApp: um imprevisto virou canal, a Limonada. Quando uma investidora sugeriu outro mercado, elas acharam a distribuição cara demais. Escolheram licenciar como marca branca para farmacêuticas e receber royalties."*
 - **Citação (Fundadora 1):** *"Uma das nossas investidoras-anjo sugeriu que entrássemos nesse outro mercado. Mas, para nós, o investimento em distribuição seria alto demais neste momento."*
 - **Cartógrafo:** *"Empreendedores experientes combinam as duas lógicas conforme a decisão. Mas combinar exige experiência."*
-- **Fecho do Grimório:** `› maio de 2024: +50.000 pacientes · ~1.000 médicos e enfermeiros visitados por mês · 2% do mercado potencial`
+- **Fecho do Grimório:** "Maio de 2024: mais de 50.000 pacientes, cerca de 1.000 médicos e enfermeiros visitados por mês, 2% do mercado potencial."
 - **Carta real:** Combinar.
 
 ### Eventos (Cartas do Destino)
@@ -144,7 +144,7 @@ Citação do evento 2 (Fundadora 2): *"É difícil uma startup investir em todo 
 
 ## 6. F3 — Resultado
 
-- O Grimório soma: `› caixa + clientes + moral = 245`, e o **rank** é forjado como uma medalha (Aprendiz, Mestre, Grão-Mestre).
+- O Grimório soma: "Caixa + Clientes + Moral = 245", e o **rank** é forjado como uma medalha (Aprendiz, Mestre, Grão-Mestre).
 - O **título** aparece num estandarte, com o texto do perfil.
 - **Vocês × a Healthy Skin:** duas trilhas de 4 cartas; um fio de ouro liga as escolhas iguais.
 - **Tapeçaria da turma × Tapeçaria real**, lado a lado. A Cronista: *"Os blocos não nasceram juntos, nem seguiram a mesma lógica. É isso que eu chamo de Canvas em movimento."*
@@ -194,7 +194,7 @@ Os dois tomos abrem frente a frente. Conteúdo atual de `comparacao` e `conteudo
 
 ## 8. F5 — Fusão e Aprendizados
 
-Os tomos giram em órbita, cada vez mais rápido, clarão, e nasce a lendária **Aprendizados**. Os 5 `aprendizados` aparecem um por `→`, gravados como runas que acendem. O Taverneiro fecha: *"A lenda continua. Obrigado por puxarem uma cadeira."* Depois, os créditos sobem como um pergaminho: equipe, referências ABNT, créditos de arte e som.
+Os tomos giram em órbita, cada vez mais rápido, clarão, e nasce a lendária **Aprendizados**. Os 5 `aprendizados` aparecem um por `→`, escritos a pena, com a tinta brilhando em ouro. O Taverneiro fecha: *"A lenda continua. Obrigado por puxarem uma cadeira."* Depois, os créditos sobem como um pergaminho: equipe, referências ABNT, créditos de arte e som.
 
 ---
 
