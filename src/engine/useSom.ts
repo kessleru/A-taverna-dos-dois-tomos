@@ -59,6 +59,17 @@ const VOLUME_AMBIENTE = 0.08;
 const VOLUME_FALA = 0.9;
 // A música abaixa enquanto o Taverneiro fala, para a voz ficar clara.
 const VOLUME_MUSICA_SOB_FALA = 0.04;
+// Uma fala interrompida (por outra fala ou pelo mudo) some aos poucos em vez de cortar.
+const SAIDA_FALA_MS = 350;
+
+function silenciarAosPoucos(som: Howl) {
+  if (!som.playing()) return;
+  som.fade(som.volume(), 0, SAIDA_FALA_MS);
+  som.once('fade', () => {
+    som.stop();
+    som.volume(VOLUME_FALA);
+  });
+}
 
 export function useSom() {
   const [mudo, setMudo] = useState(() => lerMudo(sessionStorage.getItem(CHAVE_MUDO)));
@@ -110,7 +121,7 @@ export function useSom() {
   // O mudo pausa em vez de parar, para música e lareira retomarem do mesmo ponto.
   useEffect(() => {
     if (mudo && falaAtual.current) {
-      falaAtual.current.som.stop();
+      silenciarAosPoucos(falaAtual.current.som);
       falaAtual.current = null;
       fundo.current[0]?.volume(VOLUME_MUSICA);
     }
@@ -145,20 +156,33 @@ export function useSom() {
   // última). Uma fala nova interrompe a anterior.
   const falar = useCallback(
     (momento: Momento) => {
-      if (mudo) return;
+      // Antes do primeiro clique o navegador seguraria a fala e a soltaria
+      // depois, por cima da próxima; melhor não falar.
+      if (mudo || !liberado) return;
       const id = escolherFala(FALAS[momento], Math.random(), falaAtual.current?.id);
       const som = id ? falas.current[id] : undefined;
       if (!id || !som) return;
-      falaAtual.current?.som.stop();
+      // A mesma fala já está tocando (grupo de uma fala só): deixa terminar.
+      if (som.playing()) return;
+      const anterior = falaAtual.current?.som;
       falaAtual.current = { id, som };
       const musica = fundo.current[0];
       musica?.volume(VOLUME_MUSICA_SOB_FALA);
       som.once('end', () => {
         if (falaAtual.current?.som === som) musica?.fade(VOLUME_MUSICA_SOB_FALA, VOLUME_MUSICA, 600);
       });
-      som.play();
+      som.volume(VOLUME_FALA);
+      if (anterior && !anterior.playing()) anterior.stop(); // estava na fila: descarta
+      if (anterior?.playing()) {
+        silenciarAosPoucos(anterior);
+        window.setTimeout(() => {
+          if (falaAtual.current?.som === som) som.play();
+        }, SAIDA_FALA_MS);
+      } else {
+        som.play();
+      }
     },
-    [mudo],
+    [mudo, liberado],
   );
 
   // Uma tarefa por arquivo de som, para a tela de carregamento. Lê os Howls na
