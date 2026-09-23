@@ -14,6 +14,7 @@
 | [07-tipografia.md](07-tipografia.md) | Serifada medieval + monoespaçada de terminal |
 | [08-assets.md](08-assets.md) | Imagens para gerar (com prompts), ícones, sons |
 | [09-referencias.md](09-referencias.md) | Jogos e programas pesquisados |
+| [10-briefing-quadro.md](10-briefing-quadro.md) | F1 como quadro de missões da taverna (proposta aprovada) |
 
 ---
 
