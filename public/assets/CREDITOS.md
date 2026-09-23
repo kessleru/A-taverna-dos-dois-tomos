@@ -36,6 +36,20 @@ usadas no código; entram com o redesign.
 
 **PREENCHER:** ferramenta usada para gerar cada uma.
 
+## Verso, texturas e favicon
+
+Gerados pela equipe com os prompts de `docs/redesign/08-assets.md` (seção 6
+e o prompt do verso). Os originais ficam em `assets-originais/`.
+
+| Arquivo | Uso | Ajuste feito |
+|---|---|---|
+| `cartas/verso.webp` | Verso de todas as cartas | Recortado do fundo, cantos arredondados transparentes, 500×700 (5:7). Original do Gemini (`Gemini_Generated_Image_…jpg`) |
+| `cenario/quadro-tabuas.webp` | Tábuas do quadro de missões (F1) | Só conversão para WebP |
+| `cenario/pergaminho.webp` | Papéis pregados e página do Grimório | Só conversão para WebP |
+| `../favicon.png` | Ícone da aba do navegador | Reduzido para 192×192 |
+
+**PREENCHER:** ferramenta usada nas texturas e no favicon.
+
 ## Ícones (`icones/`)
 
 De [game-icons.net](https://game-icons.net), licença

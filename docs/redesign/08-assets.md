@@ -32,7 +32,7 @@ Prompts em inglês, porque os geradores costumam responder melhor. Todos começa
 
 Falta registrar a ferramenta usada em `public/assets/CREDITOS.md`.
 
-**Não gerar como imagem** (fica melhor em CSS/SVG, nítido em qualquer escala e sem texto errado): molduras das cartas, verso, selo de cera, d20, orbes, correntes, Canvas.
+**Não gerar como imagem** (fica melhor em CSS/SVG, nítido em qualquer escala e sem texto errado): molduras das cartas, selo de cera, d20, orbes, correntes, Canvas.
 
 ## 3. Ícones (feito)
 
@@ -64,7 +64,7 @@ Baixados em `public/assets/icones/`, com o quadrado preto de fundo removido e `f
 
 `public/assets/CREDITOS.md` e `public/sfx/CREDITOS.md` listam origem e licença de tudo. A tela de créditos da F5 mostra os autores de ícones (CC BY) e a música.
 
-## 6. Novos assets (a pegar)
+## 6. Novos assets
 
 O que ainda falta para o briefing e as próximas iterações. Imagens: salvar os originais em `assets-originais/imagens/` (eu converto para WebP e coloco em `public/assets/`). Sons: salvar em `assets-originais/sons/` (eu converto e coloco em `public/sfx/`). Registrar a ferramenta ou o site de cada um, para os créditos.
 
@@ -74,11 +74,13 @@ Usar o **estilo base** da seção 2 antes de cada prompt, exceto no favicon e na
 
 | Arquivo | Proporção e tamanho | Para quê | Prompt | Prioridade |
 |---|---|---|---|---|
-| `favicon.png` | 1:1, 512×512, fundo transparente | Ícone da aba do navegador (hoje dá erro 404) | `Game icon of two closed leather-bound tomes stacked at a slight angle, sealed together with a red wax seal, bold simple shapes readable at 32 pixels, warm gold and brown colors, flat painterly style, transparent background, no text` | P0 |
-| `quadro-tabuas.webp` | 2:1, 2048×1024 | Tábuas do quadro de missões (F1); hoje é CSS | `Front view of a wall made of vertical dark oak planks, worn wood grain, small dark gaps between planks, even warm lighting, seamless horizontally, no objects, no text, texture only` | P2 (o CSS já funciona) |
-| `pergaminho.webp` | 1:1, 1024×1024 | Fundo dos papéis pregados (F1, F3, F4); hoje é CSS | `Seamless texture of aged light parchment paper, subtle fibers, faint stains only near the edges, even lighting, flat, no text, no writing, no folds` | P2 (o CSS já funciona) |
+| `favicon.png` | 1:1, 512×512, fundo transparente | Ícone da aba do navegador. **Feito** (`public/favicon.png`) | `Game icon of two closed leather-bound tomes stacked at a slight angle, sealed together with a red wax seal, bold simple shapes readable at 32 pixels, warm gold and brown colors, flat painterly style, transparent background, no text` | P0 |
+| `quadro-tabuas.webp` | 2:1, 2048×1024 | Tábuas do quadro de missões (F1). **Feito** (`cenario/quadro-tabuas.webp`) | `Front view of a wall made of vertical dark oak planks, worn wood grain, small dark gaps between planks, even warm lighting, seamless horizontally, no objects, no text, texture only` | P2 (o CSS já funciona) |
+| `pergaminho.webp` | 1:1, 1024×1024 | Fundo dos papéis pregados e do Grimório. **Feito** (`cenario/pergaminho.webp`) | `Seamless texture of aged light parchment paper, subtle fibers, faint stains only near the edges, even lighting, flat, no text, no writing, no folds` | P2 (o CSS já funciona) |
 
-### Sons
+| `verso-carta` | 3:4 gerado, recortado para 5:7 | Verso de todas as cartas. **Feito** (`cartas/verso.webp`) | `Collectible card game card back, front view, perfectly symmetrical, vertical 3:4 format. Ornate frame of dark polished oak with gold filigree and iron corner brackets, rounded corners. In the center, a round golden emblem: two closed leather-bound tomes crossed behind a compass rose, sealed with a red wax seal. Background inside the frame: deep brown leather with subtle embossed geometric pattern and faint warm glow radiating from the emblem. Small amber gems set at the top and bottom of the frame. Warm candlelight, rich saturated colors, painterly digital art, high detail, crisp edges. Card centered, touching the top and bottom edges, with a thin plain dark margin on the left and right. No text, no letters, no numbers, no logos, no watermark, no hands, no table.` | P1 |
+
+### Sons (ainda faltam)
 
 Prompts em inglês para gerador de efeitos sonoros (o mesmo usado no público de taverna); em banco de sons (Freesound, Pixabay), buscar pelas palavras-chave.
 

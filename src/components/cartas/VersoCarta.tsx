@@ -1,21 +1,19 @@
+const VERSO = `${import.meta.env.BASE_URL}assets/cartas/verso.webp`;
+
+// Verso único para todas as cartas (madeira, ouro e o emblema dos dois tomos);
+// só o brilho em volta muda com a cor da carta, para mostrar de que tipo ela é.
 export function VersoCarta({ corPrincipal, tamanho = 'grande' }: { corPrincipal: string; tamanho?: 'grande' | 'pequena' }) {
   return (
-    <div
-      className="flex items-center justify-center overflow-hidden rounded-carta border-2"
+    <img
+      src={VERSO}
+      alt=""
+      draggable={false}
+      className="block select-none rounded-carta"
       style={{
         width: tamanho === 'grande' ? 260 : 170,
         aspectRatio: '5 / 7',
-        borderColor: corPrincipal,
-        background: `repeating-linear-gradient(45deg, ${corPrincipal}33 0 10px, ${corPrincipal}55 10px 20px), linear-gradient(160deg, ${corPrincipal}dd, #171225)`,
-        boxShadow: 'var(--sombra-carta)',
+        boxShadow: `var(--sombra-carta), 0 0 28px -8px ${corPrincipal}`,
       }}
-    >
-      <span
-        className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-ouro font-titulo text-xl text-ouro"
-        style={{ background: '#17123acc' }}
-      >
-        SA
-      </span>
-    </div>
+    />
   );
 }
