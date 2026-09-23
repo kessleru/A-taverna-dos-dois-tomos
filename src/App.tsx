@@ -3,6 +3,7 @@ import { Taverna } from './components/ui/Taverna';
 import { Palco } from './components/ui/Palco';
 import { GrimorioProvider, useGrimorio } from './components/ui/NotificacoesGrimorio';
 import { TransicaoPagina } from './components/ui/TransicaoPagina';
+import { AmpliacaoProvider } from './components/cartas/Ampliacao';
 import { Hud } from './components/hud/Hud';
 import { useNavegacao } from './engine/useNavegacao';
 import { useRodada } from './engine/useRodada';
@@ -51,20 +52,22 @@ export default function App() {
     <Palco>
       <GrimorioProvider aoNotificar={() => som.tocar('ping')}>
         <AvisoDeSom mudo={som.mudo} />
-        <div className="relative h-full w-full">
-          <Taverna />
-          {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
-          <TransicaoPagina chave={fase} aoVirar={() => som.tocar('pagina')}>
-            <main className={fase === 'abertura' ? 'relative h-full' : 'relative h-full pt-14'}>
-              {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
-              {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
-              {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
-              {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
-              {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
-              {fase === 'fusao' && <F5Fusao {...faseProps} />}
-            </main>
-          </TransicaoPagina>
-        </div>
+        <AmpliacaoProvider>
+          <div className="relative h-full w-full">
+            <Taverna />
+            {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
+            <TransicaoPagina chave={fase} aoVirar={() => som.tocar('pagina')}>
+              <main className={fase === 'abertura' ? 'relative h-full' : 'relative h-full pt-14'}>
+                {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
+                {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
+                {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
+                {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
+                {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
+                {fase === 'fusao' && <F5Fusao {...faseProps} />}
+              </main>
+            </TransicaoPagina>
+          </div>
+        </AmpliacaoProvider>
       </GrimorioProvider>
     </Palco>
   );
