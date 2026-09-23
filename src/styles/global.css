@@ -8,6 +8,7 @@
 
 @import './tokens.css';
 @import './cartas.css';
+@import './taverna.css';
 
 @tailwind base;
 @tailwind components;

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Fundo } from './components/ui/Fundo';
+import { Taverna } from './components/ui/Taverna';
 import { Palco } from './components/ui/Palco';
 import { Hud } from './components/hud/Hud';
 import { useNavegacao } from './engine/useNavegacao';
@@ -34,9 +34,9 @@ export default function App() {
   return (
     <Palco>
       <div className="relative h-full w-full">
-        <Fundo />
+        <Taverna />
         {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
-        <main className={fase === 'abertura' ? 'h-full' : 'h-full pt-14'}>
+        <main className={fase === 'abertura' ? 'relative h-full' : 'relative h-full pt-14'}>
           {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
           {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
           {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
