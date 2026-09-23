@@ -8,9 +8,11 @@ import { CartaEvento } from '../components/cartas/CartaEvento';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
 import { VersoCarta } from '../components/cartas/VersoCarta';
 import { CenaArte } from '../components/cartas/CenaArte';
+import { Orbes } from '../components/hud/Orbes';
+import { MapaJornada } from '../components/hud/MapaJornada';
 
-// Rota de revisão visual (Iteração 3). Não faz parte da apresentação:
-// mostra todas as cartas e cenas de artes.ts lado a lado, frente e verso.
+// Rota de revisão visual. Não faz parte da apresentação: mostra todas as
+// cartas (nas molduras de bronze, prata e ouro), estados e peças do HUD.
 function Secao({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
@@ -42,6 +44,32 @@ export function Vitrine() {
             trancada={carta.id === 'combinar'}
           />
         ))}
+      </Secao>
+
+      <Secao titulo="Decisões em tamanho grande">
+        {briefing.jeitosDeDecidir.cartas.slice(0, 2).map((carta) => (
+          <CartaDecisao
+            key={carta.id}
+            id={carta.id as 'planejar' | 'adaptar'}
+            nome={carta.nome}
+            teoria={carta.teoria}
+            resumo={carta.resumo}
+            tamanho="grande"
+          />
+        ))}
+        <CartaDecisao id="combinar" nome="Combinar" teoria="As duas juntas" resumo="Destravada: a carta lendária da forja." tamanho="grande" />
+      </Secao>
+
+      <Secao titulo="HUD — orbes (normal, cheio e quase quebrando)">
+        <Orbes ind={{ caixa: 50, clientes: 95, moral: 12 }} />
+      </Secao>
+
+      <Secao titulo="HUD — mapa da jornada (início, meio e completo)">
+        <div className="flex flex-col gap-8">
+          <MapaJornada etapaAtual={0} escolhas={[]} />
+          <MapaJornada etapaAtual={2} escolhas={['adaptar', 'planejar']} />
+          <MapaJornada etapaAtual={4} escolhas={['adaptar', 'adaptar', 'planejar', 'combinar']} />
+        </div>
       </Secao>
 
       <Secao titulo="Eventos (CartaEvento)">

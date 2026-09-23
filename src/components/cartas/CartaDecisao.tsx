@@ -4,21 +4,7 @@ import type { Escolha } from '../../data/rodada';
 import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
 import { Icone } from '../ui/Icone';
-
-// Sigilo de cada lógica (01-tema-e-hud.md §2): a cor nunca aparece sozinha.
-const SIGILOS: Record<Escolha | 'bricolagem', string> = {
-  planejar: 'scroll-quill',
-  adaptar: 'compass',
-  combinar: 'crossed-swords',
-  bricolagem: 'hammer-drop',
-};
-
-const CORES: Record<Escolha | 'bricolagem', string> = {
-  planejar: 'var(--planejar)',
-  adaptar: 'var(--adaptar)',
-  combinar: 'var(--ouro)',
-  bricolagem: 'var(--bricolagem)',
-};
+import { COR as CORES, SIGILO as SIGILOS } from './logicas';
 
 interface CartaDecisaoProps {
   id: Escolha | 'bricolagem';

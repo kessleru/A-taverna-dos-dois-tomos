@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { etapas, eventos, combinarDesbloqueado } from '../data/rodada';
 import type { useRodada } from '../engine/useRodada';
-import { BarraIndicador } from '../components/hud/BarraIndicador';
-import { TrilhaEtapas } from '../components/hud/TrilhaEtapas';
+import { Orbes } from '../components/hud/Orbes';
+import { MapaJornada } from '../components/hud/MapaJornada';
 import { CenaSituacao } from '../components/rodada/CenaSituacao';
 import { Votacao } from '../components/rodada/Votacao';
 import { Consequencia } from '../components/rodada/Consequencia';
@@ -68,13 +68,9 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
 
   return (
     <section className="mx-auto flex h-full max-w-[1400px] flex-col gap-6 overflow-y-auto px-6 py-10">
-      <div className="flex items-center justify-between">
-        <TrilhaEtapas etapaAtual={estado.etapa} escolhas={estado.escolhas} />
-        <div className="flex gap-3">
-          <BarraIndicador icone="💰" rotulo="Caixa" valor={estado.ind.caixa} cor="var(--ouro)" />
-          <BarraIndicador icone="👥" rotulo="Clientes" valor={estado.ind.clientes} cor="var(--adaptar)" />
-          <BarraIndicador icone="🔥" rotulo="Moral" valor={estado.ind.moral} cor="var(--dano)" />
-        </div>
+      <div className="flex items-start justify-between">
+        <MapaJornada etapaAtual={estado.etapa} escolhas={estado.escolhas} />
+        <Orbes ind={estado.ind} />
       </div>
 
       {estado.passo === 'situacao' && <CenaSituacao etapa={etapa} avancar={avancar} />}
@@ -84,7 +80,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
       )}
 
       {estado.passo === 'consequencia' && opcaoAtual && (
-        <Consequencia resultado={opcaoAtual.resultado} ind={estado.ind} avancar={avancar} />
+        <Consequencia resultado={opcaoAtual.resultado} avancar={avancar} />
       )}
 
       {estado.passo === 'dado' && <Dado3D ultimoDado={estado.ultimoDado} onRolar={aoRolarDado} avancar={avancar} />}

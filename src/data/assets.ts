@@ -15,6 +15,7 @@ const FIXAS = [
   'molduras/carta-bronze.webp',
   'molduras/carta-prata.webp',
   'molduras/carta-ouro.webp',
+  'ui/orbe.webp',
 ].map((arquivo) => base + arquivo);
 
 const DAS_CARTAS = [

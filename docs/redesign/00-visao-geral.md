@@ -88,7 +88,7 @@ Cada iteração termina com `npm run build` e `npm test` passando e um commit.
 | # | Iteração | Entrega |
 |---|---|---|
 | 1 | Base visual | Palco 1920×1080, tokens, fontes, fundo da taverna, Grimório, transição entre fases — **feita** ([plano](../superpowers/plans/2026-09-22-iteracao-1-base-visual.md)) |
-| 2 | Cartas e HUD | Molduras novas, ampliação de carta, orbes, mapa da jornada, vitrine atualizada |
+| 2 | Cartas e HUD | Molduras novas, ampliação de carta, orbes, mapa da jornada, vitrine atualizada — **feita** ([plano](../superpowers/plans/2026-09-23-iteracao-2-cartas-e-hud.md)) |
 | 3 | Rodada | Dados novos, d20 com bônus, mesa, votação, jogada, Crônica, Canvas, eventos, forja do Combinar |
 | 4 | Tutorial e demais fases | Tour, abertura, taverna, resultado, confronto, fusão |
 | 5 | Assets e ensaio | Imagens geradas, sons, teste no projetor, ensaio cronometrado, deploy |
