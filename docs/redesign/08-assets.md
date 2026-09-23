@@ -54,7 +54,7 @@ Baixados em `public/assets/icones/`, com o quadrado preto de fundo removido e `f
 | Lareira e murmúrio de taverna (ambiente, opcional) | `ambiente-taverna.ogg` | Freesound (CC0) |
 | Música de fundo (ligada por padrão, entra no primeiro clique) | `musica-taverna.ogg` | [Kevin MacLeod / incompetech](https://incompetech.com/music/royalty-free/music.html), categoria medieval (CC BY 4.0, exige crédito). Ex.: "Village Consort", "Angevin B" |
 
-- **Já em `public/sfx/`:** todos os `.ogg` da tabela, exceto `tambor.ogg`, `chama.ogg` (descarte queimando, [06](06-animacoes.md)) e `ambiente-taverna.ogg`. Origem de cada um em `public/sfx/CREDITOS.md`.
+- **Já em `public/sfx/`:** todos os `.ogg` da tabela, exceto `tambor.ogg` e `chama.ogg` (descarte queimando, [06](06-animacoes.md)). A lareira ambiente está em `ambiente-taverna.mp3`. Origem de cada um em `public/sfx/CREDITOS.md`.
 - **Música:** a equipe escolheu "Playing with a Full Deck" (trilha do Hearthstone) em `public/sfx/musica-fundo.mp3`, no lugar da sugestão abaixo. É música comercial sem licença: ver o aviso em `public/sfx/CREDITOS.md`.
 - Nomes exatos em `src/engine/useSom.ts`. O hook atual já ignora arquivos que faltam, então dá para adicionar aos poucos.
 - Volume: efeitos 0,4; ambiente 0,08; música 0,12.

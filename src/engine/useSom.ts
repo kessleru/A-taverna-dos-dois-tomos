@@ -37,13 +37,15 @@ function caminhoSom(arquivo: string): string {
 
 const VOLUME_EFEITOS = 0.4;
 const VOLUME_MUSICA = 0.12;
+const VOLUME_AMBIENTE = 0.08;
 
 export function useSom() {
   const [mudo, setMudo] = useState(() => lerMudo(sessionStorage.getItem(CHAVE_MUDO)));
   // O navegador só libera áudio depois do primeiro clique ou tecla.
   const [liberado, setLiberado] = useState(false);
   const sons = useRef<Partial<Record<Efeito, Howl>>>({});
-  const musica = useRef<Howl | null>(null);
+  // Música e lareira: tocam em loop por baixo de tudo.
+  const fundo = useRef<Howl[]>([]);
 
   useEffect(() => {
     sessionStorage.setItem(CHAVE_MUDO, String(mudo));
@@ -55,10 +57,13 @@ export function useSom() {
     for (const efeito of EFEITOS) {
       sons.current[efeito] = new Howl({ src: [caminhoSom(`${efeito}.ogg`)], volume: VOLUME_EFEITOS });
     }
-    musica.current = new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true });
+    fundo.current = [
+      new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true }),
+      new Howl({ src: [caminhoSom('ambiente-taverna.mp3')], volume: VOLUME_AMBIENTE, loop: true, html5: true }),
+    ];
     return () => {
       for (const som of Object.values(sons.current)) som?.unload();
-      musica.current?.unload();
+      for (const faixa of fundo.current) faixa.unload();
     };
   }, []);
 
@@ -75,18 +80,18 @@ export function useSom() {
     };
   }, []);
 
-  // O mudo pausa em vez de parar, para a música retomar do mesmo ponto.
+  // O mudo pausa em vez de parar, para música e lareira retomarem do mesmo ponto.
   useEffect(() => {
-    const faixa = musica.current;
-    if (!faixa) return;
-    if (mudo) {
-      faixa.pause();
-      return;
+    for (const faixa of fundo.current) {
+      if (mudo) {
+        faixa.pause();
+        continue;
+      }
+      if (!liberado || faixa.playing()) continue;
+      // Se o navegador ainda recusar, tenta de novo quando o Howler destravar.
+      faixa.once('playerror', () => faixa.once('unlock', () => faixa.play()));
+      faixa.play();
     }
-    if (!liberado || faixa.playing()) return;
-    // Se o navegador ainda recusar, tenta de novo quando o Howler destravar.
-    faixa.once('playerror', () => faixa.once('unlock', () => faixa.play()));
-    faixa.play();
   }, [mudo, liberado]);
 
   useEffect(() => {

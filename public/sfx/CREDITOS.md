@@ -29,9 +29,17 @@ combinar.
 | `fanfarra.ogg` | Music Jingles | `Pizzicato jingles/jingles_PIZZI01.ogg` |
 
 **Faltam** (nenhum pacote Kenney baixado tem): `tambor.ogg` (rufar antes da
-revelação), `chama.ogg` (carta queimando no descarte) e, opcional,
-`ambiente-taverna.ogg`. Sugestão: [Freesound](https://freesound.org)
-filtrando por CC0.
+revelação) e `chama.ogg` (carta queimando no descarte). Sugestão:
+[Freesound](https://freesound.org) filtrando por CC0.
+
+## Ambiente
+
+`ambiente-taverna.mp3`: lareira crepitando, arquivo original
+`freesound_community-fireplace-6354.mp3` (em `assets-originais/sons/`),
+reduzido para mono a 56 kbps (3,4 MB para 1,2 MB). O padrão do nome é o do
+Pixabay (usuário "freesound_community"), cuja licença dispensa crédito.
+**PREENCHER:** confirmar a origem. Toca em loop a 0,08 de volume junto com a
+música e silencia junto com ela.
 
 ## Música
 
