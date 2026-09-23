@@ -1,6 +1,6 @@
-# Startup Arena — A Batalha dos Artigos
+# A Taverna dos Dois Tomos
 
-Jogo de apresentação para a atividade de Empreendedorismo. O redesign em andamento ("A Taverna dos Dois Tomos") está em [docs/redesign/](./docs/redesign/00-visao-geral.md); o plano original fica em [docs/plano-original.md](./docs/plano-original.md) como histórico.
+Jogo de apresentação para a atividade de Empreendedorismo (repositório "Startup Arena"). O redesign em andamento está em [docs/redesign/](./docs/redesign/00-visao-geral.md); o plano original fica em [docs/plano-original.md](./docs/plano-original.md) como histórico.
 
 ## Pastas
 

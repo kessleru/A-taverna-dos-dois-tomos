@@ -38,7 +38,7 @@ export function F0Abertura({ avancar, som }: F0AberturaProps) {
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               transition={{ duration: 1.2, ease: 'easeOut' }}
             >
-              <Titulo>A Taverna dos Dois Tomos</Titulo>
+              <Titulo tamanho={104}>A Taverna dos Dois Tomos</Titulo>
               <p className="mt-4 font-texto text-[36px] italic text-pergaminho/85">
                 a crônica de uma startup real, jogada em cartas
               </p>
