@@ -88,7 +88,7 @@ export default function App() {
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
-      if (evento.shiftKey && evento.key.toLowerCase() === 'r') rodada.reiniciar();
+      if (!evento.defaultPrevented && evento.shiftKey && evento.key.toLowerCase() === 'r') rodada.reiniciar();
     }
     window.addEventListener('keydown', aoTeclar);
     return () => window.removeEventListener('keydown', aoTeclar);

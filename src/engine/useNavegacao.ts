@@ -31,6 +31,8 @@ export function useNavegacao() {
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
+      // Tecla já tratada por uma tela (folhas do briefing, carregamento).
+      if (evento.defaultPrevented) return;
       if (evento.key === 'ArrowRight' || evento.key === ' ' || evento.key === 'PageDown') {
         evento.preventDefault();
         avancar();

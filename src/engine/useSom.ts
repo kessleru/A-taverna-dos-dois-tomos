@@ -80,6 +80,8 @@ export function useSom() {
   const fundo = useRef<Howl[]>([]);
   const falas = useRef<Record<string, Howl>>({});
   const falaAtual = useRef<{ id: string; som: Howl } | null>(null);
+  // Até quando a fala interrompida ainda está sumindo (a próxima espera).
+  const fimDaSaida = useRef(0);
 
   useEffect(() => {
     sessionStorage.setItem(CHAVE_MUDO, String(mudo));
@@ -139,7 +141,7 @@ export function useSom() {
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
-      if (evento.key.toLowerCase() === 'm') setMudo((m) => !m);
+      if (!evento.defaultPrevented && evento.key.toLowerCase() === 'm') setMudo((m) => !m);
     }
     window.addEventListener('keydown', aoTeclar);
     return () => window.removeEventListener('keydown', aoTeclar);
@@ -161,23 +163,32 @@ export function useSom() {
       if (mudo || !liberado) return;
       const id = escolherFala(FALAS[momento], Math.random(), falaAtual.current?.id);
       const som = id ? falas.current[id] : undefined;
-      if (!id || !som) return;
+      // Arquivo que não carregou: não fala (e não abaixa a música à toa).
+      if (!id || !som || som.state() !== 'loaded') return;
       // A mesma fala já está tocando (grupo de uma fala só): deixa terminar.
       if (som.playing()) return;
       const anterior = falaAtual.current?.som;
       falaAtual.current = { id, som };
       const musica = fundo.current[0];
-      musica?.volume(VOLUME_MUSICA_SOB_FALA);
-      som.once('end', () => {
+      const devolverMusica = () => {
         if (falaAtual.current?.som === som) musica?.fade(VOLUME_MUSICA_SOB_FALA, VOLUME_MUSICA, 600);
-      });
+      };
+      musica?.volume(VOLUME_MUSICA_SOB_FALA);
+      som.once('end', devolverMusica);
+      som.once('playerror', devolverMusica);
       som.volume(VOLUME_FALA);
       if (anterior && !anterior.playing()) anterior.stop(); // estava na fila: descarta
       if (anterior?.playing()) {
         silenciarAosPoucos(anterior);
+        fimDaSaida.current = Date.now() + SAIDA_FALA_MS;
+      }
+      // Espera a fala interrompida terminar de sumir, mesmo que ela tenha
+      // sido interrompida por uma fala anterior que nem chegou a tocar.
+      const espera = Math.max(0, fimDaSaida.current - Date.now());
+      if (espera > 0) {
         window.setTimeout(() => {
           if (falaAtual.current?.som === som) som.play();
-        }, SAIDA_FALA_MS);
+        }, espera);
       } else {
         som.play();
       }

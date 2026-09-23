@@ -5,9 +5,12 @@ import { motion } from 'framer-motion';
 // para ninguém avançar de fase às cegas antes de o jogo aparecer.
 export function TelaCarregamento({ progresso }: { progresso: number }) {
   useEffect(() => {
+    // Marca as teclas do jogo como tratadas (os atalhos ignoram teclas com
+    // defaultPrevented), mas deixa passar recarregar, atalhos com Ctrl e o F
+    // de tela cheia.
     function bloquear(evento: KeyboardEvent) {
+      if (evento.key === 'F5' || evento.ctrlKey || evento.metaKey || evento.key.toLowerCase() === 'f') return;
       evento.preventDefault();
-      evento.stopPropagation();
     }
     window.addEventListener('keydown', bloquear, true);
     return () => window.removeEventListener('keydown', bloquear, true);

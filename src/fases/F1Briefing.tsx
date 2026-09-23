@@ -47,14 +47,15 @@ export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
     [folha, avancar, voltar, som],
   );
 
-  // Captura as setas antes do useNavegacao: aqui elas trocam de folha e só
-  // nas pontas mudam de fase.
+  // Trata as setas antes do useNavegacao (fase de captura): aqui elas trocam
+  // de folha e só nas pontas mudam de fase.
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
       const direcao = TECLAS_AVANCAR.includes(evento.key) ? 1 : TECLAS_VOLTAR.includes(evento.key) ? -1 : 0;
       if (direcao === 0) return;
+      // Só preventDefault: o useNavegacao ignora teclas já tratadas, e a tecla
+      // ainda chega a quem libera o áudio (stopPropagation deixava o jogo mudo).
       evento.preventDefault();
-      evento.stopPropagation();
       ir(direcao);
     }
     window.addEventListener('keydown', aoTeclar, true);
