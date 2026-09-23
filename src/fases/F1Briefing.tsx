@@ -6,16 +6,23 @@ import { ControlesFase } from '../components/ui/ControlesFase';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { CartaDecisao } from '../components/cartas/CartaDecisao';
 import type { FaseProps } from '../types';
+import type { useSom } from '../engine/useSom';
 
-export function F1Briefing(props: FaseProps) {
+interface F1BriefingProps extends FaseProps {
+  som: ReturnType<typeof useSom>;
+}
+
+export function F1Briefing({ som, ...props }: F1BriefingProps) {
   const [viradas, setViradas] = useState<Record<string, boolean>>({});
   const [expandido, setExpandido] = useState<string | null>(null);
 
   function clicarConselheiro(id: string) {
     if (!viradas[id]) {
+      som.tocar('virar-carta');
       setViradas((v) => ({ ...v, [id]: true }));
       return;
     }
+    som.tocar('clique');
     setExpandido((atual) => (atual === id ? null : id));
   }
 

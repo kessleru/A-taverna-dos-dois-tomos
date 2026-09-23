@@ -6,10 +6,15 @@ import { Titulo } from '../components/ui/Titulo';
 import { ControlesFase } from '../components/ui/ControlesFase';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import type { FaseProps } from '../types';
+import type { useSom } from '../engine/useSom';
 
 const ATRIBUTOS = Object.keys(rotulosAtributos) as Atributo[];
 
-export function F4Artigos(props: FaseProps) {
+interface F4ArtigosProps extends FaseProps {
+  som: ReturnType<typeof useSom>;
+}
+
+export function F4Artigos({ som, ...props }: F4ArtigosProps) {
   const [viradas, setViradas] = useState<Record<string, boolean>>({});
   const [artigoA, artigoB] = conteudo.artigos;
   const ambasReveladas = conteudo.artigos.every((a) => viradas[a.id]);
@@ -29,7 +34,14 @@ export function F4Artigos(props: FaseProps) {
             animate={ambasReveladas ? { rotate: indice === 0 ? -4 : 4 } : { rotate: 0 }}
             transition={{ type: 'spring', stiffness: 120, damping: 14 }}
           >
-            <CartaArtigo artigo={artigo} virada={!!viradas[artigo.id]} onClick={() => setViradas((v) => ({ ...v, [artigo.id]: true }))} />
+            <CartaArtigo
+              artigo={artigo}
+              virada={!!viradas[artigo.id]}
+              onClick={() => {
+                som.tocar('virar-carta');
+                setViradas((v) => ({ ...v, [artigo.id]: true }));
+              }}
+            />
           </motion.div>
         ))}
       </motion.div>

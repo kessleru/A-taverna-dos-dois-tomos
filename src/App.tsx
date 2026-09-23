@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { Fundo } from './components/ui/Fundo';
 import { Hud } from './components/hud/Hud';
 import { useNavegacao } from './engine/useNavegacao';
 import { useRodada } from './engine/useRodada';
+import { useSom } from './engine/useSom';
 import { F0Abertura } from './fases/F0Abertura';
 import { F1Briefing } from './fases/F1Briefing';
 import { F2Rodada } from './fases/F2Rodada';
@@ -13,7 +15,16 @@ import { Vitrine } from './fases/Vitrine';
 export default function App() {
   const { fase, avancar, voltar, primeiraFase, ultimaFase } = useNavegacao();
   const rodada = useRodada();
+  const som = useSom();
   const faseProps = { avancar, voltar, primeiraFase, ultimaFase };
+
+  useEffect(() => {
+    function aoTeclar(evento: KeyboardEvent) {
+      if (evento.shiftKey && evento.key.toLowerCase() === 'r') rodada.reiniciar();
+    }
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, [rodada]);
 
   if (window.location.hash === '#vitrine') {
     return <Vitrine />;
@@ -22,13 +33,13 @@ export default function App() {
   return (
     <div className="relative h-screen w-screen">
       <Fundo />
-      {fase !== 'abertura' && <Hud fase={fase} />}
+      {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
       <main className={fase === 'abertura' ? 'h-full' : 'h-full pt-14'}>
-        {fase === 'abertura' && <F0Abertura {...faseProps} />}
-        {fase === 'briefing' && <F1Briefing {...faseProps} />}
-        {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} />}
+        {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
+        {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
+        {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
         {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
-        {fase === 'artigos' && <F4Artigos {...faseProps} />}
+        {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
         {fase === 'fusao' && <F5Fusao {...faseProps} />}
       </main>
     </div>

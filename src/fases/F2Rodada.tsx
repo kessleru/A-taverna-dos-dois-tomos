@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { etapas, eventos, combinarDesbloqueado } from '../data/rodada';
 import type { useRodada } from '../engine/useRodada';
 import { BarraIndicador } from '../components/hud/BarraIndicador';
@@ -12,13 +13,32 @@ import { Desbloqueio } from '../components/rodada/Desbloqueio';
 import { CartaEvento } from '../components/cartas/CartaEvento';
 import { Botao } from '../components/ui/Botao';
 import type { FaseProps } from '../types';
+import type { useSom } from '../engine/useSom';
 
 interface F2RodadaProps extends FaseProps {
   rodada: ReturnType<typeof useRodada>;
+  som: ReturnType<typeof useSom>;
 }
 
-export function F2Rodada({ avancar: avancarFase, rodada }: F2RodadaProps) {
+export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
   const { estado, avancar, escolher, rolarDado } = rodada;
+
+  function aoEscolher(escolha: Parameters<typeof escolher>[0]) {
+    som.tocar('escolha');
+    escolher(escolha);
+  }
+
+  function aoRolarDado() {
+    som.tocar('dado');
+    rolarDado();
+  }
+
+  useEffect(() => {
+    if (estado.passo === 'evento') som.tocar('evento');
+    if (estado.passo === 'desbloqueio') som.tocar(combinarDesbloqueado(estado.escolhas) ? 'fanfarra' : 'cadeado');
+    // som.tocar é intencionalmente omitido: o objeto retornado por useSom
+    // muda de identidade a cada render e recolocaria esse efeito em loop.
+  }, [estado.passo]);
 
   if (estado.terminou) {
     return (
@@ -47,14 +67,14 @@ export function F2Rodada({ avancar: avancarFase, rodada }: F2RodadaProps) {
       {estado.passo === 'situacao' && <CenaSituacao etapa={etapa} avancar={avancar} />}
 
       {estado.passo === 'votacao' && (
-        <Votacao etapa={etapa} combinarLiberado={combinarDesbloqueado(estado.escolhas)} onEscolher={escolher} />
+        <Votacao etapa={etapa} combinarLiberado={combinarDesbloqueado(estado.escolhas)} onEscolher={aoEscolher} />
       )}
 
       {estado.passo === 'consequencia' && opcaoAtual && (
         <Consequencia resultado={opcaoAtual.resultado} ind={estado.ind} avancar={avancar} />
       )}
 
-      {estado.passo === 'dado' && <Dado3D ultimoDado={estado.ultimoDado} onRolar={rolarDado} avancar={avancar} />}
+      {estado.passo === 'dado' && <Dado3D ultimoDado={estado.ultimoDado} onRolar={aoRolarDado} avancar={avancar} />}
 
       {estado.passo === 'artigos' && (
         <div className="flex flex-col gap-4">

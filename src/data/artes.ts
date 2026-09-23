@@ -12,6 +12,13 @@
 
 import type { Escolha } from './rodada';
 
+// Prefixa com o base path do build (import.meta.env.BASE_URL), necessário
+// porque o site é publicado em GitHub Pages sob /empreendedorismo/, não na
+// raiz do domínio — sem isso as imagens quebrariam em produção.
+function caminhoAsset(relativo: string): string {
+  return `${import.meta.env.BASE_URL}assets/${relativo}`;
+}
+
 export type Raridade = 'comum' | 'rara' | 'lendaria';
 export type FormatoJanela = 'arco' | 'retangulo' | 'ponta';
 export type Particulas = 'faiscas' | 'poeira' | 'bolhas' | 'moedas' | 'folhas' | 'estrelas';
@@ -46,7 +53,7 @@ export const artesArtigos: Record<'A' | 'B', ArteCarta> = {
     cores: ['#FFB27A', '#F86624'],
     particulas: 'poeira',
     raridade: 'rara',
-    imagem: '/assets/artigo-A.png',
+    imagem: caminhoAsset('artigo-A.png'),
     prompt: `${estiloPrompt}. Um mapa antigo brilhante pairando sobre uma mesa de madeira, rosa dos ventos dourada, luz âmbar.`,
   },
   B: {
@@ -54,7 +61,7 @@ export const artesArtigos: Record<'A' | 'B', ArteCarta> = {
     cores: ['#7BEDE0', '#2EC4B6'],
     particulas: 'bolhas',
     raridade: 'rara',
-    imagem: '/assets/artigo-B.png',
+    imagem: caminhoAsset('artigo-B.png'),
     prompt: `${estiloPrompt}. Um laboratório de biotecnologia acolhedor, frascos com luz turquesa, plantas em recipientes.`,
   },
 };
@@ -65,7 +72,7 @@ export const artesDecisoes: Record<Escolha | 'bricolagem', ArteCarta> = {
     cores: ['#B9C9FA', '#6C8EF5'],
     particulas: 'poeira',
     raridade: 'comum',
-    imagem: '/assets/planejar.png',
+    imagem: caminhoAsset('planejar.png'),
     prompt: `${estiloPrompt}. Uma prancheta flutuante com gráficos e réguas de luz azul, engrenagens girando ao fundo.`,
   },
   adaptar: {
@@ -73,7 +80,7 @@ export const artesDecisoes: Record<Escolha | 'bricolagem', ArteCarta> = {
     cores: ['#A6F0C6', '#5CC98A'],
     particulas: 'folhas',
     raridade: 'comum',
-    imagem: '/assets/adaptar.png',
+    imagem: caminhoAsset('adaptar.png'),
     prompt: `${estiloPrompt}. Uma bússola dourada girando sobre trilhas verdes sinuosas, brisa levando folhas.`,
   },
   combinar: {
@@ -81,7 +88,7 @@ export const artesDecisoes: Record<Escolha | 'bricolagem', ArteCarta> = {
     cores: ['#FFE9A3', '#F9C80E'],
     particulas: 'faiscas',
     raridade: 'lendaria',
-    imagem: '/assets/combinar.jpg',
+    imagem: caminhoAsset('combinar.jpg'),
     prompt: `${estiloPrompt}. Duas correntes de luz, azul e verde, se entrelaçando e explodindo em faíscas douradas.`,
   },
   bricolagem: {
@@ -89,7 +96,7 @@ export const artesDecisoes: Record<Escolha | 'bricolagem', ArteCarta> = {
     cores: ['#E0B48A', '#C08552'],
     particulas: 'poeira',
     raridade: 'comum',
-    imagem: '/assets/bricolagem.png',
+    imagem: caminhoAsset('bricolagem.png'),
     prompt: `${estiloPrompt}. Uma bancada de oficina com ferramentas recombinadas em algo novo, luz quente de cobre.`,
   },
 };
@@ -101,7 +108,7 @@ export const artesEtapas: Record<string, ArteCarta> = {
     cores: ['#FFE29A', '#C08552'],
     particulas: 'poeira',
     raridade: 'comum',
-    imagem: '/assets/fundacao.jpg',
+    imagem: caminhoAsset('fundacao.jpg'),
     prompt: `${estiloPrompt}. Três silhuetas ao redor de uma mesa de cozinha à noite, uma lâmpada acesa entre elas.`,
   },
   lancamento: {
@@ -109,7 +116,7 @@ export const artesEtapas: Record<string, ArteCarta> = {
     cores: ['#7BEDE0', '#2EC4B6'],
     particulas: 'bolhas',
     raridade: 'comum',
-    imagem: '/assets/lancamento.jpg',
+    imagem: caminhoAsset('lancamento.jpg'),
     prompt: `${estiloPrompt}. Um frasco de produto saindo de uma linha de produção artesanal, luz turquesa.`,
   },
   investidores: {
@@ -117,7 +124,7 @@ export const artesEtapas: Record<string, ArteCarta> = {
     cores: ['#B9C9FA', '#6C8EF5'],
     particulas: 'poeira',
     raridade: 'rara',
-    imagem: '/assets/investidores.jpg',
+    imagem: caminhoAsset('investidores.jpg'),
     prompt: `${estiloPrompt}. Uma mesa de reunião elegante com seis cadeiras, gráficos de luz azul projetados.`,
   },
   'novo-mercado': {
@@ -125,7 +132,7 @@ export const artesEtapas: Record<string, ArteCarta> = {
     cores: ['#D9B8FF', '#8E6FD9'],
     particulas: 'estrelas',
     raridade: 'rara',
-    imagem: '/assets/novo-mercado.jpg',
+    imagem: caminhoAsset('novo-mercado.jpg'),
     prompt: `${estiloPrompt}. Um horizonte de cidade se abrindo em novos caminhos luminosos, roxo profundo.`,
   },
 };
@@ -137,7 +144,7 @@ export const arteEventos: Record<string, ArteCarta> = {
     cores: ['#A6F0C6', '#5CC98A'],
     particulas: 'folhas',
     raridade: 'comum',
-    imagem: '/assets/crazy-quilt.jpg',
+    imagem: caminhoAsset('crazy-quilt.jpg'),
     prompt: `${estiloPrompt}. Uma colcha de retalhos costurada com fios de luz verde conectando pontos.`,
   },
   '0-nao': {
@@ -145,7 +152,7 @@ export const arteEventos: Record<string, ArteCarta> = {
     cores: ['#FFB0B8', '#EA3546'],
     particulas: 'poeira',
     raridade: 'comum',
-    imagem: '/assets/porta-fechada.jpg',
+    imagem: caminhoAsset('porta-fechada.jpg'),
     prompt: `${estiloPrompt}. Uma porta de madeira fechada com uma pilha de papéis empoeirados no chão.`,
   },
   '1-sim': {
@@ -153,7 +160,7 @@ export const arteEventos: Record<string, ArteCarta> = {
     cores: ['#FFF3A3', '#F9C80E'],
     particulas: 'faiscas',
     raridade: 'comum',
-    imagem: '/assets/lemonade.jpg',
+    imagem: caminhoAsset('lemonade.jpg'),
     prompt: `${estiloPrompt}. Um copo de limonada brilhante virando uma tela de smartphone com um ícone de venda.`,
   },
   '1-nao': {
@@ -161,7 +168,7 @@ export const arteEventos: Record<string, ArteCarta> = {
     cores: ['#FFB0B8', '#EA3546'],
     particulas: 'poeira',
     raridade: 'comum',
-    imagem: '/assets/plano-furou.jpg',
+    imagem: caminhoAsset('plano-furou.jpg'),
     prompt: `${estiloPrompt}. Um gráfico de plano furado rasgado ao meio, tinta vermelha escorrendo.`,
   },
   '2-sim': {
@@ -169,7 +176,7 @@ export const arteEventos: Record<string, ArteCarta> = {
     cores: ['#B9C9FA', '#6C8EF5'],
     particulas: 'bolhas',
     raridade: 'rara',
-    imagem: '/assets/incubadora.jpg',
+    imagem: caminhoAsset('incubadora.jpg'),
     prompt: `${estiloPrompt}. Portas de vidro de um hospital-incubadora se abrindo, luz azul acolhedora.`,
   },
   '2-nao': {
@@ -177,7 +184,7 @@ export const arteEventos: Record<string, ArteCarta> = {
     cores: ['#FFB0B8', '#EA3546'],
     particulas: 'poeira',
     raridade: 'comum',
-    imagem: '/assets/nao-foi.jpg',
+    imagem: caminhoAsset('nao-foi.jpg'),
     prompt: `${estiloPrompt}. Uma sala de espera vazia com uma cadeira única iluminada por luz fria.`,
   },
 };
@@ -187,6 +194,6 @@ export const arteLendaria: ArteCarta = {
   cores: ['#FFE9A3', '#F9C80E'],
   particulas: 'estrelas',
   raridade: 'lendaria',
-  imagem: '/assets/aprendizados.jpg',
+  imagem: caminhoAsset('aprendizados.jpg'),
   prompt: `${estiloPrompt}. Um troféu dourado orbitado por partículas de luz, fundo em explosão suave de brilho.`,
 };
