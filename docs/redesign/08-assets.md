@@ -58,8 +58,36 @@ Baixados em `public/assets/icones/`, com o quadrado preto de fundo removido e `f
 - **Música:** a equipe escolheu "Playing with a Full Deck" (trilha do Hearthstone) em `public/sfx/musica-fundo.mp3`, no lugar da sugestão abaixo. É música comercial sem licença: ver o aviso em `public/sfx/CREDITOS.md`.
 - Nomes exatos em `src/engine/useSom.ts`. O hook atual já ignora arquivos que faltam, então dá para adicionar aos poucos.
 - Volume: efeitos 0,4; ambiente 0,08; música 0,12.
-- **Bônus (P2):** a equipe gravar 4 ou 5 falas curtas do Taverneiro ("Puxem uma cadeira!", "Lendária!"), como o Innkeeper do Hearthstone.
+- **Recebidos, a integrar:** 18 falas do Taverneiro (`assets-originais/sons/falas/`, 2 a 6 s cada) e 3 trechos de 15 s de público de taverna (`assets-originais/sons/som de publico/`).
 
 ## 5. Créditos
 
 `public/assets/CREDITOS.md` e `public/sfx/CREDITOS.md` listam origem e licença de tudo. A tela de créditos da F5 mostra os autores de ícones (CC BY) e a música.
+
+## 6. Novos assets (a pegar)
+
+O que ainda falta para o briefing e as próximas iterações. Imagens: salvar os originais em `assets-originais/imagens/` (eu converto para WebP e coloco em `public/assets/`). Sons: salvar em `assets-originais/sons/` (eu converto e coloco em `public/sfx/`). Registrar a ferramenta ou o site de cada um, para os créditos.
+
+### Imagens
+
+Usar o **estilo base** da seção 2 antes de cada prompt, exceto no favicon e nas texturas, que já dizem o estilo.
+
+| Arquivo | Tamanho | Para quê | Prompt | Prioridade |
+|---|---|---|---|---|
+| `favicon.png` | 512×512, fundo transparente | Ícone da aba do navegador (hoje dá erro 404) | `Game icon of two closed leather-bound tomes stacked at a slight angle, sealed together with a red wax seal, bold simple shapes readable at 32 pixels, warm gold and brown colors, flat painterly style, transparent background, no text` | P0 |
+| `quadro-tabuas.webp` | 2048×1024 | Tábuas do quadro de missões (F1); hoje é CSS | `Front view of a wall made of vertical dark oak planks, worn wood grain, small dark gaps between planks, even warm lighting, seamless horizontally, no objects, no text, texture only` | P2 (o CSS já funciona) |
+| `pergaminho.webp` | 1024×1024 | Fundo dos papéis pregados (F1, F3, F4); hoje é CSS | `Seamless texture of aged light parchment paper, subtle fibers, faint stains only near the edges, even lighting, flat, no text, no writing, no folds` | P2 (o CSS já funciona) |
+
+### Sons
+
+Prompts em inglês para gerador de efeitos sonoros (o mesmo usado no público de taverna); em banco de sons (Freesound, Pixabay), buscar pelas palavras-chave.
+
+| Arquivo | Duração | Para quê | Prompt ou busca | Prioridade |
+|---|---|---|---|---|
+| `tambor` | 1,5–2 s | Rufar antes de revelar a carta escolhida e o resultado do dado ([06](06-animacoes.md)) | `Short medieval snare drum roll building tension, ending with a single hit, dry, no reverb tail` · busca: `drum roll short` | P1 |
+| `chama` | 0,8–1 s | Carta descartada queimando de baixo para cima | `Quick whoosh of paper catching fire and burning up, short crackle at the end` · busca: `paper burn whoosh` | P1 |
+| `correntes-quebrando` | 1–1,5 s | Forja do Combinar: as correntes se partem (hoje usa um som de fivela) | `Heavy iron chains snapping and falling onto a wooden table, metallic clatter` · busca: `chain break` | P1 |
+| `publico-comemora` | 2–3 s | Rank alto no Resultado e carta lendária | `Small medieval tavern crowd cheering and clapping, mugs clinking, short and joyful` | P2 |
+| `publico-lamenta` | 1,5–2 s | Falha no dado e evento desfavorável | `Small tavern crowd groaning in disappointment, a few "ohh" sounds, short` | P2 |
+
+As cartas, molduras, orbes, d20, correntes e selos continuam em CSS/SVG (seção 2), e os ícones que ainda faltarem eu busco no game-icons.net.
