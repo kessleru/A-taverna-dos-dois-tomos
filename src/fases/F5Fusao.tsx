@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useRef, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { conteudo } from '../data/conteudo';
 import { useFolhas } from '../engine/useFolhas';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
+import { CartaArtigo } from '../components/cartas/CartaArtigo';
+import { Faiscas } from '../components/ui/Faiscas';
+import { Poeira } from '../components/ui/Poeira';
 import { NavFolhas } from '../components/ui/NavFolhas';
 import { Icone } from '../components/ui/Icone';
 import { mola } from '../styles/movimento';
@@ -21,18 +24,30 @@ interface F5FusaoProps extends FaseProps {
 // F5 — Aprendizados (03-historia.md §8): a lendária Aprendizados em destaque e
 // os cinco aprendizados escritos a pena, um por folha, com a tinta brilhando
 // em ouro. No fim, o Taverneiro se despede e os créditos sobem.
-// A fusão animada dos dois tomos ficou para depois (00-visao-geral.md §7).
+// Ao chegar na primeira folha, os dois tomos se fundem na lendária antes.
 export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
   const aoVirar = useCallback(() => som.tocar('pagina'), [som]);
   const { folha, ir } = useFolhas({ total: TOTAL, chave: 'sa-f5-folha', avancar, voltar, aoVirar });
   const creditos = folha === TOTAL - 1;
+  const reduzido = useReducedMotion();
+  const [fundindo, setFundindo] = useState(() => folha === 0 && !reduzido);
+  const [veioDaFusao, setVeioDaFusao] = useState(false);
 
   return (
     <section className="flex h-full flex-col gap-4 px-20 pb-5 pt-6">
-      <div className="flex min-h-0 flex-1 items-center gap-16">
+      <div className="relative flex min-h-0 flex-1 items-center gap-16">
+        {fundindo && (
+          <Fusao
+            som={som}
+            aoTerminar={() => {
+              setVeioDaFusao(true);
+              setFundindo(false);
+            }}
+          />
+        )}
         <motion.div
-          className="relative shrink-0"
-          initial={{ scale: 0.6, opacity: 0, rotate: -8 }}
+          className={`relative shrink-0 ${fundindo ? 'invisible' : ''}`}
+          initial={veioDaFusao || fundindo ? false : { scale: 0.6, opacity: 0, rotate: -8 }}
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
           transition={mola.impacto}
         >
@@ -42,12 +57,15 @@ export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
             animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           />
+          <Poeira quantidade={18} semente={5} className="-inset-24" />
           <CartaLendaria />
         </motion.div>
 
-        <div className="flex h-full min-w-0 flex-1 flex-col justify-center">
-          {creditos ? <Creditos som={som} /> : <Aprendizados ate={folha} />}
-        </div>
+        {!fundindo && (
+          <motion.div className="flex h-full min-w-0 flex-1 flex-col justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {creditos ? <Creditos som={som} /> : <Aprendizados ate={folha} />}
+          </motion.div>
+        )}
       </div>
 
       <NavFolhas
@@ -59,6 +77,89 @@ export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
         mostrarAvancar={!(creditos && ultimaFase)}
       />
     </section>
+  );
+}
+
+// Distância do centro da área até o lugar da lendária na coluna da esquerda:
+// metade da área (1760 / 2) menos metade da carta grande (468 / 2).
+const DESLOCAMENTO_LENDARIA = -(880 - 234);
+
+// Os dois tomos orbitam cada vez mais rápido e se fundem num clarão; a
+// lendária nasce no centro e desliza para o seu lugar.
+function Fusao({ som, aoTerminar }: { som: ReturnType<typeof useSom>; aoTerminar: () => void }) {
+  const [fase, setFase] = useState<'orbita' | 'clarao' | 'assenta'>('orbita');
+  const [artigoA, artigoB] = conteudo.artigos;
+  const somRef = useRef(som);
+  somRef.current = som;
+  const aoTerminarRef = useRef(aoTerminar);
+  aoTerminarRef.current = aoTerminar;
+
+  useEffect(() => {
+    somRef.current.tocar('embaralhar');
+    const ids = [
+      window.setTimeout(() => {
+        setFase('clarao');
+        somRef.current.tocar('fanfarra');
+        somRef.current.tocar('correntes-quebrando');
+      }, 2300),
+      window.setTimeout(() => setFase('assenta'), 3600),
+      window.setTimeout(() => aoTerminarRef.current(), 4400),
+    ];
+    return () => ids.forEach((id) => window.clearTimeout(id));
+  }, []);
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+      {fase === 'orbita' && (
+        <motion.div
+          className="relative flex items-center justify-center"
+          animate={{ rotate: 1080 }}
+          transition={{ duration: 2.3, ease: [0.55, 0, 0.9, 0.6] }}
+        >
+          {[
+            { artigo: artigoA, lado: -1 },
+            { artigo: artigoB, lado: 1 },
+          ].map(({ artigo, lado }) => (
+            <motion.div
+              key={artigo.id}
+              className="absolute left-0 top-0"
+              initial={{ x: lado * 460, scale: 1 }}
+              animate={{ x: 0, scale: 0.35 }}
+              transition={{ duration: 2.3, ease: 'easeIn' }}
+            >
+              {/* Centro da carta no eixo da órbita. */}
+              <div className="-translate-x-1/2 -translate-y-1/2">
+                <CartaArtigo artigo={artigo} tamanho="pequena" />
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
+      {fase !== 'orbita' && (
+        <>
+          {fase === 'clarao' && (
+            <>
+              <motion.div
+                className="absolute inset-[-200px] bg-[radial-gradient(circle,rgb(255_244_214),rgb(232_182_74/0.6)_30%,transparent_65%)]"
+                initial={{ opacity: 1, scale: 0.4 }}
+                animate={{ opacity: 0, scale: 1.4 }}
+                transition={{ duration: 1.1, ease: 'easeOut' }}
+              />
+              <Faiscas quantidade={20} raio={520} />
+            </>
+          )}
+          <motion.div
+            initial={{ scale: 0.3, rotate: -20, x: 0 }}
+            animate={fase === 'assenta' ? { scale: 1, rotate: 0, x: DESLOCAMENTO_LENDARIA } : { scale: 1.1, rotate: 0, x: 0 }}
+            transition={fase === 'assenta' ? { duration: 0.8, ease: 'easeInOut' } : mola.impacto}
+            style={{ filter: 'drop-shadow(0 0 40px var(--ouro))' }}
+          >
+            <CartaLendaria />
+          </motion.div>
+        </>
+      )}
+    </div>
   );
 }
 

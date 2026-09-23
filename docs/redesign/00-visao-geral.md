@@ -99,9 +99,9 @@ Backend, votação por celular, cronômetro, game over, narrativa de isekai. Ide
 
 ## 7. Melhorias futuras
 
-Pedidas durante o desenvolvimento, para depois do essencial:
+Pedidas durante o desenvolvimento, para depois do essencial. Todas **feitas**:
 
-- Animação ao selecionar uma carta na votação (hoje a carta escolhida só ganha destaque antes da revelação).
-- Fusão animada das cartas dos dois tomos virando a carta lendária de aprendizado na F5 (03-historia.md §8).
-- Tela inicial (F0) mais grandiosa: hoje está feia e o título não fica no centro. O Grimório escreve a abertura e sai; depois entra a tela de título, bem grandiosa e com elementos de RPG.
-- Mais partículas que combinem com o tema, sem exagero (brasas, poeira dourada, faíscas nos momentos certos).
+- **Animação ao selecionar uma carta** — a carta levanta, balança e assenta ampliada com brilho na cor da lógica, com onda de luz e faíscas (`Faiscas.tsx`); a descartada queima de baixo para cima.
+- **Fusão animada na F5** — os dois tomos orbitam cada vez mais rápido, clarão com faíscas, nasce a lendária Aprendizados no centro e desliza para o seu lugar.
+- **Tela inicial (F0)** — o Grimório escreve a abertura e sai (clicar nele pula); entra a tela de título centralizada, com brasão dos dois tomos, raios de luz girando, "A Taverna / dos Dois Tomos" com filetes dourados, faixa vermelha com o subtítulo, os dois tomos flutuando dos lados e o botão pulsando.
+- **Partículas sem exagero** — poeira dourada (`Poeira.tsx`) só no título, na lendária e no rank Grão-Mestre; faíscas só na carta escolhida e na fusão. Com movimento reduzido, nada disso aparece.

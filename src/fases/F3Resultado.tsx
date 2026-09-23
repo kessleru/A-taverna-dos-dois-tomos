@@ -6,6 +6,7 @@ import { pontuacao, type EstadoRodada } from '../engine/motor';
 import { ControlesFase } from '../components/ui/ControlesFase';
 import { ContadorAnimado } from '../components/ui/ContadorAnimado';
 import { Tapecaria } from '../components/hud/Tapecaria';
+import { Poeira } from '../components/ui/Poeira';
 import { Icone } from '../components/ui/Icone';
 import { COR, SIGILO } from '../components/cartas/logicas';
 import { useSonsEmSequencia } from '../engine/useSonsEmSequencia';
@@ -69,7 +70,9 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
   return (
     <section className="flex h-full gap-14 px-20 pb-8 pt-10">
       {/* Rank e título */}
-      <div className="flex w-[640px] shrink-0 flex-col items-center gap-6">
+      <div className="relative flex w-[640px] shrink-0 flex-col items-center gap-6">
+        {/* Poeira dourada só para o rank mais alto, sem exagero. */}
+        {estrelas === 3 && <Poeira quantidade={20} semente={31} />}
         <motion.div
           className="relative flex h-[280px] w-[280px] flex-col items-center justify-center rounded-full"
           style={{
