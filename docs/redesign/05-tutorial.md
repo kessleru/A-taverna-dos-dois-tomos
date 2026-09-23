@@ -1,5 +1,7 @@
 # 05 — Tutorial
 
+> **Como ficou implementado (iteração 4):** em vez de uma mesa de exemplo antes da etapa 1, o Taverneiro apresenta cada peça **na primeira vez que ela aparece** na etapa 1 (desafio, jornada, orbes e Tapeçaria; Leitura do Mapa e cartas; dado; Crônica) e a Combinar na forja. Mesmo holofote, seta e balão, sem estado falso e sem atrasar a rodada. Textos em `src/data/tutorial.ts`; peças em `src/components/guia/`. `→`, `Enter` ou clique avançam o balão; `Esc` ou "Pular o tutorial" fecham as dicas daquele passo. Ficaram de fora a tecla `T`, a mão fantasma e a ampliação automática.
+
 ## 1. Formato
 
 Um **tour guiado pelo Taverneiro** sobre a própria mesa da rodada, logo depois da F1 e antes da etapa 1 (~1:30). Cada passo apaga a tela, abre um **holofote** no elemento, desenha uma **seta** até ele e mostra um **balão** curto. Avança com `→`, como todo o resto. A mesa aparece com um estado de exemplo (as cartas da etapa 1, orbes em 50), então nada do tutorial mexe na rodada de verdade.

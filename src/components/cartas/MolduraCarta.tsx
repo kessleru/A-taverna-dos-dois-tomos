@@ -88,7 +88,12 @@ export function MolduraCarta({
         {nome}
       </div>
 
-      <div className="overflow-hidden px-1 text-[10.5px] leading-snug text-tinta" style={posicao(SLOTS_MOLDURA.texto)}>
+      <div className="overflow-hidden px-1 text-center text-[10.5px] leading-snug text-tinta" style={posicao(SLOTS_MOLDURA.texto)}>
+        {/* Calços flutuantes: o texto desvia das gemas que invadem os cantos de baixo. */}
+        <div className="float-left h-[42px] w-0" />
+        <div className="float-right h-[42px] w-0" />
+        <div className="float-left clear-left h-[40px] w-[25px]" />
+        <div className="float-right clear-right h-[40px] w-[24px]" />
         {subtitulo && <p className="font-texto text-[9px] italic leading-tight text-tinta/75">{subtitulo}</p>}
         {children}
       </div>

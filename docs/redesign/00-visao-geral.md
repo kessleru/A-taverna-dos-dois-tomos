@@ -89,10 +89,19 @@ Cada iteração termina com `npm run build` e `npm test` passando e um commit.
 |---|---|---|
 | 1 | Base visual | Palco 1920×1080, tokens, fontes, fundo da taverna, Grimório, transição entre fases — **feita** ([plano](../superpowers/plans/2026-09-22-iteracao-1-base-visual.md)) |
 | 2 | Cartas e HUD | Molduras novas, ampliação de carta, orbes, mapa da jornada, vitrine atualizada — **feita** ([plano](../superpowers/plans/2026-09-23-iteracao-2-cartas-e-hud.md)) |
-| 3 | Rodada | Dados novos, d20 com bônus, mesa, votação, jogada, Crônica, Canvas, eventos, forja do Combinar |
-| 4 | Tutorial e demais fases | Tour, abertura, taverna, resultado, confronto, fusão |
-| 5 | Assets e ensaio | Imagens geradas, sons, teste no projetor, ensaio cronometrado, deploy |
+| 3 | Rodada | Dados novos, d20 com bônus, mesa, votação, jogada, Crônica, Canvas, eventos, forja do Combinar — **feita** |
+| 4 | Tutorial e demais fases | Tour, abertura, taverna, resultado, confronto, fusão — **feita** (a fusão animada ficou em §7) |
+| 5 | Assets e ensaio | Imagens geradas, sons, teste no projetor, ensaio cronometrado, deploy — **código feito** (murmúrio, sons em todos os momentos, Carta do Destino nova, textos maiores, [roteiro de ensaio](11-ensaio.md)); falta a equipe ensaiar, testar no projetor e gerar os sons da 08 §6 |
 
 ## 6. Fora do escopo
 
 Backend, votação por celular, cronômetro, game over, narrativa de isekai. Ideias que ficam de fora para manter o desenvolvimento simples (podem voltar depois): runas com efeito, brasão, trilhas de experiência, aplausômetro, Canvas com regras, quinta etapa, modo curto, desfazer passo.
+
+## 7. Melhorias futuras
+
+Pedidas durante o desenvolvimento, para depois do essencial:
+
+- Animação ao selecionar uma carta na votação (hoje a carta escolhida só ganha destaque antes da revelação).
+- Fusão animada das cartas dos dois tomos virando a carta lendária de aprendizado na F5 (03-historia.md §8).
+- Tela inicial (F0) mais grandiosa: hoje está feia e o título não fica no centro. O Grimório escreve a abertura e sai; depois entra a tela de título, bem grandiosa e com elementos de RPG.
+- Mais partículas que combinem com o tema, sem exagero (brasas, poeira dourada, faíscas nos momentos certos).

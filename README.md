@@ -42,8 +42,12 @@ npm test
 
 - `→`, `Espaço`, `PageDown`: avançar
 - `←`, `PageUp`: voltar
-- `1` Planejar, `2` Adaptar, `3` Combinar (durante a votação)
+- `1`, `2`, `3`: escolhem a carta pela posição na mesa (durante a votação; o número aparece na gema da carta)
+- `Shift+1` / `Shift+2` / `Shift+3`: forçam o próximo dado para falha / sucesso / crítico (emergência no ensaio)
+- `Esc`: pula as dicas do Taverneiro (tutorial) daquele momento; em tela cheia prefira o link "Pular o tutorial", porque o navegador também sai da tela cheia com `Esc`
 - `M`: mudo, `F`: tela cheia, `Shift+R`: reinicia a rodada (ensaio)
+
+Roteiro cronometrado e checklist do projetor: [`docs/redesign/11-ensaio.md`](docs/redesign/11-ensaio.md).
 
 O estado da apresentação fica salvo em `sessionStorage`, então um recarregamento acidental não perde o progresso.
 

@@ -22,7 +22,6 @@ export function F0Abertura({ avancar, som }: F0AberturaProps) {
   const [pronto, setPronto] = useState(false);
 
   function entrar() {
-    som.tocar('clique');
     som.falar('boas-vindas');
     avancar();
   }

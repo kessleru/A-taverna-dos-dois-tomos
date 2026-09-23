@@ -41,9 +41,6 @@ export interface ArteCarta {
   prompt?: string;
 }
 
-// Custo de risco mostrado no orbe da carta durante a votação.
-export const orbeDecisao: Record<Escolha, number> = { planejar: 1, adaptar: 2, combinar: 3 };
-
 const estiloPrompt =
   'ilustração pintada estilo deckbuilder de fantasia, cores saturadas, luz dramática, sem texto, 800x600';
 
@@ -155,21 +152,22 @@ export const arteEventos: Record<string, ArteCarta> = {
     imagem: caminhoAsset('cartas/porta-fechada.webp'),
     prompt: `${estiloPrompt}. Uma porta de madeira fechada com uma pilha de papéis empoeirados no chão.`,
   },
+  // Evento 2, "Quem vai fabricar?" (03-historia.md §5); a Limonada virou fato da Crônica da etapa 4.
   '1-sim': {
-    icone: '🍋',
-    cores: ['#FFF3A3', '#F9C80E'],
-    particulas: 'faiscas',
+    icone: '🧴',
+    cores: ['#A6F0C6', '#5CC98A'],
+    particulas: 'folhas',
     raridade: 'comum',
-    imagem: caminhoAsset('cartas/lemonade.webp'),
-    prompt: `${estiloPrompt}. Um copo de limonada brilhante virando uma tela de smartphone com um ícone de venda.`,
+    imagem: caminhoAsset('cartas/fabricante-parceiro.webp'),
+    prompt: 'Ver docs/redesign/08-assets.md §2 (fabricante-parceiro).',
   },
   '1-nao': {
-    icone: '📉',
-    cores: ['#FFB0B8', '#EA3546'],
+    icone: '⚙️',
+    cores: ['#B9C9FA', '#3B4A7A'],
     particulas: 'poeira',
     raridade: 'comum',
-    imagem: caminhoAsset('cartas/plano-furou.webp'),
-    prompt: `${estiloPrompt}. Um gráfico de plano furado rasgado ao meio, tinta vermelha escorrendo.`,
+    imagem: caminhoAsset('cartas/maquinas-caras.webp'),
+    prompt: 'Ver docs/redesign/08-assets.md §2 (maquinas-caras).',
   },
   '2-sim': {
     icone: '🏥',

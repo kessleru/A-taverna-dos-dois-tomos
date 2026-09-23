@@ -1,57 +1,112 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { temposTransicao } from '../../styles/movimento';
 
 interface TransicaoPaginaProps {
   chave: string;
   children: ReactNode;
+  // Fundo pintado atrás da página que vira, para ela ser uma folha opaca.
+  fundo?: ReactNode;
   aoVirar?: () => void;
 }
 
-export function TransicaoPagina({ chave, children, aoVirar }: TransicaoPaginaProps) {
-  const tempos = temposTransicao(!!useReducedMotion());
-  // Conta as viradas para reiniciar a folha a cada troca (e não animar no carregamento).
-  const [viradas, setViradas] = useState(0);
-  const chaveAnterior = useRef(chave);
+interface Saida {
+  chave: string;
+  conteudo: ReactNode;
+  id: number;
+}
+
+// Descola devagar, gira rápido no meio e assenta de perfil.
+const CURVA_FOLHA = [0.55, 0.05, 0.55, 1] as const;
+
+// Página de tomo virando entre as fases (01-tema-e-hud.md §9): a fase que sai é
+// a própria folha. Ela gira para dentro do tomo em volta da lombada (borda
+// esquerda do palco) até ficar de perfil, revelando por baixo a fase que entra,
+// já montada. Girar para fora cobriria o palco quase o giro todo, e passando de
+// 90° a folha sairia do palco, então o giro para aí.
+//
+// As páginas ficam numa lista com chave, então a fase que sai não é recriada
+// (não repete animações nem falas): só ganha a rotação e sai ao fim do giro,
+// por temporizador (a saída do AnimatePresence travava depois da rodada).
+export function TransicaoPagina({ chave, children, fundo, aoVirar }: TransicaoPaginaProps) {
+  const reduzido = !!useReducedMotion();
+  const tempos = temposTransicao(reduzido);
+  const duracao = reduzido ? tempos.saida + tempos.entrada : tempos.folha;
+  const [chaveAtual, setChaveAtual] = useState(chave);
+  const [saindo, setSaindo] = useState<Saida | null>(null);
+  // Último conteúdo renderizado de cada fase.
+  const conteudos = useRef(new Map<string, ReactNode>());
+  const contador = useRef(0);
   const aoVirarRef = useRef(aoVirar);
   aoVirarRef.current = aoVirar;
 
+  if (chaveAtual !== chave) {
+    // A fase mudou neste render: a anterior vira a folha que sai.
+    setSaindo({
+      chave: chaveAtual,
+      conteudo: conteudos.current.get(chaveAtual),
+      id: ++contador.current,
+    });
+    setChaveAtual(chave);
+  } else {
+    conteudos.current.set(chave, children);
+  }
+
   useEffect(() => {
-    if (chaveAnterior.current === chave) return;
-    chaveAnterior.current = chave;
-    setViradas((v) => v + 1);
+    if (!saindo) return;
     aoVirarRef.current?.();
-  }, [chave]);
+    const id = window.setTimeout(() => {
+      conteudos.current.delete(saindo.chave);
+      setSaindo(null);
+    }, duracao * 1000);
+    return () => window.clearTimeout(id);
+  }, [saindo, duracao]);
+
+  // Mesma estrutura para a página parada e a que vira: assim a fase que sai
+  // continua sendo o mesmo elemento e não é montada de novo.
+  function pagina(chavePagina: string, conteudo: ReactNode, virando: boolean) {
+    return (
+      <motion.div
+        key={chavePagina}
+        className={`absolute inset-0 ${virando ? 'pointer-events-none' : ''}`}
+        style={{ zIndex: virando ? 30 : 10, transformOrigin: 'left center' }}
+        initial={false}
+        animate={virando ? (reduzido ? { opacity: 0 } : { rotateY: 90 }) : { rotateY: 0, opacity: 1 }}
+        transition={virando ? { duration: duracao, ease: CURVA_FOLHA } : { duration: 0 }}
+      >
+        {/* Frente: a fase; enquanto vira, sobre o fundo da taverna. */}
+        <div className="absolute inset-0 overflow-hidden">
+          {virando && fundo}
+          {conteudo}
+          {/* A folha escurece ao se afastar da luz das velas. */}
+          {virando && !reduzido && (
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-l from-black/70 to-black/20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: duracao / 2, ease: 'easeIn' }}
+            />
+          )}
+        </div>
+      </motion.div>
+    );
+  }
+
+  const paginas = [pagina(chave, children, false)];
+  if (saindo && saindo.chave !== chave) paginas.push(pagina(saindo.chave, saindo.conteudo, true));
 
   return (
-    // perspectiveOrigin na borda esquerda: a folha fica de perfil (invisível)
-    // no começo e no fim do giro, em vez de aparecer como uma parede.
-    <div className="absolute inset-0" style={{ perspective: 4000, perspectiveOrigin: '0% 50%' }}>
-      <AnimatePresence mode="wait" initial={false}>
+    // perspectiveOrigin na lombada: a folha encolhe em direção a ela ao girar.
+    <div className="absolute inset-0" style={{ perspective: 3000, perspectiveOrigin: '0% 50%' }}>
+      {paginas}
+      {saindo && !reduzido && (
+        // Sombra da folha sobre a fase de baixo, que clareia conforme ela passa.
         <motion.div
-          key={chave}
-          className="absolute inset-0"
-          initial={{ opacity: tempos.entrada > 0 ? 0 : 1 }}
-          animate={{ opacity: 1, transition: { duration: tempos.entrada } }}
-          // A fase antiga fica na tela até a folha cobrir tudo (0,999: o
-          // Framer só respeita a duração se o valor mudar).
-          exit={{ opacity: tempos.entrada > 0 ? 0 : 0.999, transition: { duration: tempos.saida } }}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
-      {tempos.folha > 0 && viradas > 0 && (
-        <motion.div
-          key={viradas}
-          className="folha-pagina"
-          style={{ transformOrigin: 'left center' }}
-          initial={{ rotateY: 90, opacity: 0 }}
-          animate={{ rotateY: -90, opacity: [0, 1, 1, 0] }}
-          transition={{
-            duration: tempos.folha,
-            ease: 'easeInOut',
-            opacity: { duration: tempos.folha, times: [0, 0.12, 0.88, 1] },
-          }}
+          key={`sombra-${saindo.id}`}
+          className="folha-sombra"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: duracao * 0.9, ease: 'easeIn' }}
         />
       )}
     </div>

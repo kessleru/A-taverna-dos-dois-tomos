@@ -10,9 +10,8 @@ export const mola = {
 export const DURACAO_PAGINA_S = 0.9;
 export const DURACAO_FADE_S = 0.3;
 
-// Página de tomo virando (01-tema-e-hud.md §9): a folha de pergaminho gira
-// 180° em volta da borda esquerda; no meio do giro ela cobre o palco inteiro
-// e a fase troca por baixo. Com movimento reduzido, só um fade.
+// Página de tomo virando (01-tema-e-hud.md §9): a fase que sai gira 180° em
+// volta da lombada e revela a próxima. Com movimento reduzido, só um fade.
 export function temposTransicao(reduzido: boolean) {
   return reduzido
     ? { saida: DURACAO_FADE_S / 2, entrada: DURACAO_FADE_S / 2, folha: 0 }

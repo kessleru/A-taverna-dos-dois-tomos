@@ -118,20 +118,11 @@
   }
 }
 
-/* Folha da transição entre fases. */
-.folha-pagina {
+/* Sombra que a folha projeta sobre a fase de baixo enquanto passa. */
+.folha-sombra {
   position: absolute;
   inset: 0;
-  z-index: 50;
+  z-index: 20;
   pointer-events: none;
-  background: radial-gradient(ellipse at 60% 40%, #f8eed6 0%, var(--pergaminho) 55%, #cdb384 100%);
-  box-shadow: 0 0 120px rgb(0 0 0 / 0.7);
-}
-
-/* Sombra da lombada à esquerda e da borda à direita. */
-.folha-pagina::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, rgb(42 29 20 / 0.5), transparent 16%, transparent 86%, rgb(42 29 20 / 0.3));
+  background: linear-gradient(to right, rgb(10 6 3 / 0.85), rgb(10 6 3 / 0.55) 60%, rgb(10 6 3 / 0.3));
 }

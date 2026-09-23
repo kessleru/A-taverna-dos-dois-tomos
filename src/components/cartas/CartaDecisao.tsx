@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { artesDecisoes, orbeDecisao, type ArteCarta } from '../../data/artes';
+import { artesDecisoes, type ArteCarta } from '../../data/artes';
 import type { Escolha } from '../../data/rodada';
 import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
+import { FormaGema } from './FormaGema';
 import { Icone } from '../ui/Icone';
 import { COR as CORES, SIGILO as SIGILOS } from './logicas';
 
@@ -16,14 +17,15 @@ interface CartaDecisaoProps {
   onClick?: () => void;
   rotacao?: number;
   emDestaque?: boolean;
+  // Tecla da votação (posição da carta na mesa); fora da votação a gema mostra o sigilo.
+  tecla?: number;
 }
 
-export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, tamanho = 'pequena', onClick, rotacao = 0, emDestaque = false }: CartaDecisaoProps) {
+export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, tamanho = 'pequena', onClick, rotacao = 0, emDestaque = false, tecla }: CartaDecisaoProps) {
   const cor = CORES[id];
   const arteOriginal = artesDecisoes[id];
   const arte: ArteCarta = trancada ? { ...arteOriginal, cores: ['#555', '#222'] } : arteOriginal;
-  // Gema de cima: a tecla da votação (a Bricolagem não é votada, mostra a ferramenta).
-  const tecla = id === 'bricolagem' ? <Icone nome="toolbox" className="h-[62%] w-[62%]" /> : orbeDecisao[id];
+  const gemaTopo = tecla ?? <Icone nome={SIGILOS[id]} className="h-[62%] w-[62%]" />;
 
   const tamanhoEfetivo = emDestaque ? 'grande' : tamanho;
 
@@ -51,8 +53,9 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
                 arte={arte}
                 corPrincipal={cor}
                 tamanho={tamanhoEfetivo}
-                gemaTopo={tecla}
+                gemaTopo={gemaTopo}
                 gemaEsquerda={<Icone nome={SIGILOS[id]} className="h-[64%] w-[64%]" />}
+                gemaDireita={<FormaGema logica={id} className="h-[62%] w-[62%]" />}
                 subtitulo={teoria}
               >
                 <p className="font-medium">{resumo}</p>

@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { arteEventos } from '../../data/artes';
 import { CenaArte } from './CenaArte';
-import { ESCALA_CARTA } from './escala';
+import { Icone } from '../ui/Icone';
 
 interface CartaEventoProps {
   depoisDaEtapa: number;
@@ -10,44 +10,57 @@ interface CartaEventoProps {
   sucesso: boolean;
 }
 
-const ROTULOS: Record<string, string> = { caixa: '💰', clientes: '👥', moral: '🔥' };
+// Mesmos ícones e cores dos orbes do HUD.
+const INDICADORES = {
+  caixa: { rotulo: 'Caixa', icone: 'shiny-purse', cor: 'var(--ouro)' },
+  clientes: { rotulo: 'Clientes', icone: 'flying-flag', cor: 'var(--clientes)' },
+  moral: { rotulo: 'Moral', icone: 'flamer', cor: 'var(--brasa)' },
+} as const;
 
+// Carta do Destino (03-historia.md §5, eventos): horizontal como a Carta de
+// Desafio, vira na mesa mostrando o desfecho e o que ele muda nos orbes.
 export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEventoProps) {
+  const reduzido = useReducedMotion();
   const arte = arteEventos[`${depoisDaEtapa}-${sucesso ? 'sim' : 'nao'}`];
-  const cor = sucesso ? 'var(--adaptar)' : 'var(--dano)';
 
   return (
     <motion.div
-      initial={{ rotate: 180, scale: 0.6, opacity: 0 }}
-      animate={{ rotate: 0, scale: 1, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 140, damping: 16 }}
-      className="flex w-full max-w-xl overflow-hidden rounded-carta border-2"
-      style={{ zoom: ESCALA_CARTA, borderColor: cor, boxShadow: 'var(--sombra-carta)', background: 'linear-gradient(120deg, #17123add, #241e4edd)' }}
+      className="quadro-madeira flex h-[400px] w-[1180px] !p-5"
+      style={{ transformPerspective: 1600 }}
+      initial={reduzido ? false : { rotateY: 180, scale: 0.8, opacity: 0 }}
+      animate={{ rotateY: 0, scale: 1, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 120, damping: 16 }}
     >
-      <div
-        className="relative h-28 w-28 shrink-0"
-        style={{ clipPath: 'polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%)' }}
-      >
-        <CenaArte arte={arte} nome={nome} />
-        <span
-          className="absolute -left-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-pergaminho/80 text-sm"
-          style={{ background: cor }}
-        >
-          {arte.icone}
-        </span>
+      <div className="h-full w-[400px] shrink-0 overflow-hidden rounded-l-[4px] border-2 border-ouro-escuro">
+        {arte && <CenaArte arte={arte} nome={nome} />}
       </div>
-      <div className="flex flex-1 flex-col justify-center gap-1 p-4">
-        <span className="font-texto text-[10px] uppercase tracking-wide text-pergaminho/50">Evento · {nome}</span>
-        <h3 className="font-titulo text-lg" style={{ color: cor }}>
+      <div className="pergaminho flex flex-1 flex-col justify-center gap-3 !px-12 [clip-path:none]">
+        <p className="font-titulo text-[24px] font-bold uppercase tracking-[0.08em] text-ouro-escuro">Carta do Destino · {nome}</p>
+        <h2 className="font-titulo text-[48px] font-bold leading-[1.05]" style={{ color: sucesso ? '#2f7a45' : 'var(--cera)' }}>
           {desfecho.titulo}
-        </h3>
-        <p className="text-sm text-pergaminho/85">{desfecho.texto}</p>
-        <div className="mt-1 flex gap-2">
-          {Object.entries(desfecho.efeito).map(([chave, valor]) => (
-            <span key={chave} className="rounded-full bg-pergaminho/10 px-2 py-0.5 text-[10px]">
-              {ROTULOS[chave]} {valor! > 0 ? `+${valor}` : valor}
-            </span>
-          ))}
+        </h2>
+        <p className="font-texto text-[32px] leading-snug">{desfecho.texto}</p>
+        <div className="mt-1 flex flex-wrap gap-3">
+          {(Object.keys(INDICADORES) as (keyof typeof INDICADORES)[])
+            .filter((chave) => desfecho.efeito[chave])
+            .map((chave) => {
+              const valor = desfecho.efeito[chave]!;
+              const { rotulo, icone, cor } = INDICADORES[chave];
+              return (
+                <span
+                  key={chave}
+                  className="flex items-center gap-2 rounded-md border-2 border-ouro-escuro/70 bg-madeira-profunda/90 px-4 py-1.5 font-titulo text-[28px] font-bold text-pergaminho shadow-carta"
+                >
+                  <span style={{ color: cor }}>
+                    <Icone nome={icone} className="h-8 w-8" />
+                  </span>
+                  {rotulo}
+                  <span style={{ color: valor > 0 ? 'var(--cura)' : 'var(--dano)' }}>
+                    {valor > 0 ? `▲ +${valor}` : `▼ −${Math.abs(valor)}`}
+                  </span>
+                </span>
+              );
+            })}
         </div>
       </div>
     </motion.div>

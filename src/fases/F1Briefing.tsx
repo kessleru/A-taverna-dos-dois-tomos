@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { navegarFolha, type Direcao } from '../engine/folhas';
-import { Botao } from '../components/ui/Botao';
+import { useFolhas } from '../engine/useFolhas';
+import { NavFolhas } from '../components/ui/NavFolhas';
 import { QuadroMadeira } from '../components/ui/QuadroMadeira';
 import { FolhaMissao } from './briefing/FolhaMissao';
 import { FolhaTomos } from './briefing/FolhaTomos';
@@ -13,54 +13,14 @@ import type { useSom } from '../engine/useSom';
 // O briefing é o quadro de missões da taverna, em quatro folhas
 // (docs/redesign/10-briefing-quadro.md).
 const TOTAL_FOLHAS = 4;
-const CHAVE_FOLHA = 'sa-f1-folha';
-const TECLAS_AVANCAR = ['ArrowRight', ' ', 'PageDown'];
-const TECLAS_VOLTAR = ['ArrowLeft', 'PageUp'];
-
-function lerFolha(): number {
-  const salva = Number(sessionStorage.getItem(CHAVE_FOLHA));
-  return Number.isInteger(salva) && salva >= 0 && salva < TOTAL_FOLHAS ? salva : 0;
-}
 
 interface F1BriefingProps extends FaseProps {
   som: ReturnType<typeof useSom>;
 }
 
 export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
-  const [folha, setFolha] = useState(lerFolha);
-
-  useEffect(() => {
-    sessionStorage.setItem(CHAVE_FOLHA, String(folha));
-  }, [folha]);
-
-  const ir = useCallback(
-    (direcao: Direcao) => {
-      const destino = navegarFolha(folha, TOTAL_FOLHAS, direcao);
-      if (destino.tipo === 'sair') {
-        if (direcao === 1) avancar();
-        else voltar();
-        return;
-      }
-      som.tocar('pagina');
-      setFolha(destino.folha);
-    },
-    [folha, avancar, voltar, som],
-  );
-
-  // Trata as setas antes do useNavegacao (fase de captura): aqui elas trocam
-  // de folha e só nas pontas mudam de fase.
-  useEffect(() => {
-    function aoTeclar(evento: KeyboardEvent) {
-      const direcao = TECLAS_AVANCAR.includes(evento.key) ? 1 : TECLAS_VOLTAR.includes(evento.key) ? -1 : 0;
-      if (direcao === 0) return;
-      // Só preventDefault: o useNavegacao ignora teclas já tratadas, e a tecla
-      // ainda chega a quem libera o áudio (stopPropagation deixava o jogo mudo).
-      evento.preventDefault();
-      ir(direcao);
-    }
-    window.addEventListener('keydown', aoTeclar, true);
-    return () => window.removeEventListener('keydown', aoTeclar, true);
-  }, [ir]);
+  const aoVirar = useCallback(() => som.tocar('pagina'), [som]);
+  const { folha, ir } = useFolhas({ total: TOTAL_FOLHAS, chave: 'sa-f1-folha', avancar, voltar, aoVirar });
 
   return (
     <section className="flex h-full flex-col gap-5 px-24 pb-5 pt-8">
@@ -75,20 +35,7 @@ export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
         </AnimatePresence>
       </QuadroMadeira>
 
-      <nav className="flex items-center justify-between" aria-label="Folhas do briefing">
-        <Botao variante="fantasma" onClick={() => ir(-1)}>
-          Voltar
-        </Botao>
-        <ol className="flex gap-4" aria-label={`Folha ${folha + 1} de ${TOTAL_FOLHAS}`}>
-          {Array.from({ length: TOTAL_FOLHAS }, (_, i) => (
-            <li
-              key={i}
-              className={`h-5 w-5 rounded-full border-2 ${i === folha ? 'border-cera bg-cera' : 'border-pergaminho/40'}`}
-            />
-          ))}
-        </ol>
-        <Botao onClick={() => ir(1)}>Continuar</Botao>
-      </nav>
+      <NavFolhas folha={folha} total={TOTAL_FOLHAS} ir={ir} rotulo="Folhas do briefing" />
     </section>
   );
 }

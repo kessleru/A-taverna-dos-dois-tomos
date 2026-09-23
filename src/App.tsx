@@ -4,6 +4,7 @@ import { Taverna } from './components/ui/Taverna';
 import { Palco } from './components/ui/Palco';
 import { GrimorioProvider, useGrimorio } from './components/ui/NotificacoesGrimorio';
 import { TransicaoPagina } from './components/ui/TransicaoPagina';
+import { SomContexto } from './engine/SomContexto';
 import { AmpliacaoProvider } from './components/cartas/Ampliacao';
 import { TelaCarregamento } from './components/ui/TelaCarregamento';
 import { carregarTudo, type Tarefa } from './engine/carregamento';
@@ -102,25 +103,27 @@ export default function App() {
     <Palco>
       <AnimatePresence>{!carregado && <TelaCarregamento key="carregando" progresso={progresso} />}</AnimatePresence>
       {carregado && (
-        <GrimorioProvider aoNotificar={() => som.tocar('ping')}>
-          <AvisoDeSom mudo={som.mudo} />
-          <AmpliacaoProvider>
-            <div className="relative h-full w-full">
-              <Taverna />
-              {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
-              <TransicaoPagina chave={fase} aoVirar={() => som.tocar('pagina')}>
-                <main className={fase === 'abertura' ? 'relative h-full' : 'relative h-full pt-14'}>
-                  {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
-                  {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
-                  {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
-                  {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
-                  {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
-                  {fase === 'fusao' && <F5Fusao {...faseProps} som={som} />}
-                </main>
-              </TransicaoPagina>
-            </div>
-          </AmpliacaoProvider>
-        </GrimorioProvider>
+        <SomContexto.Provider value={som}>
+          <GrimorioProvider aoNotificar={() => som.tocar('ping')}>
+            <AvisoDeSom mudo={som.mudo} />
+            <AmpliacaoProvider>
+              <div className="relative h-full w-full">
+                <Taverna />
+                {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
+                <TransicaoPagina chave={fase} fundo={<Taverna />} aoVirar={() => som.tocar('pagina')}>
+                  <main className={fase === 'abertura' ? 'relative h-full' : 'relative h-full pt-14'}>
+                    {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
+                    {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
+                    {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
+                    {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
+                    {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
+                    {fase === 'fusao' && <F5Fusao {...faseProps} som={som} />}
+                  </main>
+                </TransicaoPagina>
+              </div>
+            </AmpliacaoProvider>
+          </GrimorioProvider>
+        </SomContexto.Provider>
       )}
     </Palco>
   );

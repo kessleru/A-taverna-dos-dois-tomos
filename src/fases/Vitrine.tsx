@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { conteudo } from '../data/conteudo';
-import { briefing, etapas, eventos, dadoDaIncerteza } from '../data/rodada';
+import { briefing, etapas, eventos, dadoDoDestino } from '../data/rodada';
 import { artesEtapas } from '../data/artes';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { CartaDecisao } from '../components/cartas/CartaDecisao';
@@ -98,11 +98,11 @@ export function Vitrine() {
         ))}
       </Secao>
 
-      <Secao titulo="Dado da Incerteza — faces">
-        {Object.entries(dadoDaIncerteza.faces).map(([face, info]) => (
-          <div key={face} className="w-32 rounded-carta border border-pergaminho/20 p-3 text-center text-sm">
-            <div className="font-titulo text-xl">{face}</div>
-            <div>{info.titulo}</div>
+      <Secao titulo="Dado do Destino — faixas">
+        {Object.entries(dadoDoDestino.faixas).map(([faixa, info]) => (
+          <div key={faixa} className="w-56 rounded-carta border border-pergaminho/20 p-3 text-center">
+            <div className="font-titulo text-xl">{info.titulo}</div>
+            <div className="font-texto">{info.texto}</div>
           </div>
         ))}
       </Secao>

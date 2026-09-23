@@ -59,7 +59,9 @@ Em `src/assets/icones/`, com o quadrado preto de fundo removido e `fill="current
 - Nomes exatos em `src/engine/useSom.ts`. O hook atual já ignora arquivos que faltam, então dá para adicionar aos poucos.
 - Volume: efeitos 0,4; ambiente 0,08; música 0,12.
 - **Falas do Taverneiro:** as 18 falas estão em `public/sfx/falas/` e tocam nos momentos definidos em `src/engine/falas.ts` (entrada, briefing, cada passo da rodada, eventos, resultado e créditos).
-- **A integrar:** 3 trechos de 15 s de público de taverna (`assets-originais/sons/som de publico/`).
+- **Murmúrio:** os 3 trechos de público de taverna viraram `murmurio-1..3.mp3`, revezando com crossfade por baixo da lareira (`src/engine/murmurio.ts`).
+- **Onde cada som toca (iteração 5):** todo botão faz `clique`; Leitura do Mapa vira com `virar-carta`; cartas distribuídas com `embaralhar`; a descartada queima com `chama`; a contagem do dado faz `tic`; falha soma `perda`; caixa subindo soma `moedas`; Crônica abre com `livro-abrir` e o selo bate com `selo`; balões do tutorial com `pagina`; Resultado com `metal` (medalha), `moedas` (pontos), `vitoria` (rank 2+ estrelas), `estandarte`, um `ping` por fio de ouro e `publico-comemora`; Confronto com `selo`, `ping`, `carta-deslizar`, `tic`, `livro-abrir` e `vitoria`; créditos com `fanfarra` e público. Um teste (`src/engine/sons.test.ts`) falha se algum arquivo sumir.
+- **Pedidos à equipe (gerar, P1):** ver a tabela "Sons que ainda faltam" na seção 6.
 
 ## 5. Créditos
 
@@ -93,6 +95,17 @@ Prompts em inglês para gerador de efeitos sonoros (o mesmo usado no público de
 | `publico-comemora` | 2–3 s | Rank alto no Resultado e carta lendária | `Small medieval tavern crowd cheering and clapping, mugs clinking, short and joyful` | P2 |
 | `publico-lamenta` | 1,5–2 s | Falha no dado e evento desfavorável | `Small tavern crowd groaning in disappointment, a few "ohh" sounds, short` | P2 |
 
+### Sons que ainda faltam (gerar)
+
+Momentos que hoje usam um som emprestado do Kenney ou ficam mudos. Salvar em `assets-originais/sons/efeitos-gerados/`.
+
+| Arquivo | Duração | Para quê | Prompt | Prioridade |
+|---|---|---|---|---|
+| `pena` | 1,5–2 s | Aprendizados da F5 escritos a pena (hoje mudo) | `Quill pen scratching quickly on parchment paper, a few strokes, dry, close microphone` | P1 |
+| `bigorna` | 1–1,5 s | Medalha do rank sendo forjada na F3 (hoje `metal`, um saque de faca) | `Single blacksmith hammer strike on an anvil with a short metallic ring, medieval forge` | P1 |
+| `fanfarra-grande` | 3–4 s | Rank Grão-Mestre e carta lendária (hoje um jingle curto de pizzicato) | `Short triumphant medieval brass fanfare with timpani, royal and grand, ending on a held chord` | P1 |
+| `velas` | 1–2 s | Velas acendendo na tela inicial, quando ela for refeita | `Several candles igniting one after another, soft match strikes and small flame whooshes` | P2 |
+
 As cartas, molduras, orbes, d20, correntes e selos continuam em CSS/SVG (seção 2), e os ícones que ainda faltarem eu busco no game-icons.net.
 
 ## 7. Pacotes recebidos (`assets-originais/texturas-e-cartas/`)
@@ -106,5 +119,6 @@ A equipe trouxe pacotes prontos; nenhum veio com arquivo de licença (**PREENCHE
 | `molduras/mascara-arte-carta.webp`, `mascara-arte-acao.webp` | idem | Recorte da arte. Janela da carta: 20,0% a 80,1% na largura e 13,8% a 54,7% na altura; da carta de ação: 30,4% a 69,9% e 20,0% a 48,5% |
 | `ui/cristal.webp`, `ui/orbe.webp` | idem (UI Elements) | Base dos orbes do HUD e do custo/risco da carta |
 | `texturas/holo.webp`, `holo-marmore.webp`, `estrelas.webp` | Holographic card VFX | Brilho holográfico das cartas raras e lendárias (01 §8.3) |
+| `texturas/ferro-placas.webp` | Metal, material 4 (mapa `diffuseOriginal`, BMP convertido), 256×256 | Cantoneiras de ferro do quadro de missões |
 
-**Não aproveitados agora:** as molduras "batareya" (pixel art de 64×96, ficariam serrilhadas ampliadas) e as texturas 3D de madeira, metal e pedra (`Magical Wood Planks`, `Metal Plates`, `Metal`, `Stone Wall`, em BMP com mapas de relevo). Continuam em `assets-originais` se algum fundo pedir.
+**Não aproveitados agora:** as molduras "batareya" (pixel art de 64×96, ficariam serrilhadas ampliadas) e o resto das texturas 3D de madeira, metal e pedra (`Magical Wood Planks`, `Metal Plates`, `Metal`, `Stone Wall`, em BMP com mapas de relevo). Continuam em `assets-originais` se algum fundo pedir.

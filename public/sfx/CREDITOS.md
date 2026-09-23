@@ -27,6 +27,10 @@ combinar.
 | `selo.ogg` | RPG Audio | `dropLeather.ogg` |
 | `perda.ogg` | [Music Jingles](https://kenney.nl/assets/music-jingles) | `Hit jingles/jingles_HIT01.ogg` |
 | `fanfarra.ogg` | Music Jingles | `Pizzicato jingles/jingles_PIZZI01.ogg` |
+| `vitoria.ogg` | Music Jingles | `Pizzicato jingles/jingles_PIZZI04.ogg` |
+| `metal.ogg` | RPG Audio | `drawKnife1.ogg` |
+| `estandarte.ogg` | RPG Audio | `cloth1.ogg` |
+| `livro-abrir.ogg` | RPG Audio | `bookOpen.ogg` |
 
 ## Gerados pela equipe
 
@@ -62,6 +66,15 @@ reduzido para mono a 56 kbps (3,4 MB para 1,2 MB). O padrão do nome é o do
 Pixabay (usuário "freesound_community"), cuja licença dispensa crédito.
 **PREENCHER:** confirmar a origem. Toca em loop a 0,08 de volume junto com a
 música e silencia junto com ela.
+
+## Murmúrio da taverna
+
+`murmurio-1.mp3`, `murmurio-2.mp3`, `murmurio-3.mp3`: três clipes de ~22 s de
+público conversando numa taverna, gerados pela equipe (originais em
+`assets-originais/sons/som de publico/`, nomes "Cozy_medieval_fantas_#4-…").
+Se revezam com crossfade de 2,5 s (`src/engine/murmurio.ts`) a 0,07 de volume,
+por baixo da lareira, e silenciam junto com a música.
+**PREENCHER:** ferramenta usada para gerar.
 
 ## Música
 

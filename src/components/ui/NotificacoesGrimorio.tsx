@@ -37,7 +37,7 @@ export function GrimorioProvider({ children, aoNotificar }: GrimorioProviderProp
   return (
     <Notificar.Provider value={notificar}>
       {children}
-      <div className="pointer-events-none absolute right-8 top-24 z-40 flex w-[460px] flex-col gap-3">
+      <div className="pointer-events-none absolute right-8 top-[250px] z-40 flex w-[460px] flex-col gap-3">
         <AnimatePresence initial={false}>
           {lista.map((notificacao) => (
             <motion.div

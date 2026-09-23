@@ -55,7 +55,8 @@ e o prompt do verso). Os originais ficam em `assets-originais/`.
 Pacotes trazidos pela equipe (`assets-originais/texturas-e-cartas/`), só
 convertidos para WebP: `molduras/` e `ui/` do "free fantasy card frames
 deckbuilder UI sampler"; `texturas/holo*` e `texturas/estrelas.webp` do
-"holographic card VFX". Detalhes em `docs/redesign/08-assets.md` §7.
+"holographic card VFX"; `texturas/ferro-placas.webp` do pacote "Metal"
+(material 4). Detalhes em `docs/redesign/08-assets.md` §7.
 
 **PREENCHER:** autor, site e licença de cada pacote (vieram sem arquivo de licença).
 

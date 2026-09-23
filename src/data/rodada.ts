@@ -61,7 +61,7 @@ export const briefing = {
       { texto: '4 decisões, da fundação até a empresa crescer.', icones: ['scroll-quill'] },
       { texto: 'Em cada uma, a turma discute rapidinho e vota levantando a mão.', icones: ['flying-flag'] },
       { texto: 'Três marcadores mostram a saúde da startup: Caixa, Clientes e Moral.', icones: ['shiny-purse', 'flying-flag', 'flamer'] },
-      { texto: 'Depois de cada decisão, rola o Dado da Incerteza e podem surgir eventos.', icones: ['dice-twenty-faces-one'] },
+      { texto: 'Depois de cada voto, o Dado do Destino (d20) decide quanto a carta rende; o contexto dá bônus.', icones: ['dice-twenty-faces-one'] },
       { texto: 'No final, vocês descobrem o perfil empreendedor da turma.', icones: ['wax-seal'] },
     ],
     taverneiro: {
@@ -74,7 +74,27 @@ export const briefing = {
 // ─────────────────────────────────────────────────────────────
 // ETAPAS — a jornada segue o ciclo de vida descrito nos dois artigos
 // ─────────────────────────────────────────────────────────────
-interface Opcao { texto: string; efeito: Indicadores; resultado: string }
+// Blocos do Business Model Canvas (a "Tapeçaria da Guilda", 02-jogabilidade.md §6).
+export type Bloco =
+  | 'parcerias'
+  | 'atividades'
+  | 'recursos'
+  | 'proposta'
+  | 'relacionamento'
+  | 'canais'
+  | 'segmentos'
+  | 'custos'
+  | 'receitas';
+
+// Lógica de cada decisão; a bricolagem aparece na fundação real e nos tomos.
+export type Logica = Escolha | 'bricolagem';
+
+interface Opcao { texto: string; efeito: Indicadores; resultado: string; blocos: Bloco[] }
+
+// Leitura do Mapa (02 §3): cada nível da matriz do Artigo A dá setas a cada
+// carta (+1 por ▲, −1 por ▼); a soma é o bônus do contexto no d20.
+interface NivelLeitura { texto: string; setas: Partial<Record<Escolha, number>> }
+
 export interface Etapa {
   id: string;
   fase: string;
@@ -85,8 +105,11 @@ export interface Etapa {
   combinar?: Opcao;
   ideal: Escolha;
   perguntaParaTurma: string; // aparece na votação para puxar a discussão
-  artigoA: string; // o que a teoria diz
-  artigoB: string; // o que a startup real fez
+  artigoA: string; // fala do Cartógrafo: o que a literatura diz
+  artigoB: string; // resumo curto do que a startup real fez
+  leitura: { micro: NivelLeitura; meso: NivelLeitura; macro: NivelLeitura };
+  // Crônica (03 §5): a Cronista conta o que a Healthy Skin fez, com citação real.
+  cronica: { texto: string; citacao?: { autor: string; texto: string } };
 }
 
 export const etapas: Etapa[] = [
@@ -95,49 +118,84 @@ export const etapas: Etapa[] = [
     fase: '1 · Fundação',
     titulo: 'A ideia foi recusada',
     situacao: 'Você propôs o produto na farmacêutica onde trabalha. A empresa recusou sem nem pedir um plano de negócios.',
-    planejar: { texto: 'Fazer pesquisa de mercado e um plano completo antes de sair.', efeito: { caixa: -15, clientes: 0, moral: -10 }, resultado: 'Meses de planilhas para um mercado que ainda não existe.' },
-    adaptar: { texto: 'Chamar duas colegas de confiança e começar com o que vocês já sabem.', efeito: { caixa: -5, clientes: 5, moral: 20 }, resultado: 'Farmácia, P&D e cosméticos naturais: uma equipe montada com o que estava à mão.' },
+    planejar: { texto: 'Fazer pesquisa de mercado e um plano completo antes de sair.', efeito: { caixa: -15, clientes: 0, moral: -10 }, resultado: 'Meses de planilhas para um mercado que ainda não existe.', blocos: ['segmentos', 'custos'] },
+    adaptar: { texto: 'Chamar duas colegas de confiança e começar com o que vocês já sabem.', efeito: { caixa: -5, clientes: 5, moral: 20 }, resultado: 'Farmácia, P&D e cosméticos naturais: uma equipe montada com o que estava à mão.', blocos: ['parcerias', 'recursos', 'proposta'] },
     ideal: 'adaptar',
     perguntaParaTurma: 'Vocês largariam o emprego sem um plano no papel?',
-    artigoA: 'No início, empresas de sucesso focam em parcerias, não em pesquisas de mercado sofisticadas.',
+    artigoA: 'Curioso. Nos meus mapas, quem vem de grandes empresas costuma começar planejando. No início, as que dão certo focam em parcerias.',
     artigoB: 'A Healthy Skin nasceu assim em 2016: três colegas recombinando suas experiências. Isso é bricolagem!',
+    leitura: {
+      micro: { texto: 'Anos de indústria farmacêutica e cosmética, e colegas de confiança', setas: { planejar: 1, adaptar: 2 } },
+      meso: { texto: 'A empresa ainda nem existe', setas: { planejar: -1, adaptar: 1 } },
+      macro: { texto: 'Não existe produto parecido no mercado', setas: { planejar: -2, adaptar: 1 } },
+    },
+    cronica: {
+      texto: 'A empregadora recusou. Ela não desistiu: chamou duas colegas que conhecia havia anos, uma de P&D farmacêutico e outra de cosméticos naturais. Três carreiras recombinadas numa empresa. Eu chamo isso de bricolagem.',
+      citacao: { autor: 'Fundadora 1', texto: 'Fiquei feliz quando ela entrou comigo, porque conhece os processos e tem relação com fabricantes com quem podemos fazer parceria.' },
+    },
   },
   {
     id: 'lancamento',
     fase: '2 · Primeiros anos',
     titulo: 'Remédio ou cosmético?',
     situacao: 'O produto funciona. Registrar como medicamento leva anos e custa caro. Como cosmético é mais simples, mas ainda exige estudos.',
-    planejar: { texto: 'Seguir o caminho tradicional e registrar como medicamento.', efeito: { caixa: -20, clientes: -5, moral: -5 }, resultado: 'Anos de espera sem vender nada.' },
-    adaptar: { texto: 'Registrar como cosmético e publicar estudos clínicos mesmo assim.', efeito: { caixa: 5, clientes: 20, moral: 10 }, resultado: 'No mercado rápido e barato, sem perder a confiança dos médicos.' },
+    planejar: { texto: 'Seguir o caminho tradicional e registrar como medicamento.', efeito: { caixa: -20, clientes: -5, moral: -5 }, resultado: 'Anos de espera sem vender nada.', blocos: ['atividades', 'custos'] },
+    adaptar: { texto: 'Registrar como cosmético e publicar estudos clínicos mesmo assim.', efeito: { caixa: 5, clientes: 20, moral: 10 }, resultado: 'No mercado rápido e barato, sem perder a confiança dos médicos.', blocos: ['atividades', 'canais', 'parcerias'] },
     ideal: 'adaptar',
     perguntaParaTurma: 'Vale a pena esperar anos pelo caminho "certo"?',
     artigoA: 'Em mercados complexos e incertos, planejar sozinho não é recomendado.',
     artigoB: 'A Healthy Skin contornou as regras e testou o produto com pacientes em ciclos rápidos até chegar à fórmula final.',
+    leitura: {
+      micro: { texto: 'Vocês conhecem pacientes e médicos de perto', setas: { adaptar: 1 } },
+      meso: { texto: 'Empresa pequena, pagando com recursos próprios e um empréstimo', setas: { planejar: -1, adaptar: 1 } },
+      macro: { texto: 'Registrar como remédio leva anos e custa caro', setas: { planejar: -2, adaptar: 2 } },
+    },
+    cronica: {
+      texto: 'Registraram como cosmético Classe 2 na Anvisa, mais rápido e barato. Mas fizeram estudos clínicos e publicaram artigos, para ganhar a confiança dos médicos, e testaram protótipos com pacientes de hospitais parceiros.',
+      citacao: { autor: 'Fundadora 2', texto: 'Decidimos primeiro desenvolver um cosmético Classe 2. Também precisamos de estudos clínicos, mas é mais simples do que o exigido para medicamentos.' },
+    },
   },
   {
     id: 'investidores',
     fase: '3 · Investidores anjo',
     titulo: 'Os investidores chegaram',
     situacao: 'Deu certo! Seis investidores anjo colocaram dinheiro na startup e querem saber para onde ele vai.',
-    planejar: { texto: 'Criar conselho, metas, relatórios e reuniões regulares.', efeito: { caixa: 20, clientes: 5, moral: 5 }, resultado: 'Investidores confiantes e operação mais estável.' },
-    adaptar: { texto: 'Continuar decidindo tudo no improviso, como no começo.', efeito: { caixa: -20, clientes: -5, moral: -15 }, resultado: 'Os investidores ficaram nervosos.' },
+    planejar: { texto: 'Criar conselho, metas, relatórios e reuniões regulares.', efeito: { caixa: 20, clientes: 5, moral: 5 }, resultado: 'Investidores confiantes e operação mais estável.', blocos: ['atividades', 'custos', 'relacionamento'] },
+    adaptar: { texto: 'Continuar decidindo tudo no improviso, como no começo.', efeito: { caixa: -20, clientes: -5, moral: -15 }, resultado: 'Os investidores ficaram nervosos.', blocos: ['atividades'] },
     ideal: 'planejar',
     perguntaParaTurma: 'O jeito que funcionou até aqui ainda serve com investidores olhando?',
-    artigoA: 'Quando a empresa cresce, investidores e reguladores exigem planejamento. É a hora da causation.',
+    artigoA: 'Quando a empresa cresce, investidores e reguladores pedem planejamento. É a hora da causation.',
     artigoB: 'Depois dos anjos, em 2019, a Healthy Skin criou um conselho e passou a apresentar relatórios.',
+    leitura: {
+      micro: { texto: 'Três anos de estrada: vocês já sabem improvisar', setas: { adaptar: 1 } },
+      meso: { texto: 'A empresa cresce com dinheiro de terceiros', setas: { planejar: 2, adaptar: -1 } },
+      macro: { texto: 'Seis investidores querem previsões e relatórios', setas: { planejar: 2, adaptar: -2 } },
+    },
+    cronica: {
+      texto: 'Com os anjos veio um conselho. Reuniões regulares, relatórios, planos discutidos com todos. Mas elas continuaram decidindo com base em testes e ouvindo pacientes e equipe.',
+    },
   },
   {
     id: 'novo-mercado',
     fase: '4 · Anos recentes',
     titulo: 'Um mercado novo apareceu',
     situacao: 'O produto também ajuda em outras doenças de pele. Mas o mercado é mais caro: cerca de 12 mil dermatologistas, contra 3 mil oncologistas.',
-    planejar: { texto: 'Montar uma equipe de vendas própria com plano nacional.', efeito: { caixa: -20, clientes: 10, moral: -5 }, resultado: 'O custo de distribuição engoliu o caixa.' },
-    adaptar: { texto: 'Entrar aos poucos, testando com médicos conhecidos.', efeito: { caixa: 0, clientes: 10, moral: 5 }, resultado: 'Cresce devagar, mas sem grandes riscos.' },
-    combinar: { texto: 'Licenciar para uma farmacêutica como marca branca, com contrato de royalties e estudos planejados.', efeito: { caixa: 20, clientes: 25, moral: 10 }, resultado: 'Parceria para chegar longe, plano para chegar com segurança.' },
+    planejar: { texto: 'Montar uma equipe de vendas própria com plano nacional.', efeito: { caixa: -20, clientes: 10, moral: -5 }, resultado: 'O custo de distribuição engoliu o caixa.', blocos: ['canais', 'relacionamento', 'custos'] },
+    adaptar: { texto: 'Entrar aos poucos, testando com médicos conhecidos.', efeito: { caixa: 0, clientes: 10, moral: 5 }, resultado: 'Cresce devagar, mas sem grandes riscos.', blocos: ['canais', 'relacionamento'] },
+    combinar: { texto: 'Licenciar para uma farmacêutica como marca branca, com contrato de royalties e estudos planejados.', efeito: { caixa: 20, clientes: 25, moral: 10 }, resultado: 'Parceria para chegar longe, plano para chegar com segurança.', blocos: ['parcerias', 'canais', 'receitas'] },
     ideal: 'combinar',
     perguntaParaTurma: 'Dá para arriscar e ter segurança ao mesmo tempo?',
-    artigoA: 'Empreendedores experientes combinam as duas lógicas conforme a decisão. Mas combinar exige experiência!',
+    artigoA: 'Empreendedores experientes combinam as duas lógicas conforme a decisão. Mas combinar exige experiência.',
     artigoB: 'A Healthy Skin está licenciando seus produtos para farmacêuticas, para atender outras doenças como a psoríase.',
+    leitura: {
+      micro: { texto: 'Vocês já planejaram e já improvisaram', setas: { combinar: 1 } },
+      meso: { texto: 'Empresa estabelecida, com só 2% do mercado', setas: { planejar: 1, combinar: 1 } },
+      macro: { texto: 'Mercado quatro vezes maior e caro de alcançar', setas: { planejar: -2, adaptar: 1, combinar: 1 } },
+    },
+    cronica: {
+      texto: 'Incubadas na Eretz.bio, do Hospital Albert Einstein, e com apoio do PIPE Fapesp. Na pandemia, abriram televendas e WhatsApp: um imprevisto virou canal, a Limonada. Para o mercado novo, escolheram licenciar como marca branca e receber royalties.',
+      citacao: { autor: 'Fundadora 1', texto: 'Uma das nossas investidoras-anjo sugeriu que entrássemos nesse outro mercado. Mas, para nós, o investimento em distribuição seria alto demais neste momento.' },
+    },
   },
 ];
 
@@ -170,41 +228,42 @@ export const eventos: Evento[] = [
     depoisDaEtapa: 0,
     nome: 'Quem vocês conhecem?',
     condicao: (e) => e[0] === 'adaptar',
-    seSim: { titulo: '🧵 Crazy Quilt!', texto: 'Um hospital conhecido topou testar os protótipos com pacientes.', efeito: { clientes: 10, moral: 5 } },
-    seNao: { titulo: '🚪 Plano pronto, porta fechada', texto: 'O plano ficou lindo, mas nenhum hospital conhece vocês para testar o produto.', efeito: { clientes: -5, moral: -5 } },
+    seSim: { titulo: 'Colcha de Retalhos!', texto: 'Um hospital conhecido topou testar os protótipos com pacientes.', efeito: { clientes: 10, moral: 5 } },
+    seNao: { titulo: 'Plano pronto, porta fechada', texto: 'O plano ficou lindo, mas nenhum hospital conhece vocês para testar o produto.', efeito: { clientes: -5, moral: -5 } },
     conceito: 'Parcerias como colcha de retalhos (Artigo A). A startup real testou com hospitais parceiros (Artigo B).',
   },
   {
     depoisDaEtapa: 1,
-    nome: 'A pandemia chegou',
-    condicao: (e) => e[1] === 'adaptar',
-    seSim: { titulo: '🍋 Lemonade!', texto: 'Vocês já vendiam online e passaram a atender por telefone e WhatsApp.', efeito: { caixa: 5, clientes: 10 } },
-    seNao: { titulo: '📉 O plano não previa isso', texto: 'Sem produto no mercado e sem canal digital, tudo parou.', efeito: { caixa: -10, moral: -5 } },
-    conceito: 'Transformar imprevistos em oportunidades (Artigo A). A startup real abriu televendas e WhatsApp na Covid (Artigo B).',
+    nome: 'Quem vai fabricar?',
+    // A rede de contatos das fundadoras vem da etapa 1 (03 §5).
+    condicao: (e) => e[0] === 'adaptar',
+    seSim: { titulo: 'Perda Aceitável!', texto: 'Uma das fundadoras conhecia um fabricante que produz lotes pequenos. Nada de comprar máquinas.', efeito: { caixa: 10 } },
+    seNao: { titulo: 'Máquinas caras demais', texto: 'Sem contatos na indústria, só sobrou montar uma fábrica.', efeito: { caixa: -10, moral: -5 } },
+    conceito: 'Arrisque só o que pode perder (Artigo A). A Healthy Skin terceiriza a produção até hoje (Artigo B).',
   },
   {
     depoisDaEtapa: 2,
     nome: 'A incubadora abriu vagas',
     condicao: (_e, ind) => ind.caixa >= 50 && ind.moral >= 60,
-    seSim: { titulo: '🏥 Portas abertas', texto: 'Vocês entraram na incubadora de um grande hospital.', efeito: { clientes: 10, moral: 5 } },
-    seNao: { titulo: '😮‍💨 Não foi dessa vez', texto: 'Com caixa ou moral baixos, a incubadora preferiu outra startup.', efeito: { moral: -5 } },
+    seSim: { titulo: 'Portas abertas', texto: 'Vocês entraram na incubadora de um grande hospital.', efeito: { clientes: 10, moral: 5 } },
+    seNao: { titulo: 'Não foi dessa vez', texto: 'Com caixa ou moral baixos, a incubadora preferiu outra startup.', efeito: { moral: -5 } },
     conceito: 'A startup real foi incubada na Eretz.bio, do Hospital Albert Einstein (Artigo B).',
   },
 ];
 
 // ─────────────────────────────────────────────────────────────
-// DADO DA INCERTEZA — rola depois de cada decisão (d6)
+// DADO DO DESTINO — d20 + bônus do contexto contra CD 11 (02-jogabilidade.md §4)
 // ─────────────────────────────────────────────────────────────
-export const dadoDaIncerteza = {
-  explicacao: 'Nenhuma lógica controla tudo: o contexto também joga (Artigo A).',
-  faces: {
-    1: { titulo: 'Mercado azedou', efeito: { clientes: -8 } },
-    2: { titulo: 'Mercado estável', efeito: {} },
-    3: { titulo: 'Mercado estável', efeito: {} },
-    4: { titulo: 'Mercado estável', efeito: {} },
-    5: { titulo: 'Mercado estável', efeito: {} },
-    6: { titulo: 'Mercado a favor', efeito: { clientes: 8 } },
-  } as Record<number, { titulo: string; efeito: Partial<Indicadores> }>,
+export const dadoDoDestino = {
+  cd: 11,
+  critico: 19, // total a partir do qual (ou 20 natural) a carta rende mais
+  bonusCombinar: 2, // "Experiência": quem já viveu as duas lógicas sabe combiná-las
+  faixas: {
+    critico: { titulo: 'Crítico!', texto: 'Ganhos ×1,5', multiplicador: 1.5 },
+    sucesso: { titulo: 'Sucesso', texto: 'A carta rende o esperado', multiplicador: 1 },
+    falha: { titulo: 'Falha', texto: 'Ganhos pela metade', multiplicador: 0.5 },
+  },
+  explicacao: 'Nenhuma lógica controla tudo: o contexto dá bônus ou atrapalha (Artigo A).',
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -215,10 +274,14 @@ export const regras = {
   minimo: 5,    // nunca zera: com a turma, não existe game over
   maximo: 100,
   alertaQuaseQuebrou: 15, // abaixo disso, a barra pisca e aparece "Quase quebrou!"
+  // Rank da guilda pela soma dos três indicadores. Limiares conferidos por
+  // simulação (4.000 rodadas por caminho, d20 aleatório, 23/09/2026): o caminho
+  // real tem mediana 300, o camaleão 250, só adaptar 199, e quem planeja cedo
+  // fica entre 50 e 110.
   estrelas: [
-    { minimo: 230, estrelas: 3 },
-    { minimo: 160, estrelas: 2 },
-    { minimo: 0, estrelas: 1 },
+    { minimo: 230, estrelas: 3, nome: 'Grão-Mestre' },
+    { minimo: 160, estrelas: 2, nome: 'Mestre' },
+    { minimo: 0, estrelas: 1, nome: 'Aprendiz' },
   ],
 };
 
@@ -230,7 +293,7 @@ export const perfis = {
   lendario: { emoji: '🦎✨', nome: 'Camaleão Lendário', texto: 'Adaptaram no início, planejaram ao crescer e combinaram no fim. É o caminho que os dois artigos descrevem e o que a startup real fez.' },
   camaleao: { emoji: '🦎', nome: 'Camaleão', texto: 'Adaptaram no início e planejaram ao crescer: o padrão mais encontrado na revisão do Artigo A.' },
   improvisador: { emoji: '🏄', nome: 'Surfista do Improviso', texto: 'Adaptaram o tempo todo. Ótimo para começar, mas empresas maiores precisam de planejamento.' },
-  planejador: { emoji: '📐', nome: 'Arquiteto de Planilhas', texto: 'Planejaram desde o começo. Funciona em mercados estáveis, mas em mercados incertos o plano sozinho não segura.' },
+  planejador: { emoji: '📐', nome: 'Arquiteto de Pergaminhos', texto: 'Planejaram desde o começo. Funciona em mercados estáveis, mas em mercados incertos o plano sozinho não segura.' },
   invertido: { emoji: '🔄', nome: 'Caminho Invertido', texto: 'Planejaram cedo e adaptaram depois. É raro, mas a revisão do Artigo A mostra novatos que aprendem a improvisar com a experiência.' },
   equilibrista: { emoji: '⚖️', nome: 'Equilibrista', texto: 'Misturaram as lógicas desde cedo. Os dois artigos concordam: não existe lógica única.' },
 };
@@ -246,6 +309,24 @@ export function calcularPerfil(e: Escolha[]): keyof typeof perfis {
   if (cedo === 'P' && tarde === 'A') return 'invertido';
   return 'equilibrista';
 }
+
+// Tapeçaria real por etapa (03-historia.md §6, Tabela 4 do Artigo B): cada
+// bloco acende nas lógicas marcadas com ✓✓; duas lógicas = bloco listrado.
+const EFETUAL_EXCETO_RECEITAS: Bloco[] = ['proposta', 'recursos', 'atividades', 'parcerias', 'segmentos', 'canais', 'relacionamento', 'custos'];
+export const canvasReal: Partial<Record<Bloco, Logica[]>>[] = [
+  { proposta: ['bricolagem'], recursos: ['bricolagem'], atividades: ['bricolagem'], parcerias: ['bricolagem'] },
+  Object.fromEntries(EFETUAL_EXCETO_RECEITAS.map((b) => [b, ['adaptar']])),
+  {
+    ...Object.fromEntries(EFETUAL_EXCETO_RECEITAS.filter((b) => b !== 'segmentos').map((b) => [b, ['adaptar']])),
+    atividades: ['planejar', 'adaptar'],
+  },
+  {
+    ...Object.fromEntries(EFETUAL_EXCETO_RECEITAS.map((b) => [b, ['adaptar']])),
+    atividades: ['planejar', 'adaptar'],
+    parcerias: ['planejar', 'adaptar'],
+    canais: ['planejar', 'adaptar'],
+  },
+];
 
 // Linha do tempo exibida no final: "vocês vs a startup real"
 export const caminhoReal: { etapa: string; escolha: Escolha; logica: string }[] = [

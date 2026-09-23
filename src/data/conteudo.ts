@@ -133,6 +133,13 @@ export const conteudo = {
 
   temaCentral: 'Não existe lógica única: o empreendedor alterna e combina planejar e improvisar conforme a fase e o contexto.',
 
+  // Proposição central do Tomo B, lembrada pela Cronista no Confronto (03-historia.md §7).
+  proposicaoB: {
+    citacao: 'O que está à mão na fundação vira quem você é.',
+    lembranca:
+      'Lembram da etapa 1? A fundadora juntou duas colegas de confiança da indústria farmacêutica e de cosméticos. Essas três carreiras viraram a identidade da Healthy Skin: dão estabilidade, mas podem travar a proposta de valor.',
+  },
+
   aprendizados: [
     'Não existe lógica única: planejar e improvisar se combinam.',
     'A fase importa: effectuation abre caminhos no início, causation estabiliza o crescimento.',

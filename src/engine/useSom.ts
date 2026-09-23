@@ -3,11 +3,12 @@ import { Howl } from 'howler';
 import { CHAVE_MUDO, lerMudo } from './preferenciaSom';
 import { FALAS, TODAS_AS_FALAS, escolherFala, type Momento } from './falas';
 import type { Tarefa } from './carregamento';
+import { Murmurio } from './murmurio';
 
 // Efeitos do Kenney Audio (CC0) e música de fundo em public/sfx/ (origem de
 // cada arquivo em public/sfx/CREDITOS.md). Se algum arquivo faltar, o Howler
 // apenas falha ao carregar aquele som e ignora o tocar().
-const EFEITOS = [
+export const EFEITOS = [
   'clique',
   'virar-carta',
   'escolha',
@@ -33,6 +34,11 @@ const EFEITOS = [
   'correntes-quebrando',
   'publico-comemora',
   'publico-lamenta',
+  // Kenney, para os momentos que estavam mudos (resultado, livro, estandarte).
+  'metal',
+  'estandarte',
+  'vitoria',
+  'livro-abrir',
 ] as const;
 
 export type Efeito = (typeof EFEITOS)[number];
@@ -78,6 +84,8 @@ export function useSom() {
   const sons = useRef<Partial<Record<Efeito, Howl>>>({});
   // Música e lareira: tocam em loop por baixo de tudo.
   const fundo = useRef<Howl[]>([]);
+  // Murmúrio do público da taverna, por baixo da lareira.
+  const murmurio = useRef<Murmurio | null>(null);
   const falas = useRef<Record<string, Howl>>({});
   const falaAtual = useRef<{ id: string; som: Howl } | null>(null);
   // Até quando a fala interrompida ainda está sumindo (a próxima espera).
@@ -100,7 +108,9 @@ export function useSom() {
       new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true }),
       new Howl({ src: [caminhoSom('ambiente-taverna.mp3')], volume: VOLUME_AMBIENTE, loop: true, html5: true }),
     ];
+    murmurio.current = new Murmurio([1, 2, 3].map((n) => caminhoSom(`murmurio-${n}.mp3`)));
     return () => {
+      murmurio.current?.descarregar();
       for (const som of Object.values(sons.current)) som?.unload();
       for (const faixa of fundo.current) faixa.unload();
       for (const fala of Object.values(falas.current)) fala.unload();
@@ -137,6 +147,8 @@ export function useSom() {
       faixa.once('playerror', () => faixa.once('unlock', () => faixa.play()));
       faixa.play();
     }
+    if (mudo) murmurio.current?.parar();
+    else if (liberado) murmurio.current?.iniciar();
   }, [mudo, liberado]);
 
   useEffect(() => {
@@ -200,7 +212,7 @@ export function useSom() {
   // hora da chamada: o App chama depois que o efeito de pré-carga já rodou.
   const tarefasDeCarga = useCallback(
     (): Tarefa[] =>
-      [...Object.values(sons.current), ...Object.values(falas.current), ...fundo.current].flatMap((som) =>
+      [...Object.values(sons.current), ...Object.values(falas.current), ...fundo.current, ...(murmurio.current?.clipes ?? [])].flatMap((som) =>
         som ? [() => carregado(som)] : [],
       ),
     [],

@@ -10,6 +10,7 @@ const FIXAS = [
   'cenario/tampo-mesa.webp',
   'cenario/pergaminho.webp',
   'cenario/quadro-tabuas.webp',
+  'texturas/ferro-placas.webp',
   'cartas/verso.webp',
   'personagens/taverneiro.webp',
   'molduras/carta-bronze.webp',

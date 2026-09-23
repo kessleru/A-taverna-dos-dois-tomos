@@ -27,7 +27,7 @@ export const SLOTS_MOLDURA = {
   arte: { esquerda: 20, topo: 13.8, largura: 60.1, altura: 40.9 },
   nome: { esquerda: 13, topo: 58.5, largura: 74, altura: 6 },
   texto: { esquerda: 15.5, topo: 67.5, largura: 69, altura: 19.5 },
-  gemaTopo: gema(16.5, 11, 18),
-  gemaEsquerda: gema(16, 86.5, 15),
-  gemaDireita: gema(84, 86.5, 15),
+  gemaTopo: gema(16.6, 13, 17),
+  gemaEsquerda: gema(16.6, 86.8, 15),
+  gemaDireita: gema(83.5, 86.8, 15),
 } satisfies Record<string, Slot>;

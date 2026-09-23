@@ -1,140 +1,166 @@
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useCallback, useEffect, useRef, type ReactNode } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { conteudo } from '../data/conteudo';
-import { Titulo } from '../components/ui/Titulo';
-import { ControlesFase } from '../components/ui/ControlesFase';
-import { CartaArtigo } from '../components/cartas/CartaArtigo';
+import { useFolhas } from '../engine/useFolhas';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
+import { NavFolhas } from '../components/ui/NavFolhas';
+import { Icone } from '../components/ui/Icone';
+import { mola } from '../styles/movimento';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
-const DURACAO_ORBITA_MS = 2600;
+const TAVERNEIRO = `${import.meta.env.BASE_URL}assets/personagens/taverneiro.webp`;
+// Uma folha por aprendizado e a última com os créditos.
+const TOTAL = conteudo.aprendizados.length + 1;
 
 interface F5FusaoProps extends FaseProps {
   som: ReturnType<typeof useSom>;
 }
 
-export function F5Fusao({ som, ...props }: F5FusaoProps) {
-  const [orbitando, setOrbitando] = useState(true);
-  const [flash, setFlash] = useState(false);
-  const [aprendizadoAtual, setAprendizadoAtual] = useState(0);
-  const [creditos, setCreditos] = useState(false);
-  const [artigoA, artigoB] = conteudo.artigos;
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setFlash(true), DURACAO_ORBITA_MS);
-    const t2 = setTimeout(() => {
-      setFlash(false);
-      setOrbitando(false);
-    }, DURACAO_ORBITA_MS + 250);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, []);
-
-  function proximoAprendizado() {
-    if (aprendizadoAtual < conteudo.aprendizados.length - 1) {
-      setAprendizadoAtual((i) => i + 1);
-    } else if (!creditos) {
-      setCreditos(true);
-      som.falar('despedida');
-      confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, colors: ['#F9C80E', '#FFF8E7', '#2EC4B6', '#F86624'] });
-    }
-  }
+// F5 — Aprendizados (03-historia.md §8): a lendária Aprendizados em destaque e
+// os cinco aprendizados escritos a pena, um por folha, com a tinta brilhando
+// em ouro. No fim, o Taverneiro se despede e os créditos sobem.
+// A fusão animada dos dois tomos ficou para depois (00-visao-geral.md §7).
+export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
+  const aoVirar = useCallback(() => som.tocar('pagina'), [som]);
+  const { folha, ir } = useFolhas({ total: TOTAL, chave: 'sa-f5-folha', avancar, voltar, aoVirar });
+  const creditos = folha === TOTAL - 1;
 
   return (
-    <section className="mx-auto flex h-full max-w-[1400px] flex-col items-center gap-6 overflow-y-auto px-6 py-10">
-      {orbitando ? (
-        <div className="relative flex h-64 w-64 shrink-0 items-center justify-center">
+    <section className="flex h-full flex-col gap-4 px-20 pb-5 pt-6">
+      <div className="flex min-h-0 flex-1 items-center gap-16">
+        <motion.div
+          className="relative shrink-0"
+          initial={{ scale: 0.6, opacity: 0, rotate: -8 }}
+          animate={{ scale: 1, opacity: 1, rotate: 0 }}
+          transition={mola.impacto}
+        >
+          {/* Halo dourado atrás da lendária. */}
           <motion.div
-            className="absolute"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
-            style={{ transformOrigin: '0px 0px' }}
-          >
-            <div style={{ transform: 'translate(-70px, -190px) scale(0.55)' }}>
-              <CartaArtigo artigo={artigoA} />
-            </div>
-          </motion.div>
+            className="pointer-events-none absolute -inset-24 rounded-full bg-[radial-gradient(circle,rgb(232_182_74/0.45),transparent_65%)]"
+            animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <CartaLendaria />
+        </motion.div>
+
+        <div className="flex h-full min-w-0 flex-1 flex-col justify-center">
+          {creditos ? <Creditos som={som} /> : <Aprendizados ate={folha} />}
+        </div>
+      </div>
+
+      <NavFolhas
+        folha={folha}
+        total={TOTAL}
+        ir={ir}
+        rotulo="Aprendizados"
+        rotuloAvancar={folha === TOTAL - 2 ? 'Créditos' : 'Continuar'}
+        mostrarAvancar={!(creditos && ultimaFase)}
+      />
+    </section>
+  );
+}
+
+function Aprendizados({ ate }: { ate: number }) {
+  return (
+    <div className="pergaminho-sombra">
+      <div className="pergaminho pergaminho-aviso flex flex-col gap-5">
+        <h1 className="font-titulo text-[52px] font-bold leading-none">Aprendizados</h1>
+        <ol className="flex flex-col gap-4">
+          {conteudo.aprendizados.slice(0, ate + 1).map((item, i) => (
+            <Linha key={item} numero={i + 1} texto={item} nova={i === ate} />
+          ))}
+        </ol>
+      </div>
+    </div>
+  );
+}
+
+// Escrita a pena: o texto se revela da esquerda para a direita e a tinta
+// esfria de ouro para marrom.
+function Linha({ numero, texto, nova }: { numero: number; texto: string; nova: boolean }) {
+  const reduzido = useReducedMotion();
+  const animar = nova && !reduzido;
+  return (
+    <li className="flex items-start gap-4 font-texto text-[32px] leading-snug">
+      <span className="w-10 shrink-0 font-titulo font-bold text-cera">{numero}.</span>
+      <motion.span
+        initial={animar ? { clipPath: 'inset(0 100% 0 0)', color: '#c8901c', textShadow: '0 0 14px rgb(232 182 74 / 0.9)' } : false}
+        animate={{ clipPath: 'inset(0 0% 0 0)', color: 'var(--tinta)', textShadow: '0 0 0px rgb(232 182 74 / 0)' }}
+        transition={{ clipPath: { duration: 1.4, ease: 'easeInOut' }, color: { delay: 1.2, duration: 1.2 }, textShadow: { delay: 1.2, duration: 1.2 } }}
+      >
+        {texto}
+      </motion.span>
+      {animar && (
+        <motion.span
+          className="shrink-0 text-tinta/70"
+          initial={{ opacity: 1, x: -40 }}
+          animate={{ opacity: 0, x: 0 }}
+          transition={{ duration: 1.6 }}
+          aria-hidden
+        >
+          <Icone nome="quill-ink" className="h-10 w-10" />
+        </motion.span>
+      )}
+    </li>
+  );
+}
+
+function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
+  const reduzido = useReducedMotion();
+  const falou = useRef(false);
+
+  useEffect(() => {
+    if (falou.current) return;
+    falou.current = true;
+    som.falar('despedida');
+    som.tocar('fanfarra');
+    som.tocar('publico-comemora');
+    if (!reduzido) confetti({ particleCount: 150, spread: 100, origin: { x: 0.65, y: 0.4 }, colors: ['#E8B64A', '#F3E6C8', '#FF7A2F'] });
+  }, [som, reduzido]);
+
+  return (
+    <div className="flex h-full flex-col gap-6">
+      <div className="flex items-center gap-6">
+        <img src={TAVERNEIRO} alt="" className="h-[140px] w-[140px] shrink-0 rounded-full border-4 border-ouro object-cover object-top shadow-carta" />
+        <p className="font-texto text-[40px] font-bold italic leading-tight text-ouro [text-shadow:0_3px_6px_rgb(0_0_0/0.9)]">
+          “A lenda continua. Obrigado por puxarem uma cadeira.”
+        </p>
+      </div>
+      {/* Os créditos sobem como um pergaminho. */}
+      <div className="pergaminho-sombra min-h-0 flex-1">
+        <div className="pergaminho relative h-full overflow-hidden px-14">
           <motion.div
-            className="absolute"
-            animate={{ rotate: -360 }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
-            style={{ transformOrigin: '0px 0px' }}
+            className="flex flex-col gap-8 py-10 text-center"
+            initial={reduzido ? false : { y: '60%' }}
+            animate={{ y: '0%' }}
+            transition={{ duration: 6, ease: 'easeOut' }}
           >
-            <div style={{ transform: 'translate(-70px, 60px) scale(0.55)' }}>
-              <CartaArtigo artigo={artigoB} />
-            </div>
+            <Bloco titulo="Equipe">{conteudo.equipe.membros.join(' · ')}</Bloco>
+            <Bloco titulo="Referências">
+              {conteudo.artigos.map((artigo) => (
+                <p key={artigo.id} className="mb-3 text-[22px]">
+                  {artigo.referenciaABNT}
+                </p>
+              ))}
+            </Bloco>
+            <Bloco titulo="Arte e som">
+              Ícones de game-icons.net (CC BY 3.0). Ilustrações, molduras, texturas, música e efeitos: créditos completos em
+              public/assets/CREDITOS.md.
+            </Bloco>
           </motion.div>
         </div>
-      ) : (
-        <CartaLendaria />
-      )}
+      </div>
+    </div>
+  );
+}
 
-      {flash && (
-        <motion.div
-          className="pointer-events-none fixed inset-0 z-30 bg-white"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 0.5 }}
-        />
-      )}
-
-      {!orbitando && (
-        <>
-          <Titulo className="text-4xl">Aprendizados</Titulo>
-          <ol className="w-full space-y-2 pl-5 text-lg text-pergaminho/90">
-            <AnimatePresence>
-              {conteudo.aprendizados.slice(0, aprendizadoAtual + 1).map((item, indice) => (
-                <motion.li
-                  key={item}
-                  className="list-decimal"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: indice === aprendizadoAtual ? 0.1 : 0 }}
-                >
-                  {item}
-                </motion.li>
-              ))}
-            </AnimatePresence>
-          </ol>
-
-          {!creditos && (
-            <button
-              onClick={proximoAprendizado}
-              className="rounded-full bg-ouro px-8 py-3 text-lg font-bold text-tinta shadow-carta hover:brightness-110"
-            >
-              {aprendizadoAtual < conteudo.aprendizados.length - 1 ? 'Próximo aprendizado →' : 'Ver créditos →'}
-            </button>
-          )}
-
-          {creditos && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full space-y-4 border-t border-pergaminho/15 pt-6 text-center text-sm text-pergaminho/70"
-            >
-              <div>
-                <p className="font-titulo text-ouro">Equipe</p>
-                <p>{conteudo.equipe.membros.join(' · ')}</p>
-              </div>
-              <div>
-                <p className="font-titulo text-ouro">Referências</p>
-                {conteudo.artigos.map((artigo) => (
-                  <p key={artigo.id} className="mx-auto max-w-xl">
-                    {artigo.referenciaABNT}
-                  </p>
-                ))}
-              </div>
-              <p className="text-xs text-pergaminho/40">Créditos de assets em public/assets/CREDITOS.md</p>
-            </motion.div>
-          )}
-        </>
-      )}
-
-      <ControlesFase {...props} />
-    </section>
+function Bloco({ titulo, children }: { titulo: string; children: ReactNode }) {
+  return (
+    <div>
+      <p className="mb-2 font-titulo text-[30px] font-bold text-cera">{titulo}</p>
+      <div className="font-texto text-[24px] leading-snug">{children}</div>
+    </div>
   );
 }
