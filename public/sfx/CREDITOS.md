@@ -46,5 +46,7 @@ lucrativos. Se houver pedido de remoção, voltar para uma faixa livre: a
 anterior, "Fantasy RPG Exploration v2" de rubyzephyr, está em
 `assets-originais/sons/musica/` e no histórico do git (commit 8c6a90b).
 
-Toca em loop a 0,12 de volume quando o som está ligado (tecla `M` ou botão do
-HUD); o jogo começa mudo.
+Toca em loop a 0,12 de volume. O som começa ligado: a música entra no primeiro
+clique ou tecla (o navegador não deixa tocar antes) e a tecla `M` ou o botão do
+HUD desligam. Todos os efeitos são carregados ao abrir o jogo, para não
+atrasarem na primeira vez que tocam.

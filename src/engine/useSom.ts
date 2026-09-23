@@ -1,29 +1,33 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Howl } from 'howler';
+import { CHAVE_MUDO, lerMudo } from './preferenciaSom';
 
 // Efeitos do Kenney Audio (CC0) e música de fundo em public/sfx/ (origem de
 // cada arquivo em public/sfx/CREDITOS.md). Se algum arquivo faltar, o Howler
 // apenas falha ao carregar aquele som e ignora o tocar().
-export type Efeito =
-  | 'clique'
-  | 'virar-carta'
-  | 'escolha'
-  | 'ganho'
-  | 'perda'
-  | 'dado'
-  | 'evento'
-  | 'cadeado'
-  | 'fanfarra'
+const EFEITOS = [
+  'clique',
+  'virar-carta',
+  'escolha',
+  'ganho',
+  'perda',
+  'dado',
+  'evento',
+  'cadeado',
+  'fanfarra',
   // Sons do redesign (docs/redesign/06-animacoes.md), prontos para uso.
-  | 'carta-deslizar'
-  | 'carta-bater'
-  | 'embaralhar'
-  | 'tic'
-  | 'ping'
-  | 'pagina'
-  | 'moedas'
-  | 'correntes'
-  | 'selo';
+  'carta-deslizar',
+  'carta-bater',
+  'embaralhar',
+  'tic',
+  'ping',
+  'pagina',
+  'moedas',
+  'correntes',
+  'selo',
+] as const;
+
+export type Efeito = (typeof EFEITOS)[number];
 
 // Prefixa com o base path do build, como em artes.ts: em GitHub Pages o site
 // fica sob /empreendedorismo/ e um caminho absoluto /sfx/ daria 404.
@@ -33,31 +37,57 @@ function caminhoSom(arquivo: string): string {
 
 const VOLUME_EFEITOS = 0.4;
 const VOLUME_MUSICA = 0.12;
-const CHAVE_SESSAO = 'sa-mudo';
 
 export function useSom() {
-  const [mudo, setMudo] = useState(() => sessionStorage.getItem(CHAVE_SESSAO) !== 'false');
+  const [mudo, setMudo] = useState(() => lerMudo(sessionStorage.getItem(CHAVE_MUDO)));
+  // O navegador só libera áudio depois do primeiro clique ou tecla.
+  const [liberado, setLiberado] = useState(false);
   const sons = useRef<Partial<Record<Efeito, Howl>>>({});
   const musica = useRef<Howl | null>(null);
 
   useEffect(() => {
-    sessionStorage.setItem(CHAVE_SESSAO, String(mudo));
+    sessionStorage.setItem(CHAVE_MUDO, String(mudo));
   }, [mudo]);
 
-  // Música só é criada na primeira vez que o som é ligado (arquivo de ~2,2 MB),
-  // e o mudo pausa em vez de parar para retomar do mesmo ponto.
+  // Carrega tudo ao abrir: criar o Howl só no primeiro tocar() atrasava cada
+  // efeito na primeira vez (download + decodificação na hora).
   useEffect(() => {
+    for (const efeito of EFEITOS) {
+      sons.current[efeito] = new Howl({ src: [caminhoSom(`${efeito}.ogg`)], volume: VOLUME_EFEITOS });
+    }
+    musica.current = new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true });
+    return () => {
+      for (const som of Object.values(sons.current)) som?.unload();
+      musica.current?.unload();
+    };
+  }, []);
+
+  useEffect(() => {
+    function liberar() {
+      setLiberado(true);
+    }
+    // click (e não pointerdown): é no click que o Howler destrava o áudio.
+    window.addEventListener('click', liberar, { once: true });
+    window.addEventListener('keydown', liberar, { once: true });
+    return () => {
+      window.removeEventListener('click', liberar);
+      window.removeEventListener('keydown', liberar);
+    };
+  }, []);
+
+  // O mudo pausa em vez de parar, para a música retomar do mesmo ponto.
+  useEffect(() => {
+    const faixa = musica.current;
+    if (!faixa) return;
     if (mudo) {
-      musica.current?.pause();
+      faixa.pause();
       return;
     }
-    if (!musica.current) {
-      musica.current = new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true });
-    }
-    if (!musica.current.playing()) musica.current.play();
-  }, [mudo]);
-
-  useEffect(() => () => void musica.current?.unload(), []);
+    if (!liberado || faixa.playing()) return;
+    // Se o navegador ainda recusar, tenta de novo quando o Howler destravar.
+    faixa.once('playerror', () => faixa.once('unlock', () => faixa.play()));
+    faixa.play();
+  }, [mudo, liberado]);
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
@@ -69,13 +99,7 @@ export function useSom() {
 
   const tocar = useCallback(
     (efeito: Efeito) => {
-      if (mudo) return;
-      let som = sons.current[efeito];
-      if (!som) {
-        som = new Howl({ src: [caminhoSom(`${efeito}.ogg`)], volume: VOLUME_EFEITOS });
-        sons.current[efeito] = som;
-      }
-      som.play();
+      if (!mudo) sons.current[efeito]?.play();
     },
     [mudo],
   );

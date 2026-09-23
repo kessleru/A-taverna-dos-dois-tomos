@@ -52,7 +52,7 @@ Baixados em `public/assets/icones/`, com o quadrado preto de fundo removido e `f
 | Página virando, moedas, metal, correntes quebrando | `pagina.ogg`, `moedas.ogg`, `correntes.ogg` | [Kenney RPG Audio](https://kenney.nl/assets/rpg-audio) (CC0) |
 | Tambor antes da revelação, fanfarra da Forja, selo batendo | `tambor.ogg`, `fanfarra.ogg`, `selo.ogg` | Kenney RPG Audio ou [Freesound](https://freesound.org) filtrando por CC0 |
 | Lareira e murmúrio de taverna (ambiente, opcional) | `ambiente-taverna.ogg` | Freesound (CC0) |
-| Música de fundo (opcional, desligada por padrão) | `musica-taverna.ogg` | [Kevin MacLeod / incompetech](https://incompetech.com/music/royalty-free/music.html), categoria medieval (CC BY 4.0, exige crédito). Ex.: "Village Consort", "Angevin B" |
+| Música de fundo (ligada por padrão, entra no primeiro clique) | `musica-taverna.ogg` | [Kevin MacLeod / incompetech](https://incompetech.com/music/royalty-free/music.html), categoria medieval (CC BY 4.0, exige crédito). Ex.: "Village Consort", "Angevin B" |
 
 - **Já em `public/sfx/`:** todos os `.ogg` da tabela, exceto `tambor.ogg`, `chama.ogg` (descarte queimando, [06](06-animacoes.md)) e `ambiente-taverna.ogg`. Origem de cada um em `public/sfx/CREDITOS.md`.
 - **Música:** a equipe escolheu "Playing with a Full Deck" (trilha do Hearthstone) em `public/sfx/musica-fundo.mp3`, no lugar da sugestão abaixo. É música comercial sem licença: ver o aviso em `public/sfx/CREDITOS.md`.
