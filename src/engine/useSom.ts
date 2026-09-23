@@ -34,7 +34,7 @@ export function useSom() {
     sessionStorage.setItem(CHAVE_SESSAO, String(mudo));
   }, [mudo]);
 
-  // Música só é criada na primeira vez que o som é ligado (arquivo de ~2,4 MB),
+  // Música só é criada na primeira vez que o som é ligado (arquivo de ~2,2 MB),
   // e o mudo pausa em vez de parar para retomar do mesmo ponto.
   useEffect(() => {
     if (mudo) {

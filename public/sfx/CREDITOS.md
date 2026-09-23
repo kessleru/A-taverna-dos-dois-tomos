@@ -19,12 +19,16 @@ aqui fica só o que o jogo toca. Nomes exatos em `src/engine/useSom.ts`.
 
 ## Música
 
-`musica-fundo.mp3`: "Fantasy RPG Exploration v2", de rubyzephyr (arquivo
-original `rubyzephyr-fantasy-rpg-exploration-v2-461303.mp3`, reduzido de 256 para
-96 kbps: 6,3 MB para 2,4 MB; o original fica em `assets-originais/sfx/Music/`).
+`musica-fundo.mp3`: "Playing with a Full Deck", de Peter McConnell, da
+trilha sonora de *Hearthstone: Heroes of Warcraft* (© 2013, 2014 Azeroth
+Music / Blizzard Entertainment). Reduzida de 320 para 96 kbps (7,3 MB para
+2,2 MB); o original fica em `assets-originais/sfx/Music/`.
 
-**PREENCHER:** site de origem e licença (o padrão do nome do arquivo é o do
-Pixabay; se for de lá, é a Pixabay Content License, sem crédito obrigatório).
+**Atenção:** música comercial protegida por direitos autorais, sem licença de
+uso. Está aqui só para a apresentação em sala, trabalho acadêmico sem fins
+lucrativos. Se houver pedido de remoção, voltar para uma faixa livre (a
+anterior, "Fantasy RPG Exploration v2" de rubyzephyr, está no histórico do
+git, commit 8c6a90b).
 
 Toca em loop a 0,12 de volume quando o som está ligado (tecla `M` ou botão do
 HUD); o jogo começa mudo.
