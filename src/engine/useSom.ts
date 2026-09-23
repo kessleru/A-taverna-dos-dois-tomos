@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Howl } from 'howler';
 import { CHAVE_MUDO, lerMudo } from './preferenciaSom';
 import { FALAS, TODAS_AS_FALAS, escolherFala, type Momento } from './falas';
+import type { Tarefa } from './carregamento';
 
 // Efeitos do Kenney Audio (CC0) e música de fundo em public/sfx/ (origem de
 // cada arquivo em public/sfx/CREDITOS.md). Se algum arquivo faltar, o Howler
@@ -38,6 +39,16 @@ export type Efeito = (typeof EFEITOS)[number];
 
 // Prefixa com o base path do build, como em artes.ts: em GitHub Pages o site
 // fica sob /empreendedorismo/ e um caminho absoluto /sfx/ daria 404.
+// Promessa que resolve quando o Howl termina de baixar (ou falha), para a tela
+// de carregamento esperar por ele.
+function carregado(som: Howl): Promise<void> {
+  if (som.state() === 'loaded') return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    som.once('load', () => resolve());
+    som.once('loaderror', () => reject(new Error('som não carregou')));
+  });
+}
+
 function caminhoSom(arquivo: string): string {
   return `${import.meta.env.BASE_URL}sfx/${arquivo}`;
 }
@@ -150,5 +161,15 @@ export function useSom() {
     [mudo],
   );
 
-  return { mudo, alternarMudo: () => setMudo((m) => !m), tocar, falar };
+  // Uma tarefa por arquivo de som, para a tela de carregamento. Lê os Howls na
+  // hora da chamada: o App chama depois que o efeito de pré-carga já rodou.
+  const tarefasDeCarga = useCallback(
+    (): Tarefa[] =>
+      [...Object.values(sons.current), ...Object.values(falas.current), ...fundo.current].flatMap((som) =>
+        som ? [() => carregado(som)] : [],
+      ),
+    [],
+  );
+
+  return { mudo, alternarMudo: () => setMudo((m) => !m), tocar, falar, tarefasDeCarga };
 }
