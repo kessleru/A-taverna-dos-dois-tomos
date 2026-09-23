@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { arteLendaria } from '../../data/artes';
 import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
+import { Icone } from '../ui/Icone';
 
 export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
   return (
@@ -23,8 +24,16 @@ export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
         corPrincipal="var(--ouro)"
         tamanho="grande"
         frente={
-          <MolduraCarta tipo="lendaria" nome={nome} orbe="🏆" arte={arteLendaria} corPrincipal="var(--ouro)">
-            <p className="font-bold text-ouro">Os aprendizados dos dois artigos, juntos.</p>
+          <MolduraCarta
+            nome={nome}
+            arte={arteLendaria}
+            corPrincipal="var(--ouro)"
+            gemaTopo={<Icone nome="open-book" className="h-[62%] w-[62%]" />}
+            gemaEsquerda="✦"
+            gemaDireita="✦"
+            subtitulo="Lendária"
+          >
+            <p className="font-bold">Os aprendizados dos dois artigos, juntos.</p>
           </MolduraCarta>
         }
       />

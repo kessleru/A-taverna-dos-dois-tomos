@@ -5,6 +5,14 @@ import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
 import { Icone } from '../ui/Icone';
 
+// Sigilo de cada lógica (01-tema-e-hud.md §2): a cor nunca aparece sozinha.
+const SIGILOS: Record<Escolha | 'bricolagem', string> = {
+  planejar: 'scroll-quill',
+  adaptar: 'compass',
+  combinar: 'crossed-swords',
+  bricolagem: 'hammer-drop',
+};
+
 const CORES: Record<Escolha | 'bricolagem', string> = {
   planejar: 'var(--planejar)',
   adaptar: 'var(--adaptar)',
@@ -28,7 +36,8 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
   const cor = CORES[id];
   const arteOriginal = artesDecisoes[id];
   const arte: ArteCarta = trancada ? { ...arteOriginal, cores: ['#555', '#222'] } : arteOriginal;
-  const orbe = id === 'bricolagem' ? '🔧' : orbeDecisao[id];
+  // Gema de cima: a tecla da votação (a Bricolagem não é votada, mostra a ferramenta).
+  const tecla = id === 'bricolagem' ? <Icone nome="toolbox" className="h-[62%] w-[62%]" /> : orbeDecisao[id];
 
   const tamanhoEfetivo = emDestaque ? 'grande' : tamanho;
 
@@ -51,9 +60,16 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
         frente={
           <div className="relative">
             <div className={trancada ? 'grayscale' : undefined}>
-              <MolduraCarta tipo="decisao" nome={nome} orbe={orbe} arte={arte} corPrincipal={cor} tamanho={tamanhoEfetivo}>
-                <p className="text-[10px] text-tinta/60">{teoria}</p>
-                <p className="mt-1 font-medium">{resumo}</p>
+              <MolduraCarta
+                nome={nome}
+                arte={arte}
+                corPrincipal={cor}
+                tamanho={tamanhoEfetivo}
+                gemaTopo={tecla}
+                gemaEsquerda={<Icone nome={SIGILOS[id]} className="h-[64%] w-[64%]" />}
+                subtitulo={teoria}
+              >
+                <p className="font-medium">{resumo}</p>
               </MolduraCarta>
             </div>
             {/* Trancada: correntes de ferro cruzando a carta e cadeado dourado no

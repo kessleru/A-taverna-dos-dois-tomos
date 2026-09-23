@@ -12,6 +12,9 @@ const FIXAS = [
   'cenario/quadro-tabuas.webp',
   'cartas/verso.webp',
   'personagens/taverneiro.webp',
+  'molduras/carta-bronze.webp',
+  'molduras/carta-prata.webp',
+  'molduras/carta-ouro.webp',
 ].map((arquivo) => base + arquivo);
 
 const DAS_CARTAS = [
