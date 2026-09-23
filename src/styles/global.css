@@ -10,6 +10,7 @@
 @import './cartas.css';
 @import './taverna.css';
 @import './grimorio.css';
+@import './quadro.css';
 
 @tailwind base;
 @tailwind components;
