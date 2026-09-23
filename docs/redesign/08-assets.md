@@ -94,3 +94,17 @@ Prompts em inglês para gerador de efeitos sonoros (o mesmo usado no público de
 | `publico-lamenta` | 1,5–2 s | Falha no dado e evento desfavorável | `Small tavern crowd groaning in disappointment, a few "ohh" sounds, short` | P2 |
 
 As cartas, molduras, orbes, d20, correntes e selos continuam em CSS/SVG (seção 2), e os ícones que ainda faltarem eu busco no game-icons.net.
+
+## 7. Pacotes recebidos (`assets-originais/texturas-e-cartas/`)
+
+A equipe trouxe pacotes prontos; nenhum veio com arquivo de licença (**PREENCHER** a origem de cada um). O que foi aproveitado, já em WebP:
+
+| Arquivo em `public/assets/` | Origem | Uso previsto |
+|---|---|---|
+| `molduras/carta-bronze.webp`, `carta-prata.webp`, `carta-ouro.webp` | Fantasy card frames (deckbuilder UI sampler), 1024×1440 | Molduras das cartas na iteração 2: comum, rara e lendária. Já são 5:7, com janela de arte, fita do nome, área de texto em pergaminho e gemas nos cantos |
+| `molduras/carta-acao-bronze.webp` | idem | Cartas do Destino (eventos) ou de Desafio |
+| `molduras/mascara-arte-carta.webp`, `mascara-arte-acao.webp` | idem | Recorte da arte. Janela da carta: 20,0% a 80,1% na largura e 13,8% a 54,7% na altura; da carta de ação: 30,4% a 69,9% e 20,0% a 48,5% |
+| `ui/cristal.webp`, `ui/orbe.webp` | idem (UI Elements) | Base dos orbes do HUD e do custo/risco da carta |
+| `texturas/holo.webp`, `holo-marmore.webp`, `estrelas.webp` | Holographic card VFX | Brilho holográfico das cartas raras e lendárias (01 §8.3) |
+
+**Não aproveitados agora:** as molduras "batareya" (pixel art de 64×96, ficariam serrilhadas ampliadas) e as texturas 3D de madeira, metal e pedra (`Magical Wood Planks`, `Metal Plates`, `Metal`, `Stone Wall`, em BMP com mapas de relevo). Continuam em `assets-originais` se algum fundo pedir.

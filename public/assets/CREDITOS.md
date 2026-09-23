@@ -50,6 +50,15 @@ e o prompt do verso). Os originais ficam em `assets-originais/`.
 
 **PREENCHER:** ferramenta usada nas texturas e no favicon.
 
+## Molduras, UI e texturas holográficas
+
+Pacotes trazidos pela equipe (`assets-originais/texturas-e-cartas/`), só
+convertidos para WebP: `molduras/` e `ui/` do "free fantasy card frames
+deckbuilder UI sampler"; `texturas/holo*` e `texturas/estrelas.webp` do
+"holographic card VFX". Detalhes em `docs/redesign/08-assets.md` §7.
+
+**PREENCHER:** autor, site e licença de cada pacote (vieram sem arquivo de licença).
+
 ## Ícones (`icones/`)
 
 De [game-icons.net](https://game-icons.net), licença
