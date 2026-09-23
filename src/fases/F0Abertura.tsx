@@ -23,6 +23,7 @@ export function F0Abertura({ avancar, som }: F0AberturaProps) {
 
   function entrar() {
     som.tocar('clique');
+    som.falar('boas-vindas');
     avancar();
   }
 

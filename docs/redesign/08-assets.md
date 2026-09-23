@@ -58,7 +58,8 @@ Baixados em `public/assets/icones/`, com o quadrado preto de fundo removido e `f
 - **Música:** a equipe escolheu "Playing with a Full Deck" (trilha do Hearthstone) em `public/sfx/musica-fundo.mp3`, no lugar da sugestão abaixo. É música comercial sem licença: ver o aviso em `public/sfx/CREDITOS.md`.
 - Nomes exatos em `src/engine/useSom.ts`. O hook atual já ignora arquivos que faltam, então dá para adicionar aos poucos.
 - Volume: efeitos 0,4; ambiente 0,08; música 0,12.
-- **Recebidos, a integrar:** 18 falas do Taverneiro (`assets-originais/sons/falas/`, 2 a 6 s cada) e 3 trechos de 15 s de público de taverna (`assets-originais/sons/som de publico/`).
+- **Falas do Taverneiro:** as 18 falas estão em `public/sfx/falas/` e tocam nos momentos definidos em `src/engine/falas.ts` (entrada, briefing, cada passo da rodada, eventos, resultado e créditos).
+- **A integrar:** 3 trechos de 15 s de público de taverna (`assets-originais/sons/som de publico/`).
 
 ## 5. Créditos
 

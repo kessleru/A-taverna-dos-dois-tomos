@@ -7,10 +7,15 @@ import { ControlesFase } from '../components/ui/ControlesFase';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
 import type { FaseProps } from '../types';
+import type { useSom } from '../engine/useSom';
 
 const DURACAO_ORBITA_MS = 2600;
 
-export function F5Fusao(props: FaseProps) {
+interface F5FusaoProps extends FaseProps {
+  som: ReturnType<typeof useSom>;
+}
+
+export function F5Fusao({ som, ...props }: F5FusaoProps) {
   const [orbitando, setOrbitando] = useState(true);
   const [flash, setFlash] = useState(false);
   const [aprendizadoAtual, setAprendizadoAtual] = useState(0);
@@ -34,6 +39,7 @@ export function F5Fusao(props: FaseProps) {
       setAprendizadoAtual((i) => i + 1);
     } else if (!creditos) {
       setCreditos(true);
+      som.falar('despedida');
       confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, colors: ['#F9C80E', '#FFF8E7', '#2EC4B6', '#F86624'] });
     }
   }

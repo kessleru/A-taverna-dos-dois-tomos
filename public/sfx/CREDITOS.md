@@ -44,6 +44,16 @@ Feitos num gerador de efeitos sonoros com os prompts de
 
 **PREENCHER:** nome do gerador e licença.
 
+## Falas do Taverneiro
+
+18 falas gravadas/geradas pela equipe (originais em
+`assets-originais/sons/falas/`, com o texto no nome do arquivo), em
+`falas/*.mp3` mono a 64 kbps. Qual fala toca em cada momento está em
+`src/engine/falas.ts`; nos momentos com mais de uma, o jogo sorteia sem
+repetir a última. A música abaixa enquanto ele fala.
+
+**PREENCHER:** quem gravou ou qual ferramenta de voz foi usada.
+
 ## Ambiente
 
 `ambiente-taverna.mp3`: lareira crepitando, arquivo original

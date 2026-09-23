@@ -36,6 +36,22 @@ export default function App() {
   const som = useSom();
   const faseProps = { avancar, voltar, primeiraFase, ultimaFase };
 
+  // Falas de entrada de fase que não dependem do que acontece dentro dela.
+  const falarRef = useRef(som.falar);
+  falarRef.current = som.falar;
+  const faseAnterior = useRef(fase);
+  useEffect(() => {
+    const anterior = faseAnterior.current;
+    faseAnterior.current = fase;
+    if (anterior === fase) return;
+    // Só ao chegar vindo da abertura; voltar da rodada não repete a fala.
+    if (fase === 'briefing' && anterior === 'abertura') {
+      const id = window.setTimeout(() => falarRef.current('historia'), 2600);
+      return () => window.clearTimeout(id);
+    }
+    if (fase === 'resultado') falarRef.current('resultado');
+  }, [fase]);
+
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
       if (evento.shiftKey && evento.key.toLowerCase() === 'r') rodada.reiniciar();
@@ -63,7 +79,7 @@ export default function App() {
                 {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
                 {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
                 {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
-                {fase === 'fusao' && <F5Fusao {...faseProps} />}
+                {fase === 'fusao' && <F5Fusao {...faseProps} som={som} />}
               </main>
             </TransicaoPagina>
           </div>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Howl } from 'howler';
 import { CHAVE_MUDO, lerMudo } from './preferenciaSom';
+import { FALAS, TODAS_AS_FALAS, escolherFala, type Momento } from './falas';
 
 // Efeitos do Kenney Audio (CC0) e música de fundo em public/sfx/ (origem de
 // cada arquivo em public/sfx/CREDITOS.md). Se algum arquivo faltar, o Howler
@@ -44,6 +45,9 @@ function caminhoSom(arquivo: string): string {
 const VOLUME_EFEITOS = 0.4;
 const VOLUME_MUSICA = 0.12;
 const VOLUME_AMBIENTE = 0.08;
+const VOLUME_FALA = 0.9;
+// A música abaixa enquanto o Taverneiro fala, para a voz ficar clara.
+const VOLUME_MUSICA_SOB_FALA = 0.04;
 
 export function useSom() {
   const [mudo, setMudo] = useState(() => lerMudo(sessionStorage.getItem(CHAVE_MUDO)));
@@ -52,6 +56,8 @@ export function useSom() {
   const sons = useRef<Partial<Record<Efeito, Howl>>>({});
   // Música e lareira: tocam em loop por baixo de tudo.
   const fundo = useRef<Howl[]>([]);
+  const falas = useRef<Record<string, Howl>>({});
+  const falaAtual = useRef<{ id: string; som: Howl } | null>(null);
 
   useEffect(() => {
     sessionStorage.setItem(CHAVE_MUDO, String(mudo));
@@ -63,6 +69,9 @@ export function useSom() {
     for (const efeito of EFEITOS) {
       sons.current[efeito] = new Howl({ src: [caminhoSom(`${efeito}.ogg`)], volume: VOLUME_EFEITOS });
     }
+    for (const id of TODAS_AS_FALAS) {
+      falas.current[id] = new Howl({ src: [caminhoSom(`falas/${id}.mp3`)], volume: VOLUME_FALA });
+    }
     fundo.current = [
       new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true }),
       new Howl({ src: [caminhoSom('ambiente-taverna.mp3')], volume: VOLUME_AMBIENTE, loop: true, html5: true }),
@@ -70,6 +79,7 @@ export function useSom() {
     return () => {
       for (const som of Object.values(sons.current)) som?.unload();
       for (const faixa of fundo.current) faixa.unload();
+      for (const fala of Object.values(falas.current)) fala.unload();
     };
   }, []);
 
@@ -88,6 +98,11 @@ export function useSom() {
 
   // O mudo pausa em vez de parar, para música e lareira retomarem do mesmo ponto.
   useEffect(() => {
+    if (mudo && falaAtual.current) {
+      falaAtual.current.som.stop();
+      falaAtual.current = null;
+      fundo.current[0]?.volume(VOLUME_MUSICA);
+    }
     for (const faixa of fundo.current) {
       if (mudo) {
         faixa.pause();
@@ -115,5 +130,25 @@ export function useSom() {
     [mudo],
   );
 
-  return { mudo, alternarMudo: () => setMudo((m) => !m), tocar };
+  // Uma fala do Taverneiro para o momento (sorteada no grupo, sem repetir a
+  // última). Uma fala nova interrompe a anterior.
+  const falar = useCallback(
+    (momento: Momento) => {
+      if (mudo) return;
+      const id = escolherFala(FALAS[momento], Math.random(), falaAtual.current?.id);
+      const som = id ? falas.current[id] : undefined;
+      if (!id || !som) return;
+      falaAtual.current?.som.stop();
+      falaAtual.current = { id, som };
+      const musica = fundo.current[0];
+      musica?.volume(VOLUME_MUSICA_SOB_FALA);
+      som.once('end', () => {
+        if (falaAtual.current?.som === som) musica?.fade(VOLUME_MUSICA_SOB_FALA, VOLUME_MUSICA, 600);
+      });
+      som.play();
+    },
+    [mudo],
+  );
+
+  return { mudo, alternarMudo: () => setMudo((m) => !m), tocar, falar };
 }

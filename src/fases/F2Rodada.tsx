@@ -36,6 +36,19 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
   useEffect(() => {
     if (estado.passo === 'evento') som.tocar('evento');
     if (estado.passo === 'desbloqueio') som.tocar(combinarDesbloqueado(estado.escolhas) ? 'fanfarra' : 'cadeado');
+
+    // Falas do Taverneiro (src/engine/falas.ts) em cada passo da etapa.
+    if (estado.passo === 'situacao') som.falar(estado.etapa === 0 ? 'inicio-rodada' : 'desafio');
+    if (estado.passo === 'votacao') som.falar('votacao');
+    if (estado.passo === 'dado') som.falar('dado');
+    if (estado.passo === 'consequencia' && estado.escolhas[estado.etapa] === etapas[estado.etapa].ideal) som.falar('acerto');
+    if (estado.passo === 'evento') {
+      const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa);
+      const sucesso = evento?.condicao(estado.escolhas, estado.ind);
+      // Espera a carta do destino virar antes de comentar.
+      const id = window.setTimeout(() => som.falar(sucesso ? 'evento-bom' : 'evento-ruim'), 1200);
+      return () => window.clearTimeout(id);
+    }
     // som.tocar é intencionalmente omitido: o objeto retornado por useSom
     // muda de identidade a cada render e recolocaria esse efeito em loop.
   }, [estado.passo]);
