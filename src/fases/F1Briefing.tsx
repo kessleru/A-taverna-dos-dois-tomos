@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { briefing } from '../data/rodada';
 import { navegarFolha, type Direcao } from '../engine/folhas';
 import { Botao } from '../components/ui/Botao';
 import { QuadroMadeira } from '../components/ui/QuadroMadeira';
-import { Pergaminho } from '../components/ui/Pergaminho';
 import { FolhaMissao } from './briefing/FolhaMissao';
 import { FolhaTomos } from './briefing/FolhaTomos';
 import { FolhaDecisoes } from './briefing/FolhaDecisoes';
+import { FolhaRegras } from './briefing/FolhaRegras';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -70,7 +69,7 @@ export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
             {folha === 0 && <FolhaMissao />}
             {folha === 1 && <FolhaTomos som={som} />}
             {folha === 2 && <FolhaDecisoes />}
-            {folha === 3 && <FolhaRegrasProvisoria />}
+            {folha === 3 && <FolhaRegras />}
           </motion.div>
         </AnimatePresence>
       </QuadroMadeira>
@@ -90,23 +89,5 @@ export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
         <Botao onClick={() => ir(1)}>Continuar</Botao>
       </nav>
     </section>
-  );
-}
-
-// ── Folha 4: conteúdo antigo dentro do quadro até ser refeita
-// (blocos seguintes do 10-briefing-quadro.md). ────────────────────────────
-
-function FolhaRegrasProvisoria() {
-  return (
-    <div className="flex h-full items-center p-16">
-      <Pergaminho variante="aviso" className="w-[1150px]">
-        <h2 className="font-titulo text-[56px] font-bold">{briefing.regras.titulo}</h2>
-        <ol className="mt-6 list-decimal space-y-3 pl-10 font-texto text-[32px]">
-          {briefing.regras.itens.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ol>
-      </Pergaminho>
-    </div>
   );
 }

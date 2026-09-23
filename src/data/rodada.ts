@@ -54,15 +54,20 @@ export const briefing = {
       { id: 'combinar', icone: '🔒', nome: 'Combinar', teoria: 'Carta secreta', resumo: 'Trancada. Descubram como forjá-la durante o jogo.' },
     ],
   },
+  // Folha 4: cada regra com seus ícones (src/assets/icones/).
   regras: {
     titulo: 'Como funciona',
     itens: [
-      '4 decisões, da fundação até a empresa crescer.',
-      'Em cada uma, a turma discute rapidinho e vota levantando a mão.',
-      'Três barras mostram a saúde da startup: 💰 Caixa, 👥 Clientes e 🔥 Moral.',
-      'Depois de cada decisão, rola o Dado da Incerteza e podem surgir eventos.',
-      'No final, vocês descobrem o perfil empreendedor da turma.',
+      { texto: '4 decisões, da fundação até a empresa crescer.', icones: ['scroll-quill'] },
+      { texto: 'Em cada uma, a turma discute rapidinho e vota levantando a mão.', icones: ['flying-flag'] },
+      { texto: 'Três marcadores mostram a saúde da startup: Caixa, Clientes e Moral.', icones: ['shiny-purse', 'flying-flag', 'flamer'] },
+      { texto: 'Depois de cada decisão, rola o Dado da Incerteza e podem surgir eventos.', icones: ['dice-twenty-faces-one'] },
+      { texto: 'No final, vocês descobrem o perfil empreendedor da turma.', icones: ['wax-seal'] },
     ],
+    taverneiro: {
+      fala: 'Puxem uma cadeira, fundadoras!',
+      legenda: 'O Taverneiro, seu anfitrião',
+    },
   },
 };
 
