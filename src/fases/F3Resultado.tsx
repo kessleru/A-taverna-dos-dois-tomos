@@ -30,7 +30,7 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
   }, [perfilId]);
 
   return (
-    <section className="mx-auto flex h-full max-w-3xl flex-col items-center gap-8 overflow-y-auto px-6 py-10">
+    <section className="mx-auto flex h-full max-w-[1400px] flex-col items-center gap-8 overflow-y-auto px-6 py-10">
       <Titulo className="text-4xl">Resultado</Titulo>
 
       <motion.div

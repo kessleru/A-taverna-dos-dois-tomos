@@ -54,7 +54,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
   const opcaoAtual = escolhaAtual ? (escolhaAtual === 'combinar' ? etapa.combinar! : etapa[escolhaAtual]) : undefined;
 
   return (
-    <section className="mx-auto flex h-full max-w-3xl flex-col gap-6 overflow-y-auto px-6 py-10">
+    <section className="mx-auto flex h-full max-w-[1400px] flex-col gap-6 overflow-y-auto px-6 py-10">
       <div className="flex items-center justify-between">
         <TrilhaEtapas etapaAtual={estado.etapa} escolhas={estado.escolhas} />
         <div className="flex gap-3">

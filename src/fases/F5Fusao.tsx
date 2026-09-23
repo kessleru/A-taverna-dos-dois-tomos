@@ -39,7 +39,7 @@ export function F5Fusao(props: FaseProps) {
   }
 
   return (
-    <section className="mx-auto flex h-full max-w-3xl flex-col items-center gap-6 overflow-y-auto px-6 py-10">
+    <section className="mx-auto flex h-full max-w-[1400px] flex-col items-center gap-6 overflow-y-auto px-6 py-10">
       {orbitando ? (
         <div className="relative flex h-64 w-64 shrink-0 items-center justify-center">
           <motion.div

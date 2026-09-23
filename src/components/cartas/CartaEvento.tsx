@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { arteEventos } from '../../data/artes';
 import { CenaArte } from './CenaArte';
+import { ESCALA_CARTA } from './escala';
 
 interface CartaEventoProps {
   depoisDaEtapa: number;
@@ -21,7 +22,7 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
       animate={{ rotate: 0, scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 140, damping: 16 }}
       className="flex w-full max-w-xl overflow-hidden rounded-carta border-2"
-      style={{ borderColor: cor, boxShadow: 'var(--sombra-carta)', background: 'linear-gradient(120deg, #17123add, #241e4edd)' }}
+      style={{ zoom: ESCALA_CARTA, borderColor: cor, boxShadow: 'var(--sombra-carta)', background: 'linear-gradient(120deg, #17123add, #241e4edd)' }}
     >
       <div
         className="relative h-28 w-28 shrink-0"

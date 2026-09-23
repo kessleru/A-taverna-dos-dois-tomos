@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { tipos, type ArteCarta, type TipoCarta } from '../../data/artes';
 import { CenaArte } from './CenaArte';
+import { ESCALA_CARTA } from './escala';
 
 const COR_GEMA: Record<ArteCarta['raridade'], string> = {
   comum: '#C7CCD6',
@@ -37,6 +38,7 @@ export function MolduraCarta({ tipo, nome, orbe, arte, corPrincipal, tamanho = '
       style={{
         width: tamanho === 'grande' ? 260 : 170,
         aspectRatio: '5 / 7',
+        zoom: ESCALA_CARTA,
         background: `linear-gradient(160deg, ${corPrincipal}dd, #171225)`,
         boxShadow: `var(--sombra-carta), 0 0 32px -8px ${corPrincipal}88`,
         border: `2px solid ${corPrincipal}`,

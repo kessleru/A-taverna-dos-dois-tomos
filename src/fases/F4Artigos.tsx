@@ -20,7 +20,7 @@ export function F4Artigos({ som, ...props }: F4ArtigosProps) {
   const ambasReveladas = conteudo.artigos.every((a) => viradas[a.id]);
 
   return (
-    <section className="mx-auto flex h-full max-w-3xl flex-col gap-6 overflow-y-auto px-6 py-10">
+    <section className="mx-auto flex h-full max-w-[1400px] flex-col gap-6 overflow-y-auto px-6 py-10">
       <Titulo className="text-4xl">Os Artigos Lado a Lado</Titulo>
       <p className="text-sm text-pergaminho/60">Clique em cada carta para revelar.</p>
 
