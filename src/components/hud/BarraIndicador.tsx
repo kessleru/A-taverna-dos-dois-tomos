@@ -34,7 +34,7 @@ export function BarraIndicador({ icone, rotulo, valor, cor }: BarraIndicadorProp
 
   return (
     <div
-      className="relative flex items-center gap-2 rounded-full border border-papel/15 bg-noite-profunda/60 py-1 pl-1 pr-3"
+      className="relative flex items-center gap-2 rounded-full border border-pergaminho/15 bg-madeira-profunda/60 py-1 pl-1 pr-3"
       style={{ height: 28 }}
     >
       <span
@@ -44,7 +44,7 @@ export function BarraIndicador({ icone, rotulo, valor, cor }: BarraIndicadorProp
       >
         {icone}
       </span>
-      <div className="relative h-1.5 w-16 overflow-hidden rounded-full bg-papel/10">
+      <div className="relative h-1.5 w-16 overflow-hidden rounded-full bg-pergaminho/10">
         <motion.div
           className={`h-full rounded-full ${emAlerta ? 'animate-pulse' : ''}`}
           animate={{ width: `${Math.max(0, Math.min(100, percentual))}%` }}
@@ -52,7 +52,7 @@ export function BarraIndicador({ icone, rotulo, valor, cor }: BarraIndicadorProp
           style={{ backgroundColor: emAlerta ? 'var(--dano)' : cor }}
         />
       </div>
-      <span className="font-titulo text-xs tabular-nums text-papel/90">{valor}</span>
+      <span className="font-titulo text-xs tabular-nums text-pergaminho/90">{valor}</span>
 
       <AnimatePresence>
         {flutuantes.map((f) => (

@@ -36,6 +36,19 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
   useEffect(() => {
     if (estado.passo === 'evento') som.tocar('evento');
     if (estado.passo === 'desbloqueio') som.tocar(combinarDesbloqueado(estado.escolhas) ? 'fanfarra' : 'cadeado');
+
+    // Falas do Taverneiro (src/engine/falas.ts) em cada passo da etapa.
+    if (estado.passo === 'situacao') som.falar(estado.etapa === 0 ? 'inicio-rodada' : 'desafio');
+    if (estado.passo === 'votacao') som.falar('votacao');
+    if (estado.passo === 'dado') som.falar('dado');
+    if (estado.passo === 'consequencia' && estado.escolhas[estado.etapa] === etapas[estado.etapa].ideal) som.falar('acerto');
+    if (estado.passo === 'evento') {
+      const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa);
+      const sucesso = evento?.condicao(estado.escolhas, estado.ind);
+      // Espera a carta do destino virar antes de comentar.
+      const id = window.setTimeout(() => som.falar(sucesso ? 'evento-bom' : 'evento-ruim'), 1200);
+      return () => window.clearTimeout(id);
+    }
     // som.tocar é intencionalmente omitido: o objeto retornado por useSom
     // muda de identidade a cada render e recolocaria esse efeito em loop.
   }, [estado.passo]);
@@ -43,7 +56,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
   if (estado.terminou) {
     return (
       <section className="mx-auto flex h-full max-w-3xl flex-col items-center justify-center gap-6 px-6 text-center">
-        <h2 className="font-titulo text-3xl text-moeda">Rodada concluída!</h2>
+        <h2 className="font-titulo text-3xl text-ouro">Rodada concluída!</h2>
         <Botao onClick={avancarFase}>Ver o resultado →</Botao>
       </section>
     );
@@ -54,11 +67,11 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
   const opcaoAtual = escolhaAtual ? (escolhaAtual === 'combinar' ? etapa.combinar! : etapa[escolhaAtual]) : undefined;
 
   return (
-    <section className="mx-auto flex h-full max-w-3xl flex-col gap-6 overflow-y-auto px-6 py-10">
+    <section className="mx-auto flex h-full max-w-[1400px] flex-col gap-6 overflow-y-auto px-6 py-10">
       <div className="flex items-center justify-between">
         <TrilhaEtapas etapaAtual={estado.etapa} escolhas={estado.escolhas} />
         <div className="flex gap-3">
-          <BarraIndicador icone="💰" rotulo="Caixa" valor={estado.ind.caixa} cor="var(--moeda)" />
+          <BarraIndicador icone="💰" rotulo="Caixa" valor={estado.ind.caixa} cor="var(--ouro)" />
           <BarraIndicador icone="👥" rotulo="Clientes" valor={estado.ind.clientes} cor="var(--adaptar)" />
           <BarraIndicador icone="🔥" rotulo="Moral" valor={estado.ind.moral} cor="var(--dano)" />
         </div>
@@ -78,7 +91,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
 
       {estado.passo === 'artigos' && (
         <div className="flex flex-col gap-4">
-          <h2 className="font-titulo text-2xl text-moeda">O que dizem os artigos</h2>
+          <h2 className="font-titulo text-2xl text-ouro">O que dizem os artigos</h2>
           <div className="flex flex-col gap-4 sm:flex-row">
             <BalaoArtigo letra="A" texto={etapa.artigoA} />
             <BalaoArtigo letra="B" texto={etapa.artigoB} />
@@ -98,7 +111,7 @@ export function F2Rodada({ avancar: avancarFase, rodada, som }: F2RodadaProps) {
           return (
             <div className="flex flex-col items-center gap-4">
               <CartaEvento depoisDaEtapa={evento.depoisDaEtapa} nome={evento.nome} desfecho={desfecho} sucesso={sucesso} />
-              <p className="max-w-md text-center text-sm text-papel/60">{evento.conceito}</p>
+              <p className="max-w-md text-center text-sm text-pergaminho/60">{evento.conceito}</p>
               <Botao onClick={avancar}>Avançar →</Botao>
             </div>
           );

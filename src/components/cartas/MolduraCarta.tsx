@@ -1,84 +1,95 @@
-import type { ReactNode } from 'react';
-import { tipos, type ArteCarta, type TipoCarta } from '../../data/artes';
+import type { CSSProperties, ReactNode } from 'react';
+import type { ArteCarta } from '../../data/artes';
 import { CenaArte } from './CenaArte';
+import { ESCALA_CARTA } from './escala';
+import { SLOTS_MOLDURA, urlMoldura, type Slot } from './moldura';
 
-const COR_GEMA: Record<ArteCarta['raridade'], string> = {
-  comum: '#C7CCD6',
-  rara: '#5AC8FA',
-  lendaria: '#F9C80E',
-};
-
-const CLIP_JANELA: Record<'arco' | 'retangulo' | 'ponta', string> = {
-  arco: '12px 12px 8px 8px / 22px 22px 8px 8px',
-  retangulo: '10px',
-  ponta: '',
-};
+// Base fixa da carta; o tamanho "pequena" aplica zoom sobre ela, então o
+// desenho interno é um só (01-tema-e-hud.md §8).
+const LARGURA = 260;
+const ALTURA = 364;
+const ZOOM_TAMANHO = { grande: 1, pequena: 170 / 260 };
 
 interface MolduraCartaProps {
-  tipo: TipoCarta;
   nome: string;
-  orbe: ReactNode;
   arte: ArteCarta;
   corPrincipal: string;
   tamanho?: 'grande' | 'pequena';
+  gemaTopo: ReactNode;
+  gemaEsquerda?: ReactNode;
+  gemaDireita?: ReactNode;
+  subtitulo?: ReactNode;
   children: ReactNode;
 }
 
-export function MolduraCarta({ tipo, nome, orbe, arte, corPrincipal, tamanho = 'grande', children }: MolduraCartaProps) {
-  const info = tipos[tipo];
-  const janelaEstilo =
-    info.janela === 'ponta'
-      ? { clipPath: 'polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%)' }
-      : { borderRadius: CLIP_JANELA[info.janela] };
+function posicao(slot: Slot, sobra = 0): CSSProperties {
+  return {
+    position: 'absolute',
+    left: `${slot.esquerda - sobra}%`,
+    top: `${slot.topo - sobra}%`,
+    width: `${slot.largura + sobra * 2}%`,
+    height: `${slot.altura + sobra * 2}%`,
+  };
+}
 
+function Gema({ slot, children }: { slot: Slot; children?: ReactNode }) {
+  if (children === undefined || children === null) return null;
   return (
     <div
-      className="relative flex select-none flex-col overflow-visible rounded-carta p-3"
+      className="flex items-center justify-center font-titulo text-[20px] font-bold leading-none text-pergaminho [text-shadow:0_2px_3px_rgb(0_0_0/0.9),0_0_2px_rgb(0_0_0/0.9)]"
+      style={posicao(slot)}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function MolduraCarta({
+  nome,
+  arte,
+  corPrincipal,
+  tamanho = 'grande',
+  gemaTopo,
+  gemaEsquerda,
+  gemaDireita,
+  subtitulo,
+  children,
+}: MolduraCartaProps) {
+  return (
+    <div
+      className="relative select-none"
       style={{
-        width: tamanho === 'grande' ? 260 : 170,
-        aspectRatio: '5 / 7',
-        background: `linear-gradient(160deg, ${corPrincipal}dd, #171225)`,
-        boxShadow: `var(--sombra-carta), 0 0 32px -8px ${corPrincipal}88`,
-        border: `2px solid ${corPrincipal}`,
+        width: LARGURA,
+        height: ALTURA,
+        zoom: ESCALA_CARTA * ZOOM_TAMANHO[tamanho],
+        // O brilho na cor da carta repete a lógica que ela representa.
+        filter: `drop-shadow(0 10px 14px rgb(0 0 0 / 0.6)) drop-shadow(0 0 10px ${corPrincipal})`,
       }}
     >
-      {/* orbe */}
-      <div
-        className="absolute -left-2 -top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 border-papel/80 font-titulo text-sm text-papel"
-        style={{ background: corPrincipal, boxShadow: '0 4px 10px rgb(0 0 0 / 0.4)' }}
-      >
-        {orbe}
+      {/* A arte fica por baixo; a sobra de 1% some sob a borda da janela. */}
+      <div className="overflow-hidden rounded-[4px]" style={posicao(SLOTS_MOLDURA.arte, 1)}>
+        <CenaArte arte={arte} nome={nome} />
       </div>
+      <img
+        src={urlMoldura(arte.raridade)}
+        alt=""
+        draggable={false}
+        className="pointer-events-none absolute inset-0 h-full w-full"
+      />
 
-      {/* fita do nome */}
+      <Gema slot={SLOTS_MOLDURA.gemaTopo}>{gemaTopo}</Gema>
+      <Gema slot={SLOTS_MOLDURA.gemaEsquerda}>{gemaEsquerda}</Gema>
+      <Gema slot={SLOTS_MOLDURA.gemaDireita}>{gemaDireita}</Gema>
+
       <div
-        className="relative z-10 -mx-1 mb-2 rounded px-2 py-1 text-center font-titulo text-[11px] leading-tight text-papel"
-        style={{ background: `linear-gradient(90deg, transparent, ${corPrincipal}, transparent)` }}
+        className="flex items-center justify-center px-2 text-center font-titulo text-[13px] font-bold leading-none text-tinta [text-shadow:0_1px_0_rgb(255_240_210/0.6)]"
+        style={posicao(SLOTS_MOLDURA.nome)}
       >
         {nome}
       </div>
 
-      {/* janela de arte */}
-      <div
-        className="relative overflow-hidden border-2"
-        style={{ ...janelaEstilo, borderColor: '#F9C80E88', height: tamanho === 'grande' ? '46%' : '42%' }}
-      >
-        <CenaArte arte={arte} nome={nome} />
-      </div>
-
-      {/* placa de tipo */}
-      <div className="relative z-10 -mt-2 flex justify-center">
-        <span
-          className="flex items-center gap-1 rounded-full border border-papel/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-papel"
-          style={{ background: '#17123aee' }}
-        >
-          <span className="h-1.5 w-1.5 rounded-full" style={{ background: COR_GEMA[arte.raridade], boxShadow: arte.raridade === 'lendaria' ? '0 0 6px 2px #F9C80E' : undefined }} />
-          {info.nome}
-        </span>
-      </div>
-
-      {/* área de texto */}
-      <div className="relative mt-2 flex-1 overflow-hidden rounded-md bg-papel px-2 py-2 text-[11px] leading-snug text-tinta">
+      <div className="overflow-hidden px-1 text-[10.5px] leading-snug text-tinta" style={posicao(SLOTS_MOLDURA.texto)}>
+        {subtitulo && <p className="font-texto text-[9px] italic leading-tight text-tinta/75">{subtitulo}</p>}
         {children}
       </div>
     </div>

@@ -20,9 +20,9 @@ export function F4Artigos({ som, ...props }: F4ArtigosProps) {
   const ambasReveladas = conteudo.artigos.every((a) => viradas[a.id]);
 
   return (
-    <section className="mx-auto flex h-full max-w-3xl flex-col gap-6 overflow-y-auto px-6 py-10">
+    <section className="mx-auto flex h-full max-w-[1400px] flex-col gap-6 overflow-y-auto px-6 py-10">
       <Titulo className="text-4xl">Os Artigos Lado a Lado</Titulo>
-      <p className="text-sm text-papel/60">Clique em cada carta para revelar.</p>
+      <p className="text-sm text-pergaminho/60">Clique em cada carta para revelar.</p>
 
       <motion.div
         className="flex flex-wrap justify-center gap-6"
@@ -52,14 +52,14 @@ export function F4Artigos({ som, ...props }: F4ArtigosProps) {
             initial={{ scale: 2.5, opacity: 0, rotate: -8 }}
             animate={{ scale: 1, opacity: 1, rotate: -4 }}
             transition={{ type: 'spring', stiffness: 300, damping: 14 }}
-            className="mx-auto w-fit rounded-lg border-4 border-moeda px-6 py-2 text-center font-titulo text-xl uppercase tracking-widest text-moeda"
+            className="mx-auto w-fit rounded-lg border-4 border-ouro px-6 py-2 text-center font-titulo text-xl uppercase tracking-widest text-ouro"
           >
             Complementares
           </motion.div>
-          <p className="text-center text-papel/90">{conteudo.vereditoTexto}</p>
+          <p className="text-center text-pergaminho/90">{conteudo.vereditoTexto}</p>
 
-          <h2 className="font-titulo text-2xl text-moeda">Semelhanças</h2>
-          <ul className="space-y-1 pl-5 text-papel/90">
+          <h2 className="font-titulo text-2xl text-ouro">Semelhanças</h2>
+          <ul className="space-y-1 pl-5 text-pergaminho/90">
             {comparacao.semelhancas.map((item, indice) => (
               <motion.li
                 key={item}
@@ -67,29 +67,29 @@ export function F4Artigos({ som, ...props }: F4ArtigosProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: indice * 0.15 }}
-                style={{ color: 'var(--moeda)' }}
+                style={{ color: 'var(--ouro)' }}
               >
-                <span className="text-papel">{item}</span>
+                <span className="text-pergaminho">{item}</span>
               </motion.li>
             ))}
           </ul>
 
-          <h2 className="font-titulo text-2xl text-moeda">Diferenças</h2>
-          <table className="w-full text-left text-papel/90">
+          <h2 className="font-titulo text-2xl text-ouro">Diferenças</h2>
+          <table className="w-full text-left text-pergaminho/90">
             <tbody>
               {comparacao.diferencas.map((linha, indice) => (
                 <motion.tr
                   key={linha.tema}
-                  className="border-t border-papel/10"
+                  className="border-t border-pergaminho/10"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: indice * 0.1 }}
                 >
                   <td className="py-2 pr-4 font-bold">{linha.tema}</td>
-                  <td className="py-2 pr-4" style={{ color: 'var(--artigo-a)' }}>
+                  <td className="py-2 pr-4" style={{ color: 'var(--tomo-a)' }}>
                     {linha.A}
                   </td>
-                  <td className="py-2" style={{ color: 'var(--artigo-b)' }}>
+                  <td className="py-2" style={{ color: 'var(--tomo-b)' }}>
                     {linha.B}
                   </td>
                 </motion.tr>
@@ -97,7 +97,7 @@ export function F4Artigos({ som, ...props }: F4ArtigosProps) {
             </tbody>
           </table>
 
-          <h2 className="font-titulo text-2xl text-moeda">Atributos</h2>
+          <h2 className="font-titulo text-2xl text-ouro">Atributos</h2>
           <div className="flex flex-col gap-3">
             {ATRIBUTOS.map((atributo) => {
               const a = artigoA.atributos[atributo].valor;
@@ -107,17 +107,17 @@ export function F4Artigos({ som, ...props }: F4ArtigosProps) {
                   <div className="flex justify-end">
                     <motion.div
                       className="h-3 rounded-l-full"
-                      style={{ background: 'var(--artigo-a)' }}
+                      style={{ background: 'var(--tomo-a)' }}
                       initial={{ width: 0 }}
                       animate={{ width: `${a * 6}px` }}
                       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
                     />
                   </div>
-                  <span className="w-32 text-center text-papel/70">{rotulosAtributos[atributo]}</span>
+                  <span className="w-32 text-center text-pergaminho/70">{rotulosAtributos[atributo]}</span>
                   <div className="flex justify-start">
                     <motion.div
                       className="h-3 rounded-r-full"
-                      style={{ background: 'var(--artigo-b)' }}
+                      style={{ background: 'var(--tomo-b)' }}
                       initial={{ width: 0 }}
                       animate={{ width: `${b * 6}px` }}
                       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
@@ -128,8 +128,8 @@ export function F4Artigos({ som, ...props }: F4ArtigosProps) {
             })}
           </div>
 
-          <h2 className="font-titulo text-2xl text-moeda">Tema central</h2>
-          <p className="text-xl text-papel/90">{conteudo.temaCentral}</p>
+          <h2 className="font-titulo text-2xl text-ouro">Tema central</h2>
+          <p className="text-xl text-pergaminho/90">{conteudo.temaCentral}</p>
         </>
       )}
 

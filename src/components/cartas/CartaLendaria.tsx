@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { arteLendaria } from '../../data/artes';
 import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
+import { Icone } from '../ui/Icone';
 
 export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
   return (
@@ -10,7 +11,7 @@ export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
         {Array.from({ length: 10 }).map((_, indice) => (
           <motion.span
             key={indice}
-            className="absolute text-moeda"
+            className="absolute text-ouro"
             style={{ left: `${(indice * 37) % 100}%`, bottom: 0 }}
             animate={{ y: [-10, -220], opacity: [0, 1, 0] }}
             transition={{ duration: 3 + (indice % 3), repeat: Infinity, delay: indice * 0.3, ease: 'easeOut' }}
@@ -20,11 +21,19 @@ export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
         ))}
       </div>
       <CartaBase
-        corPrincipal="var(--moeda)"
+        corPrincipal="var(--ouro)"
         tamanho="grande"
         frente={
-          <MolduraCarta tipo="lendaria" nome={nome} orbe="🏆" arte={arteLendaria} corPrincipal="var(--moeda)">
-            <p className="font-bold text-moeda">Os aprendizados dos dois artigos, juntos.</p>
+          <MolduraCarta
+            nome={nome}
+            arte={arteLendaria}
+            corPrincipal="var(--ouro)"
+            gemaTopo={<Icone nome="open-book" className="h-[62%] w-[62%]" />}
+            gemaEsquerda="✦"
+            gemaDireita="✦"
+            subtitulo="Lendária"
+          >
+            <p className="font-bold">Os aprendizados dos dois artigos, juntos.</p>
           </MolduraCarta>
         }
       />

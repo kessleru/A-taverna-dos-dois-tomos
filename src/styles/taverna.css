@@ -1,0 +1,137 @@
+/* Cenário da taverna (docs/redesign/01-tema-e-hud.md §4). */
+
+.taverna-pintura {
+  position: absolute;
+  inset: -12px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(3px) brightness(0.55) saturate(1.1);
+  animation: taverna-deriva 20s ease-in-out infinite alternate;
+}
+
+/* Centro mais escuro, onde ficam as cartas. */
+.taverna-pintura::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 55% 50% at 50% 45%, rgb(20 13 8 / 0.6), transparent 75%);
+}
+
+@keyframes taverna-deriva {
+  from {
+    transform: translate(-6px, -3px);
+  }
+  to {
+    transform: translate(6px, 3px);
+  }
+}
+
+.taverna-vela {
+  position: absolute;
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 170 80 / 0.22), transparent 65%);
+  mix-blend-mode: screen;
+  animation: taverna-vela 3.2s ease-in-out infinite alternate;
+}
+
+.taverna-vela-esquerda {
+  left: -250px;
+  top: 80px;
+}
+
+.taverna-vela-direita {
+  right: -300px;
+  top: -200px;
+  animation-duration: 4.1s;
+  animation-delay: -1.3s;
+}
+
+@keyframes taverna-vela {
+  0% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  70% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0.95;
+    transform: scale(0.98);
+  }
+}
+
+.taverna-tampo {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 300px;
+  background-size: cover;
+  background-position: center top;
+  filter: brightness(0.6);
+  -webkit-mask-image: linear-gradient(to top, #000 55%, transparent);
+  mask-image: linear-gradient(to top, #000 55%, transparent);
+}
+
+.taverna-brasa {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  background: var(--brasa);
+  box-shadow: 0 0 8px 2px rgb(255 122 47 / 0.7);
+  opacity: 0;
+  animation-name: taverna-brasa;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes taverna-brasa {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(var(--deriva), -900px);
+    opacity: 0;
+  }
+}
+
+.taverna-vinheta {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 260px 80px var(--madeira-profunda);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .taverna-brasa {
+    display: none;
+  }
+}
+
+/* Folha da transição entre fases. */
+.folha-pagina {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 60% 40%, #f8eed6 0%, var(--pergaminho) 55%, #cdb384 100%);
+  box-shadow: 0 0 120px rgb(0 0 0 / 0.7);
+}
+
+/* Sombra da lombada à esquerda e da borda à direita. */
+.folha-pagina::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(42 29 20 / 0.5), transparent 16%, transparent 86%, rgb(42 29 20 / 0.3));
+}

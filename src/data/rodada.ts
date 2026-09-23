@@ -11,9 +11,32 @@ export type Escolha = 'planejar' | 'adaptar' | 'combinar';
 // BRIEFING — "Como jogar em 60 segundos" (F1, 4 telas)
 // ─────────────────────────────────────────────────────────────
 export const briefing = {
+  // Folha 1 do quadro de missões (docs/redesign/03-historia.md §4 e 10-briefing-quadro.md §4).
   missao: {
     titulo: 'Vocês agora são fundadoras de uma startup',
-    texto: 'Uma farmacêutica percebeu que muitos pacientes com câncer interrompem a quimioterapia por causa de feridas na pele. Ela quer criar um produto para isso. A história é real: é a Healthy Skin, estudada no Artigo B.',
+    texto: 'Sentem-se, fundadoras. Esta noite vocês vão reviver uma história real: a de uma farmacêutica que viu pacientes com câncer interromperem a quimioterapia por causa de feridas na pele, e decidiu criar um produto para isso.',
+    notas: [
+      { titulo: 'Quando', texto: '2016, no Brasil' },
+      { titulo: 'A guilda', texto: 'Vocês, as três fundadoras' },
+      { titulo: 'A fonte', texto: 'Artigo B. "Healthy Skin" é o nome que o artigo dá à startup real.' },
+    ],
+  },
+  // Folha 2: cada narrador se apresenta quando sua carta vira (03-historia.md §4).
+  tomos: {
+    titulo: 'Os Dois Tomos',
+    dica: 'Clique numa carta para abrir o tomo. Clique de novo para ver a estratégia e a solução.',
+    narradores: {
+      A: {
+        nome: 'O Cartógrafo',
+        autores: 'Kogut, Mello e Skorupski, 2023',
+        fala: 'Eu não conheço a sua história. Conheço 38 outras. Li tudo o que se escreveu em 21 anos sobre quando as empresas planejam e quando improvisam. Trago um mapa: a Matriz dos 3 Níveis.',
+      },
+      B: {
+        nome: 'A Cronista',
+        autores: 'Costa, Nelson e Pedroso, 2025',
+        fala: 'Eu conheço uma história só, e de perto. Segui esta guilda da primeira ideia até hoje, peça por peça do seu modelo de negócio. Trago o Canvas em Movimento.',
+      },
+    },
   },
   conselheiros: {
     titulo: 'Dois conselheiros vão ajudar vocês',
@@ -22,22 +45,29 @@ export const briefing = {
   },
   jeitosDeDecidir: {
     titulo: 'Existem jeitos diferentes de decidir',
+    // Folha 3 do briefing (03-historia.md §4).
+    fala: 'Toda decisão vai ser entre duas cartas. A terceira... vocês vão ter que forjar.',
     cartas: [
       { id: 'planejar', icone: '📋', nome: 'Planejar', teoria: 'Causation', resumo: 'Defina a meta, estude o mercado, faça o plano e execute.' },
       { id: 'adaptar', icone: '🧭', nome: 'Adaptar', teoria: 'Effectuation', resumo: 'Comece pelo que você tem, arrisque só o que pode perder e faça parcerias.' },
       { id: 'bricolagem', icone: '🔧', nome: 'Bricolagem', teoria: 'Bricolage', resumo: 'Faça com o que está à mão. Aparece dentro do Adaptar, na fundação.' },
-      { id: 'combinar', icone: '🔒', nome: 'Combinar', teoria: 'Carta secreta', resumo: 'Trancada. Descubram como desbloquear durante o jogo.' },
+      { id: 'combinar', icone: '🔒', nome: 'Combinar', teoria: 'Carta secreta', resumo: 'Trancada. Descubram como forjá-la durante o jogo.' },
     ],
   },
+  // Folha 4: cada regra com seus ícones (src/assets/icones/).
   regras: {
     titulo: 'Como funciona',
     itens: [
-      '4 decisões, da fundação até a empresa crescer.',
-      'Em cada uma, a turma discute rapidinho e vota levantando a mão.',
-      'Três barras mostram a saúde da startup: 💰 Caixa, 👥 Clientes e 🔥 Moral.',
-      'Depois de cada decisão, rola o Dado da Incerteza e podem surgir eventos.',
-      'No final, vocês descobrem o perfil empreendedor da turma.',
+      { texto: '4 decisões, da fundação até a empresa crescer.', icones: ['scroll-quill'] },
+      { texto: 'Em cada uma, a turma discute rapidinho e vota levantando a mão.', icones: ['flying-flag'] },
+      { texto: 'Três marcadores mostram a saúde da startup: Caixa, Clientes e Moral.', icones: ['shiny-purse', 'flying-flag', 'flamer'] },
+      { texto: 'Depois de cada decisão, rola o Dado da Incerteza e podem surgir eventos.', icones: ['dice-twenty-faces-one'] },
+      { texto: 'No final, vocês descobrem o perfil empreendedor da turma.', icones: ['wax-seal'] },
     ],
+    taverneiro: {
+      fala: 'Puxem uma cadeira, fundadoras!',
+      legenda: 'O Taverneiro, seu anfitrião',
+    },
   },
 };
 

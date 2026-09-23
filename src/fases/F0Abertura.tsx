@@ -1,80 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Titulo } from '../components/ui/Titulo';
 import { Botao } from '../components/ui/Botao';
+import { Grimorio } from '../components/ui/Grimorio';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
-const LINHAS = ['> buscando periódicos CAPES...', '> 2 artigos encontrados', '> iniciando arena...'];
-const VELOCIDADE_MS = 28;
+const BOOT = [
+  'Abrindo as portas da taverna...',
+  'Tomo A: 38 estudos em 21 anos.',
+  'Tomo B: uma startup, 8 anos.',
+  'Dois caminhos: planejar ou improvisar.',
+  'Acendendo as velas.',
+];
 
 interface F0AberturaProps extends FaseProps {
   som: ReturnType<typeof useSom>;
 }
 
 export function F0Abertura({ avancar, som }: F0AberturaProps) {
-  const [linhaAtual, setLinhaAtual] = useState(0);
-  const [texto, setTexto] = useState('');
-  const [terminalConcluido, setTerminalConcluido] = useState(false);
-  const [glitch, setGlitch] = useState(false);
+  const [pronto, setPronto] = useState(false);
 
-  useEffect(() => {
-    if (linhaAtual >= LINHAS.length) {
-      setTerminalConcluido(true);
-      return;
-    }
-    const linha = LINHAS[linhaAtual];
-    if (texto.length < linha.length) {
-      const id = setTimeout(() => setTexto(linha.slice(0, texto.length + 1)), VELOCIDADE_MS);
-      return () => clearTimeout(id);
-    }
-    const id = setTimeout(() => {
-      setLinhaAtual((l) => l + 1);
-      setTexto('');
-    }, 350);
-    return () => clearTimeout(id);
-  }, [texto, linhaAtual]);
-
-  useEffect(() => {
-    if (!terminalConcluido) return;
-    setGlitch(true);
-    const id = setTimeout(() => setGlitch(false), 400);
-    return () => clearTimeout(id);
-  }, [terminalConcluido]);
-
-  function comecar() {
+  function entrar() {
     som.tocar('clique');
+    som.falar('boas-vindas');
     avancar();
   }
 
   return (
-    <section className="flex h-full flex-col items-center justify-center gap-8 px-6 text-center">
-      <p className="h-20 font-mono text-fosforo">
-        {LINHAS.slice(0, linhaAtual).map((linha) => (
-          <span key={linha}>
-            {linha}
-            <br />
-          </span>
-        ))}
-        {linhaAtual < LINHAS.length && texto}
-        {!terminalConcluido && <span className="animate-pulse">▌</span>}
-      </p>
-
-      {terminalConcluido && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, x: glitch ? [0, -4, 4, -2, 2, 0] : 0 }}
-            transition={{ duration: 0.4 }}
-            style={{ textShadow: '0 0 24px var(--moeda), 0 0 48px var(--artigo-a)' }}
-          >
-            <Titulo>Startup Arena</Titulo>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <Botao onClick={comecar}>Começar</Botao>
-          </motion.div>
-        </>
-      )}
+    <section className="flex h-full flex-col items-center justify-center gap-14 text-center">
+      <Grimorio linhas={BOOT} aoConcluir={() => setPronto(true)} className="w-[980px] text-left" />
+      {/* Altura fixa: o Grimório não pula quando o título aparece. */}
+      <div className="flex h-[340px] flex-col items-center gap-8">
+        {pronto && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 1.2, ease: 'easeOut' }}
+            >
+              <Titulo tamanho={104}>A Taverna dos Dois Tomos</Titulo>
+              <p className="mt-4 font-texto text-[36px] italic text-pergaminho/85">
+                a crônica de uma startup real, jogada em cartas
+              </p>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
+              <Botao onClick={entrar}>Entrar na taverna</Botao>
+            </motion.div>
+          </>
+        )}
+      </div>
     </section>
   );
 }

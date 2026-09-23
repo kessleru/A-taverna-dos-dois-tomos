@@ -1,6 +1,6 @@
 // src/data/conteudo.ts
 // Conteúdo extraído dos dois artigos (REGEPE 2023 e 2025).
-// ESTE ARQUIVO PREVALECE sobre o schema da seção 5 do PLANO.md.
+// ESTE ARQUIVO PREVALECE sobre o schema da seção 5 de docs/plano-original.md.
 // Dados fixos dos artigos (cartas, comparação e aprendizados).
 // A mecânica do jogo (etapas, eventos, perfis) fica em rodada.ts.
 // Itens marcados com PREENCHER ou REVISAR precisam de conferência da equipe.

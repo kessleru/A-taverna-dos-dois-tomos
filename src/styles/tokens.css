@@ -1,16 +1,26 @@
+/* Paleta da taverna (docs/redesign/01-tema-e-hud.md §3). */
 :root {
-  --noite: #241e4e;
-  --noite-profunda: #17123a;
-  --papel: #fff8e7;
-  --tinta: #2b2340;
-  --artigo-a: #f86624;
-  --artigo-b: #2ec4b6;
-  --moeda: #f9c80e;
-  --planejar: #6c8ef5;
-  --adaptar: #5cc98a;
-  --bricolagem: #c08552;
-  --dano: #ea3546;
-  --fosforo: #ffb000;
+  --madeira-profunda: #140d08;
+  --madeira: #24170f;
+  --madeira-clara: #4a3222;
+  --madeira-veio: #5e4029;
+  --madeira-moldura: #2e1d12;
+  --ferro: #3b3632;
+  --pergaminho: #f3e6c8;
+  --tinta: #2a1d14;
+  --ouro: #e8b64a;
+  --ouro-claro: #ffe39a;
+  --ouro-escuro: #9c6b1e;
+  --brasa: #ff7a2f;
+  --planejar: #4f7bff;
+  --adaptar: #3fbf7f;
+  --bricolagem: #c7773a;
+  --tomo-a: #f2862e;
+  --tomo-b: #2fc7b8;
+  --clientes: #9b7bff;
+  --cera: #9e1f2b;
+  --dano: #e0374a;
+  --cura: #5ed17a;
 
   --raio-carta: 20px;
   --sombra-carta: 0 24px 48px -12px rgb(0 0 0 / 0.55);

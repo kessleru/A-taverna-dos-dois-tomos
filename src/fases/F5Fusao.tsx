@@ -7,10 +7,15 @@ import { ControlesFase } from '../components/ui/ControlesFase';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
 import type { FaseProps } from '../types';
+import type { useSom } from '../engine/useSom';
 
 const DURACAO_ORBITA_MS = 2600;
 
-export function F5Fusao(props: FaseProps) {
+interface F5FusaoProps extends FaseProps {
+  som: ReturnType<typeof useSom>;
+}
+
+export function F5Fusao({ som, ...props }: F5FusaoProps) {
   const [orbitando, setOrbitando] = useState(true);
   const [flash, setFlash] = useState(false);
   const [aprendizadoAtual, setAprendizadoAtual] = useState(0);
@@ -34,12 +39,13 @@ export function F5Fusao(props: FaseProps) {
       setAprendizadoAtual((i) => i + 1);
     } else if (!creditos) {
       setCreditos(true);
+      som.falar('despedida');
       confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, colors: ['#F9C80E', '#FFF8E7', '#2EC4B6', '#F86624'] });
     }
   }
 
   return (
-    <section className="mx-auto flex h-full max-w-3xl flex-col items-center gap-6 overflow-y-auto px-6 py-10">
+    <section className="mx-auto flex h-full max-w-[1400px] flex-col items-center gap-6 overflow-y-auto px-6 py-10">
       {orbitando ? (
         <div className="relative flex h-64 w-64 shrink-0 items-center justify-center">
           <motion.div
@@ -79,7 +85,7 @@ export function F5Fusao(props: FaseProps) {
       {!orbitando && (
         <>
           <Titulo className="text-4xl">Aprendizados</Titulo>
-          <ol className="w-full space-y-2 pl-5 text-lg text-papel/90">
+          <ol className="w-full space-y-2 pl-5 text-lg text-pergaminho/90">
             <AnimatePresence>
               {conteudo.aprendizados.slice(0, aprendizadoAtual + 1).map((item, indice) => (
                 <motion.li
@@ -98,7 +104,7 @@ export function F5Fusao(props: FaseProps) {
           {!creditos && (
             <button
               onClick={proximoAprendizado}
-              className="rounded-full bg-moeda px-8 py-3 text-lg font-bold text-tinta shadow-carta hover:brightness-110"
+              className="rounded-full bg-ouro px-8 py-3 text-lg font-bold text-tinta shadow-carta hover:brightness-110"
             >
               {aprendizadoAtual < conteudo.aprendizados.length - 1 ? 'Próximo aprendizado →' : 'Ver créditos →'}
             </button>
@@ -108,21 +114,21 @@ export function F5Fusao(props: FaseProps) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full space-y-4 border-t border-papel/15 pt-6 text-center text-sm text-papel/70"
+              className="w-full space-y-4 border-t border-pergaminho/15 pt-6 text-center text-sm text-pergaminho/70"
             >
               <div>
-                <p className="font-titulo text-moeda">Equipe</p>
+                <p className="font-titulo text-ouro">Equipe</p>
                 <p>{conteudo.equipe.membros.join(' · ')}</p>
               </div>
               <div>
-                <p className="font-titulo text-moeda">Referências</p>
+                <p className="font-titulo text-ouro">Referências</p>
                 {conteudo.artigos.map((artigo) => (
                   <p key={artigo.id} className="mx-auto max-w-xl">
                     {artigo.referenciaABNT}
                   </p>
                 ))}
               </div>
-              <p className="text-xs text-papel/40">Créditos de assets em public/assets/CREDITOS.md</p>
+              <p className="text-xs text-pergaminho/40">Créditos de assets em public/assets/CREDITOS.md</p>
             </motion.div>
           )}
         </>

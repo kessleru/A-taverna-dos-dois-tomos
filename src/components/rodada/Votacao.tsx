@@ -36,7 +36,7 @@ export function Votacao({ etapa, combinarLiberado, onEscolher }: VotacaoProps) {
 
   return (
     <div className="flex flex-col items-center gap-8">
-      <h2 className="text-center font-titulo text-2xl text-moeda">{etapa.perguntaParaTurma}</h2>
+      <h2 className="text-center font-titulo text-2xl text-ouro">{etapa.perguntaParaTurma}</h2>
 
       <div className="relative flex min-h-[22rem] flex-wrap items-end justify-center gap-4">
         <AnimatePresence>
@@ -71,7 +71,7 @@ export function Votacao({ etapa, combinarLiberado, onEscolher }: VotacaoProps) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="font-mono text-sm uppercase tracking-widest text-papel/60"
+          className="font-texto text-sm uppercase tracking-widest text-pergaminho/60"
         >
           🥁 revelando...
         </motion.p>

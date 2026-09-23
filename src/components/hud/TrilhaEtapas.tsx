@@ -12,13 +12,13 @@ export function TrilhaEtapas({ etapaAtual, escolhas }: { etapaAtual: number; esc
           <div key={etapa.id} className="flex items-center gap-2">
             <div
               className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs ${
-                atual ? 'border-moeda text-moeda' : concluida ? 'border-papel/60 text-papel' : 'border-papel/20 text-papel/40'
+                atual ? 'border-ouro text-ouro' : concluida ? 'border-pergaminho/60 text-pergaminho' : 'border-pergaminho/20 text-pergaminho/40'
               } ${atual ? 'animate-pulse' : ''}`}
               title={etapa.fase}
             >
               {concluida ? ICONE_POR_ESCOLHA[escolhas[indice]!] : indice + 1}
             </div>
-            {indice < etapas.length - 1 && <div className="h-px w-4 bg-papel/20" />}
+            {indice < etapas.length - 1 && <div className="h-px w-4 bg-pergaminho/20" />}
           </div>
         );
       })}
