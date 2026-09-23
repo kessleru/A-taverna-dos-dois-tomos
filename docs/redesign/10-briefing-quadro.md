@@ -1,6 +1,6 @@
 # 10 — Briefing (F1) como quadro de missões da taverna
 
-> Proposta aprovada (22/09/2026). Em implementação: peças base e folha 1 prontas; folhas 2 a 4 ainda com o conteúdo antigo.
+> Proposta aprovada (22/09/2026). Em implementação: peças base e folhas 1 e 2 prontas; folhas 3 e 4 ainda com o conteúdo antigo.
 > Complementa o §4 de [03-historia.md](03-historia.md), que define o conteúdo das quatro telas da F1, e usa a base visual da iteração 1 (palco, tokens, fontes, Grimório).
 
 ## 1. Problema
@@ -89,7 +89,8 @@ A F1 passa a ter **quatro folhas**, trocadas com `→` e `←` dentro da própri
 
 - As duas `CartaArtigo` escaladas 1,5× (390 px de largura), pregadas nas extremidades; as falas dos narradores (texto de 03 §4) em notas de pergaminho entre elas, em Alegreya itálico 32 px, assinadas com o nome do narrador e dos autores (Kogut, Mello e Skorupski, 2023 / Costa, Nelson e Pedroso, 2025).
 - Uma plaquinha de título no canto superior esquerdo do quadro ("Os Dois Tomos").
-- **Clique na carta virada:** vira (como hoje). **Clique de novo:** a nota do narrador troca para a **estratégia** e a **solução** do artigo (texto atual de `conteudo.ts`), com o mesmo tamanho de letra. Outro clique volta para a fala.
+- **Clique na carta virada:** vira e a fala do narrador cai ao lado. **Clique de novo:** a **estratégia** e a **solução** do artigo (texto atual de `conteudo.ts`) aparecem num aviso grande sobre o centro do quadro, em duas colunas a 28 px (na nota não cabiam: são cerca de 300 caracteres cada). Outro clique, clique no aviso ou `Esc` voltam. As teclas `1` e `2` fazem o mesmo que clicar no tomo A e no B.
+- As cartas desta folha usam 0,8 do tamanho padrão para caberem as duas falas entre elas.
 - Ao virar cada carta, o Grimório notifica os números do tomo ("Tomo A: 38 estudos, de 2001 a 2022.").
 
 ### Folha 3 — Os jeitos de decidir

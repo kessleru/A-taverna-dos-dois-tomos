@@ -21,6 +21,23 @@ export const briefing = {
       { titulo: 'A fonte', texto: 'Artigo B. "Healthy Skin" é o nome que o artigo dá à startup real.' },
     ],
   },
+  // Folha 2: cada narrador se apresenta quando sua carta vira (03-historia.md §4).
+  tomos: {
+    titulo: 'Os Dois Tomos',
+    dica: 'Clique numa carta para abrir o tomo. Clique de novo para ver a estratégia e a solução.',
+    narradores: {
+      A: {
+        nome: 'O Cartógrafo',
+        autores: 'Kogut, Mello e Skorupski, 2023',
+        fala: 'Eu não conheço a sua história. Conheço 38 outras. Li tudo o que se escreveu em 21 anos sobre quando as empresas planejam e quando improvisam. Trago um mapa: a Matriz dos 3 Níveis.',
+      },
+      B: {
+        nome: 'A Cronista',
+        autores: 'Costa, Nelson e Pedroso, 2025',
+        fala: 'Eu conheço uma história só, e de perto. Segui esta guilda da primeira ideia até hoje, peça por peça do seu modelo de negócio. Trago o Canvas em Movimento.',
+      },
+    },
+  },
   conselheiros: {
     titulo: 'Dois conselheiros vão ajudar vocês',
     A: 'O Mapa: revisou 38 estudos em 20 anos e sabe o que costuma funcionar.',
