@@ -13,7 +13,17 @@ export type Efeito =
   | 'dado'
   | 'evento'
   | 'cadeado'
-  | 'fanfarra';
+  | 'fanfarra'
+  // Sons do redesign (docs/redesign/06-animacoes.md), prontos para uso.
+  | 'carta-deslizar'
+  | 'carta-bater'
+  | 'embaralhar'
+  | 'tic'
+  | 'ping'
+  | 'pagina'
+  | 'moedas'
+  | 'correntes'
+  | 'selo';
 
 // Prefixa com o base path do build, como em artes.ts: em GitHub Pages o site
 // fica sob /empreendedorismo/ e um caminho absoluto /sfx/ daria 404.

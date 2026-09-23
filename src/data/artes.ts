@@ -1,7 +1,7 @@
 // src/data/artes.ts
-// Arte de cada carta. O PLANO.md descreve este arquivo como "já pronto",
-// mas ele não veio no pacote do projeto — foi recriado aqui na Iteração 3
-// seguindo a seção 7 do plano. Diferença deliberada: como já existe uma
+// Arte de cada carta. O plano original (docs/plano-original.md) descreve
+// este arquivo como "já pronto", mas ele não veio no pacote do projeto — foi
+// recriado aqui na Iteração 3 seguindo a seção 7 do plano. Diferença deliberada: como já existe uma
 // imagem pintada em public/assets/ para CADA carta do jogo (mesmos nomes
 // usados aqui), CenaArte.tsx sempre encontra `imagem` e não precisa do
 // motor de cena SVG em camadas (ícones do game-icons.net, 6 fundos

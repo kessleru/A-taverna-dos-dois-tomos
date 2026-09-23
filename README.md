@@ -1,6 +1,27 @@
 # Startup Arena — A Batalha dos Artigos
 
-Jogo de apresentação (15 min) para a atividade de Empreendedorismo. Ver [PLANO.md](./PLANO.md) para o plano completo.
+Jogo de apresentação para a atividade de Empreendedorismo. O redesign em andamento ("A Taverna dos Dois Tomos") está em [docs/redesign/](./docs/redesign/00-visao-geral.md); o plano original fica em [docs/plano-original.md](./docs/plano-original.md) como histórico.
+
+## Pastas
+
+```
+docs/
+  redesign/          plano atual, um arquivo por tópico
+  artigos/           PDFs dos dois artigos (não vão para o build)
+  plano-original.md  primeiro plano, histórico
+public/
+  assets/cartas/     arte das cartas (WebP)
+  assets/cenario/    fundo da taverna e tampo da mesa (WebP)
+  assets/personagens/ retratos (WebP)
+  assets/icones/     ícones SVG do game-icons.net, cor via currentColor
+  sfx/               efeitos (.ogg) e música de fundo
+src/
+  data/              textos e dados do jogo
+  engine/            motor da rodada, navegação e som
+  components/        cartas, HUD, rodada, UI
+  fases/             uma tela por fase (F0 a F5) e a vitrine
+assets-originais/    PNG/JPG/pacotes de som originais (ignorada pelo git)
+```
 
 ## Rodando
 
@@ -33,6 +54,6 @@ O estado da apresentação fica salvo em `sessionStorage`, então um recarregame
 
 O workflow `.github/workflows/deploy.yml` builda e publica a cada push em `main`. Para ativar, uma vez: **Settings → Pages → Source: GitHub Actions** no repositório. A URL final fica em `https://<usuario>.github.io/empreendedorismo/` (o `base` em `vite.config.ts` já está configurado para esse caminho).
 
-## Assets pendentes
+## Créditos
 
-`public/assets/CREDITOS.md` e `public/sfx/CREDITOS.md` listam o que falta preencher: a origem/licença de cada imagem já incluída e os arquivos de som (Kenney Audio, CC0) que o jogo já está pronto para tocar assim que forem adicionados.
+`public/assets/CREDITOS.md` e `public/sfx/CREDITOS.md` listam origem e licença de cada imagem, ícone e som, e o que ainda falta preencher.
