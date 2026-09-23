@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Fundo } from './components/ui/Fundo';
+import { Palco } from './components/ui/Palco';
 import { Hud } from './components/hud/Hud';
 import { useNavegacao } from './engine/useNavegacao';
 import { useRodada } from './engine/useRodada';
@@ -31,17 +32,19 @@ export default function App() {
   }
 
   return (
-    <div className="relative h-screen w-screen">
-      <Fundo />
-      {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
-      <main className={fase === 'abertura' ? 'h-full' : 'h-full pt-14'}>
-        {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
-        {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
-        {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
-        {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
-        {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
-        {fase === 'fusao' && <F5Fusao {...faseProps} />}
-      </main>
-    </div>
+    <Palco>
+      <div className="relative h-full w-full">
+        <Fundo />
+        {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
+        <main className={fase === 'abertura' ? 'h-full' : 'h-full pt-14'}>
+          {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
+          {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
+          {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
+          {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
+          {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
+          {fase === 'fusao' && <F5Fusao {...faseProps} />}
+        </main>
+      </div>
+    </Palco>
   );
 }
