@@ -9,6 +9,7 @@
 @import './tokens.css';
 @import './cartas.css';
 @import './taverna.css';
+@import './grimorio.css';
 
 @tailwind base;
 @tailwind components;

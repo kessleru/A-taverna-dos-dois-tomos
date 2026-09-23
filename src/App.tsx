@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Taverna } from './components/ui/Taverna';
 import { Palco } from './components/ui/Palco';
+import { GrimorioProvider, useGrimorio } from './components/ui/NotificacoesGrimorio';
 import { Hud } from './components/hud/Hud';
 import { useNavegacao } from './engine/useNavegacao';
 import { useRodada } from './engine/useRodada';
@@ -12,6 +13,20 @@ import { F3Resultado } from './fases/F3Resultado';
 import { F4Artigos } from './fases/F4Artigos';
 import { F5Fusao } from './fases/F5Fusao';
 import { Vitrine } from './fases/Vitrine';
+
+// Avisa no Grimório quando o som liga ou desliga (tecla M ou botão do HUD).
+function AvisoDeSom({ mudo }: { mudo: boolean }) {
+  const { notificar } = useGrimorio();
+  const primeiro = useRef(true);
+  useEffect(() => {
+    if (primeiro.current) {
+      primeiro.current = false;
+      return;
+    }
+    notificar(mudo ? 'som desligado' : 'som ligado');
+  }, [mudo, notificar]);
+  return null;
+}
 
 export default function App() {
   const { fase, avancar, voltar, primeiraFase, ultimaFase } = useNavegacao();
@@ -33,18 +48,21 @@ export default function App() {
 
   return (
     <Palco>
-      <div className="relative h-full w-full">
-        <Taverna />
-        {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
-        <main className={fase === 'abertura' ? 'relative h-full' : 'relative h-full pt-14'}>
-          {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
-          {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
-          {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
-          {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
-          {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
-          {fase === 'fusao' && <F5Fusao {...faseProps} />}
-        </main>
-      </div>
+      <GrimorioProvider aoNotificar={() => som.tocar('ping')}>
+        <AvisoDeSom mudo={som.mudo} />
+        <div className="relative h-full w-full">
+          <Taverna />
+          {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
+          <main className={fase === 'abertura' ? 'relative h-full' : 'relative h-full pt-14'}>
+            {fase === 'abertura' && <F0Abertura {...faseProps} som={som} />}
+            {fase === 'briefing' && <F1Briefing {...faseProps} som={som} />}
+            {fase === 'rodada' && <F2Rodada {...faseProps} rodada={rodada} som={som} />}
+            {fase === 'resultado' && <F3Resultado {...faseProps} estadoRodada={rodada.estado} />}
+            {fase === 'artigos' && <F4Artigos {...faseProps} som={som} />}
+            {fase === 'fusao' && <F5Fusao {...faseProps} />}
+          </main>
+        </div>
+      </GrimorioProvider>
     </Palco>
   );
 }

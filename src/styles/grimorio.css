@@ -1,0 +1,98 @@
+/* O Grimório: único elemento com estética de terminal (01-tema-e-hud.md §5). */
+
+.grimorio {
+  position: relative;
+  padding: 44px 36px 26px;
+  background: var(--runa-fundo);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 2px solid var(--runa);
+  border-radius: 6px;
+  box-shadow:
+    0 0 18px rgb(127 232 255 / 0.35),
+    inset 0 0 24px rgb(127 232 255 / 0.12);
+  color: var(--runa);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgb(127 232 255 / 0.6);
+  overflow: hidden;
+}
+
+.grimorio-compacto {
+  padding: 36px 24px 16px;
+  font-size: 28px;
+}
+
+/* Linhas de varredura sutis. */
+.grimorio::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgb(127 232 255 / 0.06) 0 2px, transparent 2px 5px);
+}
+
+.grimorio-aba {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  letter-spacing: 0.24em;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.grimorio-canto {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid var(--runa);
+}
+
+.grimorio-canto-no {
+  top: 6px;
+  left: 6px;
+  border-top-width: 4px;
+  border-left-width: 4px;
+}
+
+.grimorio-canto-ne {
+  top: 6px;
+  right: 6px;
+  border-top-width: 4px;
+  border-right-width: 4px;
+}
+
+.grimorio-canto-so {
+  bottom: 6px;
+  left: 6px;
+  border-bottom-width: 4px;
+  border-left-width: 4px;
+}
+
+.grimorio-canto-se {
+  bottom: 6px;
+  right: 6px;
+  border-bottom-width: 4px;
+  border-right-width: 4px;
+}
+
+.grimorio-linha {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.grimorio-cursor {
+  animation: grimorio-piscar 1s steps(1) infinite;
+}
+
+@keyframes grimorio-piscar {
+  50% {
+    opacity: 0;
+  }
+}
