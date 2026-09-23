@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { Escolha, Etapa } from '../../data/rodada';
 import { CartaDecisao } from '../cartas/CartaDecisao';
 import { LeituraMapa } from './LeituraMapa';
+import { Faiscas } from '../ui/Faiscas';
+import { COR } from '../cartas/logicas';
 
 interface VotacaoProps {
   etapa: Etapa;
@@ -60,12 +62,13 @@ export function Votacao({ etapa, combinarLiberado, onEscolher, aoSelecionar }: V
             return (
               <motion.div
                 key={escolha}
+                className="relative"
                 layout
                 initial={{ opacity: 0, y: 60, rotate: -10 }}
-                animate={{ opacity: 1, y: 0, rotate: 0, clipPath: 'inset(-60px -60px -60px -60px)' }}
+                animate={{ opacity: 1, y: 0, rotate: 0, clipPath: 'inset(-50% -50% -50% -50%)' }}
                 // A carta descartada queima de baixo para cima.
                 exit={{
-                  clipPath: 'inset(-60px -60px 100% -60px)',
+                  clipPath: 'inset(-50% -50% 100% -50%)',
                   filter: 'sepia(1) saturate(4) hue-rotate(-20deg) brightness(0.8)',
                   transition: { duration: 0.9, ease: 'easeIn' },
                 }}
@@ -81,6 +84,7 @@ export function Votacao({ etapa, combinarLiberado, onEscolher, aoSelecionar }: V
                   emDestaque={escolha === selecionada}
                   tecla={indice + 1}
                 />
+                {escolha === selecionada && <Faiscas cor={COR[escolha]} />}
               </motion.div>
             );
           })}

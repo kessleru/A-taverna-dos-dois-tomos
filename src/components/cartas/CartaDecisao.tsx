@@ -27,22 +27,21 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
   const arte: ArteCarta = trancada ? { ...arteOriginal, cores: ['#555', '#222'] } : arteOriginal;
   const gemaTopo = tecla ?? <Icone nome={SIGILOS[id]} className="h-[62%] w-[62%]" />;
 
-  const tamanhoEfetivo = emDestaque ? 'grande' : tamanho;
-
   return (
     <motion.div
       layout
       animate={
         emDestaque
-          ? { rotate: [rotacao, rotacao + 360, 0], y: -16, scale: 1.15 }
+          ? // Levanta da mesa, balança e assenta em destaque.
+            { rotate: [rotacao, -6, 4, 0], y: [0, -70, -20], scale: [1, 1.25, 1.18] }
           : { rotate: rotacao, y: 0, scale: 1 }
       }
-      transition={{ type: 'spring', stiffness: 200, damping: 22 }}
-      style={emDestaque ? { filter: 'drop-shadow(0 0 18px var(--ouro))' } : undefined}
+      transition={emDestaque ? { duration: 0.9, ease: 'easeOut' } : { type: 'spring', stiffness: 200, damping: 22 }}
+      style={emDestaque ? { filter: `drop-shadow(0 0 22px ${cor}) drop-shadow(0 0 10px var(--ouro))` } : undefined}
     >
       <CartaBase
         corPrincipal={cor}
-        tamanho={tamanhoEfetivo}
+        tamanho={tamanho}
         onClick={trancada ? undefined : onClick}
         layoutId={`decisao-${id}`}
         frente={
@@ -52,7 +51,7 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
                 nome={nome}
                 arte={arte}
                 corPrincipal={cor}
-                tamanho={tamanhoEfetivo}
+                tamanho={tamanho}
                 gemaTopo={gemaTopo}
                 gemaEsquerda={<Icone nome={SIGILOS[id]} className="h-[64%] w-[64%]" />}
                 gemaDireita={<FormaGema logica={id} className="h-[62%] w-[62%]" />}
