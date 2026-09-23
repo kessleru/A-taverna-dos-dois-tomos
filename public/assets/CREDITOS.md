@@ -1,6 +1,9 @@
 # Créditos dos assets visuais
 
-## Imagens pintadas (`public/assets/*.png`, `*.jpg`)
+Todas as imagens estão em WebP (qualidade 80). Os PNG/JPG originais ficam em
+`assets-originais/` na raiz do projeto, ignorada pelo git e fora do deploy.
+
+## Imagens pintadas (`public/assets/cartas/*.webp`)
 
 As 17 imagens (uma por carta: conselheiros, decisões, eventos, etapas e a
 carta lendária) já vieram prontas no pacote do projeto — a equipe deve
@@ -11,13 +14,28 @@ para cada carta caso seja preciso regenerar alguma.
 
 | Arquivo | Carta |
 |---|---|
-| `artigo-A.png` / `artigo-B.png` | Conselheiros (CartaArtigo) |
-| `planejar.png` / `adaptar.png` / `combinar.jpg` / `bricolagem.png` | Decisões (CartaDecisao) |
-| `fundacao.jpg` / `lancamento.jpg` / `investidores.jpg` / `novo-mercado.jpg` | Cenas das etapas (CenaSituacao) |
-| `crazy-quilt.jpg` / `porta-fechada.jpg` / `lemonade.jpg` / `plano-furou.jpg` / `incubadora.jpg` / `nao-foi.jpg` | Desfechos de evento (CartaEvento) |
-| `aprendizados.jpg` | Carta Lendária (F5) |
+| `artigo-A` / `artigo-B` | Conselheiros (CartaArtigo) |
+| `planejar` / `adaptar` / `combinar` / `bricolagem` | Decisões (CartaDecisao) |
+| `fundacao` / `lancamento` / `investidores` / `novo-mercado` | Cenas das etapas (CenaSituacao) |
+| `crazy-quilt` / `porta-fechada` / `lemonade` / `plano-furou` / `incubadora` / `nao-foi` | Desfechos de evento (CartaEvento) |
+| `aprendizados` | Carta Lendária (F5) |
 
 **PREENCHER:** origem/licença de cada imagem acima.
+
+## Imagens geradas para o redesign da taverna
+
+Geradas com os prompts de `docs/redesign/08-assets.md` (seção 2). Ainda não
+usadas no código; entram com o redesign.
+
+| Arquivo | Uso previsto |
+|---|---|
+| `bg/tavern.webp` | Fundo da taverna (1376×768) |
+| `taverneiro/taverneiro.webp` | Retrato do Taverneiro (1024×1024) |
+| `fabricante/fabricante.webp` | Fabricante parceiro (1200×896) |
+| `maquinas/maquinas.webp` | Máquinas caras (1200×896) |
+| `tampo-mesa/tampo.webp` | Tampo da mesa (1376×768) |
+
+**PREENCHER:** ferramenta usada para gerar cada uma.
 
 ## Ícones e ilustrações do PLANO.md (não usados)
 

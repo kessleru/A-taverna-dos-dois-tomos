@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Howl } from 'howler';
 
-// Os arquivos de public/sfx/ não vieram no pacote do projeto (ver
-// public/sfx/CREDITOS.md). O hook funciona normalmente sem eles: o Howler
-// apenas falha ao carregar aquele efeito específico e ignora o tocar().
+// Efeitos do Kenney Audio (CC0) e música de fundo em public/sfx/ (origem de
+// cada arquivo em public/sfx/CREDITOS.md). Se algum arquivo faltar, o Howler
+// apenas falha ao carregar aquele som e ignora o tocar().
 export type Efeito =
   | 'clique'
   | 'virar-carta'
@@ -15,28 +15,39 @@ export type Efeito =
   | 'cadeado'
   | 'fanfarra';
 
-const ARQUIVOS: Record<Efeito, string> = {
-  clique: '/sfx/clique.ogg',
-  'virar-carta': '/sfx/virar-carta.ogg',
-  escolha: '/sfx/escolha.ogg',
-  ganho: '/sfx/ganho.ogg',
-  perda: '/sfx/perda.ogg',
-  dado: '/sfx/dado.ogg',
-  evento: '/sfx/evento.ogg',
-  cadeado: '/sfx/cadeado.ogg',
-  fanfarra: '/sfx/fanfarra.ogg',
-};
+// Prefixa com o base path do build, como em artes.ts: em GitHub Pages o site
+// fica sob /empreendedorismo/ e um caminho absoluto /sfx/ daria 404.
+function caminhoSom(arquivo: string): string {
+  return `${import.meta.env.BASE_URL}sfx/${arquivo}`;
+}
 
 const VOLUME_EFEITOS = 0.4;
+const VOLUME_MUSICA = 0.12;
 const CHAVE_SESSAO = 'sa-mudo';
 
 export function useSom() {
   const [mudo, setMudo] = useState(() => sessionStorage.getItem(CHAVE_SESSAO) !== 'false');
   const sons = useRef<Partial<Record<Efeito, Howl>>>({});
+  const musica = useRef<Howl | null>(null);
 
   useEffect(() => {
     sessionStorage.setItem(CHAVE_SESSAO, String(mudo));
   }, [mudo]);
+
+  // Música só é criada na primeira vez que o som é ligado (arquivo de ~2,4 MB),
+  // e o mudo pausa em vez de parar para retomar do mesmo ponto.
+  useEffect(() => {
+    if (mudo) {
+      musica.current?.pause();
+      return;
+    }
+    if (!musica.current) {
+      musica.current = new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true });
+    }
+    if (!musica.current.playing()) musica.current.play();
+  }, [mudo]);
+
+  useEffect(() => () => void musica.current?.unload(), []);
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
@@ -51,7 +62,7 @@ export function useSom() {
       if (mudo) return;
       let som = sons.current[efeito];
       if (!som) {
-        som = new Howl({ src: [ARQUIVOS[efeito]], volume: VOLUME_EFEITOS });
+        som = new Howl({ src: [caminhoSom(`${efeito}.ogg`)], volume: VOLUME_EFEITOS });
         sons.current[efeito] = som;
       }
       som.play();
