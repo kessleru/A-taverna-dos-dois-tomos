@@ -28,14 +28,26 @@ combinar.
 | `perda.ogg` | [Music Jingles](https://kenney.nl/assets/music-jingles) | `Hit jingles/jingles_HIT01.ogg` |
 | `fanfarra.ogg` | Music Jingles | `Pizzicato jingles/jingles_PIZZI01.ogg` |
 
-**Faltam** (nenhum pacote Kenney baixado tem): `tambor.ogg` (rufar antes da
-revelação) e `chama.ogg` (carta queimando no descarte). Sugestão:
-[Freesound](https://freesound.org) filtrando por CC0.
+## Gerados pela equipe
+
+Feitos num gerador de efeitos sonoros com os prompts de
+`docs/redesign/08-assets.md` §6; originais em
+`assets-originais/sons/efeitos-gerados/`, convertidos para OGG mono.
+
+| Arquivo | Uso |
+|---|---|
+| `tambor.ogg` | Rufar antes de revelar a carta escolhida e o dado |
+| `chama.ogg` | Carta descartada queimando |
+| `correntes-quebrando.ogg` | Forja do Combinar |
+| `publico-comemora.ogg` | Rank alto e carta lendária |
+| `publico-lamenta.ogg` | Falha no dado e evento desfavorável |
+
+**PREENCHER:** nome do gerador e licença.
 
 ## Ambiente
 
 `ambiente-taverna.mp3`: lareira crepitando, arquivo original
-`freesound_community-fireplace-6354.mp3` (em `assets-originais/sons/`),
+`freesound_community-fireplace-6354.mp3` (em `assets-originais/sons/lareira/`),
 reduzido para mono a 56 kbps (3,4 MB para 1,2 MB). O padrão do nome é o do
 Pixabay (usuário "freesound_community"), cuja licença dispensa crédito.
 **PREENCHER:** confirmar a origem. Toca em loop a 0,08 de volume junto com a

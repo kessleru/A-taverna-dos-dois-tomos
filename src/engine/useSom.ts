@@ -25,6 +25,12 @@ const EFEITOS = [
   'moedas',
   'correntes',
   'selo',
+  // Gerados pela equipe (docs/redesign/08-assets.md §6).
+  'tambor',
+  'chama',
+  'correntes-quebrando',
+  'publico-comemora',
+  'publico-lamenta',
 ] as const;
 
 export type Efeito = (typeof EFEITOS)[number];

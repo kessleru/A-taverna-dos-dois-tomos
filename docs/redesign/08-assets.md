@@ -54,7 +54,7 @@ Baixados em `public/assets/icones/`, com o quadrado preto de fundo removido e `f
 | Lareira e murmúrio de taverna (ambiente, opcional) | `ambiente-taverna.ogg` | Freesound (CC0) |
 | Música de fundo (ligada por padrão, entra no primeiro clique) | `musica-taverna.ogg` | [Kevin MacLeod / incompetech](https://incompetech.com/music/royalty-free/music.html), categoria medieval (CC BY 4.0, exige crédito). Ex.: "Village Consort", "Angevin B" |
 
-- **Já em `public/sfx/`:** todos os `.ogg` da tabela, exceto `tambor.ogg` e `chama.ogg` (descarte queimando, [06](06-animacoes.md)). A lareira ambiente está em `ambiente-taverna.mp3`. Origem de cada um em `public/sfx/CREDITOS.md`.
+- **Já em `public/sfx/`:** todos os `.ogg` da tabela, e os gerados da seção 6 (`tambor`, `chama`, `correntes-quebrando`, `publico-comemora`, `publico-lamenta`). A lareira ambiente está em `ambiente-taverna.mp3`. Origem de cada um em `public/sfx/CREDITOS.md`.
 - **Música:** a equipe escolheu "Playing with a Full Deck" (trilha do Hearthstone) em `public/sfx/musica-fundo.mp3`, no lugar da sugestão abaixo. É música comercial sem licença: ver o aviso em `public/sfx/CREDITOS.md`.
 - Nomes exatos em `src/engine/useSom.ts`. O hook atual já ignora arquivos que faltam, então dá para adicionar aos poucos.
 - Volume: efeitos 0,4; ambiente 0,08; música 0,12.
@@ -80,7 +80,7 @@ Usar o **estilo base** da seção 2 antes de cada prompt, exceto no favicon e na
 
 | `verso-carta` | 3:4 gerado, recortado para 5:7 | Verso de todas as cartas. **Feito** (`cartas/verso.webp`) | `Collectible card game card back, front view, perfectly symmetrical, vertical 3:4 format. Ornate frame of dark polished oak with gold filigree and iron corner brackets, rounded corners. In the center, a round golden emblem: two closed leather-bound tomes crossed behind a compass rose, sealed with a red wax seal. Background inside the frame: deep brown leather with subtle embossed geometric pattern and faint warm glow radiating from the emblem. Small amber gems set at the top and bottom of the frame. Warm candlelight, rich saturated colors, painterly digital art, high detail, crisp edges. Card centered, touching the top and bottom edges, with a thin plain dark margin on the left and right. No text, no letters, no numbers, no logos, no watermark, no hands, no table.` | P1 |
 
-### Sons (ainda faltam)
+### Sons (feito: em `public/sfx/`, ainda não ligados às animações)
 
 Prompts em inglês para gerador de efeitos sonoros (o mesmo usado no público de taverna); em banco de sons (Freesound, Pixabay), buscar pelas palavras-chave.
 
