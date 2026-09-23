@@ -51,6 +51,10 @@ O estado da apresentação fica salvo em `sessionStorage`, então um recarregame
 
 `http://localhost:5173/#vitrine` (ou a URL publicada + `#vitrine`) mostra todas as cartas do jogo lado a lado, para revisão visual fora da apresentação.
 
+## Deploy na Vercel
+
+Importar o repositório na Vercel (framework Vite detectado sozinho; build `npm run build`, saída `dist`). Cada push na `main` publica. O `vite.config.ts` usa a raiz `/` quando roda na Vercel (variável `VERCEL`) e `/empreendedorismo/` no GitHub Pages.
+
 ## Deploy (GitHub Pages)
 
 O workflow `.github/workflows/deploy.yml` builda e publica a cada push em `main`. Para ativar, uma vez: **Settings → Pages → Source: GitHub Actions** no repositório. A URL final fica em `https://<usuario>.github.io/empreendedorismo/` (o `base` em `vite.config.ts` já está configurado para esse caminho).
