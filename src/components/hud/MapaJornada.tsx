@@ -1,8 +1,10 @@
+import { useRef } from 'react';
 import { motion, useReducedMotion, type MotionStyle } from 'framer-motion';
 import { etapas, type Escolha } from '../../data/rodada';
 import { marcosDaJornada } from '../../engine/jornada';
 import { COR, SIGILO } from '../cartas/logicas';
 import { Icone } from '../ui/Icone';
+import { Impacto } from '../ui/Particulas';
 
 const ROMANOS = ['I', 'II', 'III', 'IV'];
 
@@ -16,6 +18,8 @@ export function MapaJornada({ etapaAtual, escolhas }: { etapaAtual: number; esco
     escolhas,
     etapas.map((e) => e.ideal),
   );
+  // Marcos já feitos ao montar (recarregar a página, voltar à rodada) não comemoram de novo.
+  const feitosAoMontar = useRef(new Set(marcos.flatMap((m, i) => (m.estado === 'feito' ? [i] : []))));
 
   return (
     <div className="relative flex w-[560px] items-start justify-between px-6" aria-label="Mapa da jornada">
@@ -43,6 +47,7 @@ export function MapaJornada({ etapaAtual, escolhas }: { etapaAtual: number; esco
                   {ROMANOS[i]}
                 </span>
               )}
+              {feito && !feitosAoMontar.current.has(i) && <Impacto cor={cor} onda={80} raio={62} quantidade={8} atraso={0.15} />}
               {feito && marco.bateuReal && (
                 <span className="selo-cera absolute -bottom-2 -right-3" title="Como na história real">
                   <Icone nome="wax-seal" className="h-8 w-8" />

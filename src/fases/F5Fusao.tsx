@@ -7,6 +7,7 @@ import { CartaLendaria } from '../components/cartas/CartaLendaria';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { Faiscas } from '../components/ui/Faiscas';
 import { Poeira } from '../components/ui/Poeira';
+import { Chuva } from '../components/ui/Particulas';
 import { NavFolhas } from '../components/ui/NavFolhas';
 import { Icone } from '../components/ui/Icone';
 import { mola } from '../styles/movimento';
@@ -184,7 +185,8 @@ function Linha({ numero, texto, nova }: { numero: number; texto: string; nova: b
   const reduzido = useReducedMotion();
   const animar = nova && !reduzido;
   return (
-    <li className="flex items-start gap-4 font-texto text-[32px] leading-snug">
+    <li className="relative flex items-start gap-4 font-texto text-[32px] leading-snug">
+      {animar && <Chuva tipo="ouro" quantidade={10} janela={1.3} semente={numero * 7} />}
       <span className="w-10 shrink-0 font-titulo font-bold text-cera">{numero}.</span>
       <motion.span
         initial={animar ? { clipPath: 'inset(0 100% 0 0)', color: '#c8901c', textShadow: '0 0 14px rgb(232 182 74 / 0.9)' } : false}

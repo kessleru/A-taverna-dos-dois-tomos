@@ -115,3 +115,21 @@ Correções pedidas em `correcao/` e uma rodada de melhorias gerais:
 - **Efeitos** — crítico com faíscas, clarão dourado e chuva de ouro; falha com a mesa tremendo e clarão vermelho; anel de luz nos orbes quando um marcador muda; reflexo de vela que segue o cursor nas cartas.
 - **Visual medieval** (`src/styles/medieval.css`) — as caixas de borda sólida viraram peças de ofício: placas de ferro rebitadas com filete dourado (Leitura do Mapa, Carta do Destino, divergências do Confronto, régua do dado, barra de carregamento), fita de pano costurada (faixa do dado, veredito), botões de placa dourada chanfrada e tábua escura, medalhões de anéis dourados nos retratos e no mapa da jornada, selos de cera no progresso das folhas, tapeçaria com trama de linho, costura e cantoneiras, holofote do tutorial com halo de vela e cantoneiras de manuscrito.
 - **HUD** — nome da fase com acento ("Confronto dos Tomos", "Fusão"), ícone de som desenhado e o marcador PREENCHER escondido da tela (o nome da equipe aparece quando for preenchido em `src/data/conteudo.ts`).
+
+### Partículas no momento certo (`src/components/ui/Particulas.tsx`)
+
+Efeitos de um disparo só, amarrados ao instante da ação, com semente fixa e desligados com movimento reduzido:
+
+| Momento | Efeito |
+|---|---|
+| Carta de Desafio cai na mesa; cartas da votação são distribuídas; dado para | Poeira levantando da mesa (`Baforada`) |
+| Carta descartada queima | Brasas nascendo na linha de fogo, de baixo para cima (`Chuva tipo="brasas" queima`) |
+| Selo de cera da Crônica bate | Onda e gotas de cera (`Impacto gotas`) |
+| Marco do mapa da jornada é concluído | Onda e fagulhas na cor da carta jogada |
+| Bloco da Tapeçaria recebe tinta | Brilho curto na cor da lógica |
+| Orbe ganha valor | Bolhas subindo no líquido |
+| Carta do Destino vira | Pó de ouro no desfecho bom, cinzas caindo no ruim |
+| Forja com a Combinar trancada | Fagulhas de ferro quando as correntes batem |
+| Medalha do resultado é forjada | Fagulhas de bigorna |
+| Linha nova dos Aprendizados | Pó de ouro enquanto a pena escreve |
+| Botão Continuar aparece | Um brilho atravessa a placa uma vez |

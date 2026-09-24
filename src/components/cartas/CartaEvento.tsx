@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { arteEventos } from '../../data/artes';
 import { CenaArte } from './CenaArte';
 import { Icone } from '../ui/Icone';
+import { Chuva } from '../ui/Particulas';
 
 interface CartaEventoProps {
   depoisDaEtapa: number;
@@ -64,6 +65,8 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
             })}
         </div>
       </div>
+      {/* Depois de virar: pó de ouro sobe no desfecho bom, cinzas caem no ruim. */}
+      <Chuva tipo={sucesso ? 'ouro' : 'cinzas'} quantidade={sucesso ? 22 : 18} janela={1.4} atraso={0.7} semente={depoisDaEtapa + 40} />
     </motion.div>
   );
 }

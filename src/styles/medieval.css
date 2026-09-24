@@ -133,6 +133,27 @@
   transform: translateX(120%);
 }
 
+/* Quando o botão aparece (o passo liberou o Continuar), o brilho atravessa
+   a placa uma vez, para chamar o olho sem ficar piscando. */
+.botao-placa > .botao-brilho {
+  animation: botao-brilho-entrada 1.1s ease-out 0.45s backwards;
+}
+
+@keyframes botao-brilho-entrada {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .botao-placa > .botao-brilho {
+    animation: none;
+  }
+}
+
 /* Botão secundário: tábua escura com o mesmo chanfro e fio dourado. */
 .botao-tabua {
   position: relative;

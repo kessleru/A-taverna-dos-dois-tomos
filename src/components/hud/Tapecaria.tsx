@@ -3,6 +3,7 @@ import type { Bloco, Logica } from '../../data/rodada';
 import { COR, NOME, SIGILO } from '../cartas/logicas';
 import { FormaGema } from '../cartas/FormaGema';
 import { Icone } from '../ui/Icone';
+import { Impacto } from '../ui/Particulas';
 
 // Blocos no desenho clássico do Business Model Canvas (5 colunas + base de
 // custos e receitas), como os alunos o conhecem do Artigo B.
@@ -73,6 +74,8 @@ export function Tapecaria({ canvas, destaque = [], largura = LARGURA_BASE, titul
                   transition={{ duration: 0.9, ease: 'easeOut' }}
                 />
               )}
+              {/* A tinta chega ao bloco com um brilho curto na cor da lógica. */}
+              {aceso && fundo && <Impacto cor={COR[logicas[logicas.length - 1]]} onda={46} raio={34} quantidade={6} atraso={0.35} />}
               {/* Trama do linho por cima da tinta e, no bloco pintado, a costura à mão. */}
               <span className="trama pointer-events-none absolute inset-0" aria-hidden />
               {fundo && <span className="pointer-events-none absolute inset-[3px] rounded-[1px] border border-dashed border-pergaminho/35" aria-hidden />}

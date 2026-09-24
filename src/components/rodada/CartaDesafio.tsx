@@ -3,6 +3,7 @@ import type { Etapa } from '../../data/rodada';
 import { artesEtapas } from '../../data/artes';
 import { CenaArte } from '../cartas/CenaArte';
 import { mola } from '../../styles/movimento';
+import { Baforada } from '../ui/Particulas';
 
 // Carta de Desafio (01-tema-e-hud.md §8.2): horizontal, arte à esquerda e a
 // situação da etapa à direita num pergaminho. Cai na mesa ao aparecer.
@@ -24,6 +25,7 @@ export function CartaDesafio({ etapa }: { etapa: Etapa }) {
         <h2 className="font-titulo text-[52px] font-bold leading-[1.05]">{etapa.titulo}</h2>
         <p className="font-texto text-[34px] leading-snug">{etapa.situacao}</p>
       </div>
+      <Baforada atraso={0.22} largura={3} semente={etapa.situacao.length} />
     </motion.div>
   );
 }

@@ -5,6 +5,7 @@ import type { ResultadoDado } from '../../engine/motor';
 import confetti from 'canvas-confetti';
 import { Icone } from '../ui/Icone';
 import { Faiscas } from '../ui/Faiscas';
+import { Baforada } from '../ui/Particulas';
 import { ReguaDado } from './ReguaDado';
 import { mola } from '../../styles/movimento';
 
@@ -103,6 +104,7 @@ export function Consequencia({
         <span className="relative font-titulo text-[110px] font-bold text-pergaminho [text-shadow:0_4px_10px_rgb(0_0_0),0_0_4px_rgb(0_0_0)]">
           {face}
         </span>
+        {revelado && <Baforada largura={0.8} semente={dado.d20} />}
         {revelado && dado.faixa !== 'falha' && <Faiscas cor={cor} quantidade={dado.faixa === 'critico' ? 18 : 10} raio={dado.faixa === 'critico' ? 300 : 200} />}
       </motion.div>
 

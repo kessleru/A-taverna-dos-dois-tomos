@@ -6,6 +6,7 @@ import { pontuacao, type EstadoRodada } from '../engine/motor';
 import { ControlesFase } from '../components/ui/ControlesFase';
 import { ContadorAnimado } from '../components/ui/ContadorAnimado';
 import { Tapecaria } from '../components/hud/Tapecaria';
+import { Impacto } from '../components/ui/Particulas';
 import { Poeira } from '../components/ui/Poeira';
 import { Icone } from '../components/ui/Icone';
 import { COR, SIGILO } from '../components/cartas/logicas';
@@ -83,6 +84,8 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
           animate={{ scale: 1, filter: 'brightness(1) sepia(0) saturate(1) hue-rotate(0deg)' }}
           transition={{ scale: { type: 'spring', stiffness: 160, damping: 14 }, filter: { duration: 1.6, ease: 'easeOut' } }}
         >
+          {/* Fagulhas de bigorna quando a medalha é forjada. */}
+          <Impacto cor="var(--brasa)" onda={300} raio={240} quantidade={16} atraso={0.25} />
           <span className="font-titulo text-[20px] font-bold uppercase tracking-[0.2em] text-tinta/80">Rank</span>
           <span className="px-6 text-center font-titulo text-[34px] font-bold leading-tight text-tinta">{rank}</span>
           <span className="mt-1 flex gap-1 text-tinta">

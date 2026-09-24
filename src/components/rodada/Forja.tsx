@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { mensagensCombinar } from '../../data/rodada';
 import { CartaDecisao } from '../cartas/CartaDecisao';
 import { Icone } from '../ui/Icone';
+import { Impacto } from '../ui/Particulas';
 import { mola } from '../../styles/movimento';
 
 // Forja do Combinar (06-animacoes.md, "Revelações"): se a turma já adaptou e
@@ -63,6 +64,8 @@ export function Forja({ desbloqueado, aoFundir }: { desbloqueado: boolean; aoFun
               transition={desbloqueado ? { ...mola.impacto, duration: 1.2 } : { duration: 0.6, repeat: 2 }}
               style={desbloqueado ? { filter: 'drop-shadow(0 0 30px var(--ouro))' } : undefined}
             >
+              {/* Trancada: as correntes batem e soltam fagulhas de ferro. */}
+              {!desbloqueado && <Impacto cor="#d8d0c6" onda={180} raio={200} quantidade={10} atraso={0.25} />}
               <div style={{ zoom: 0.8 }} data-guia="combinar">
                 <CartaDecisao
                   id="combinar"
