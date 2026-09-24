@@ -24,9 +24,10 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
   const espera = useRef<number | undefined>(undefined);
   const ampliada = useRef(false);
 
-  // O giro decide qual face aparece: só backface-visibility falha quando o
-  // hover (tilt, escala e o reflexo com mix-blend) promove a carta a outra
-  // camada, e a frente vazava espelhada antes do clique.
+  // O giro decide qual face aparece, sem backface-visibility: quando o hover
+  // (tilt, escala e o reflexo com mix-blend) achata o 3D, o navegador errava
+  // a face de trás e a carta fechada mostrava a frente espelhada ou sumia.
+  // O verso gira 180° dentro da carta virada 180°, então nunca fica espelhado.
   const giro = useSpring(virada ? 0 : 180, { stiffness: 300, damping: 26 });
   const visibilidadeFrente = useTransform(giro, (v) => (v < 90 ? 'visible' : 'hidden'));
   const visibilidadeVerso = useTransform(giro, (v) => (v < 90 ? 'hidden' : 'visible'));
@@ -81,7 +82,7 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
     >
       <div style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`, transformStyle: 'preserve-3d' }}>
         <motion.div className="relative" style={{ rotateY: giro, transformStyle: 'preserve-3d' }}>
-          <motion.div className="relative" style={{ backfaceVisibility: 'hidden', visibility: visibilidadeFrente }}>
+          <motion.div className="relative" style={{ visibility: visibilidadeFrente }}>
             {frente}
             {/* Reflexo de vela que acompanha o cursor pelo verniz da carta. */}
             <div
@@ -97,7 +98,7 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
           </motion.div>
           <motion.div
             className="absolute inset-0"
-            style={{ backfaceVisibility: 'hidden', rotateY: 180, visibility: visibilidadeVerso }}
+            style={{ rotateY: 180, visibility: visibilidadeVerso }}
           >
             <VersoCarta corPrincipal={corPrincipal} tamanho={tamanho} />
           </motion.div>
