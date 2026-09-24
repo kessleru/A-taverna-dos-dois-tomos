@@ -16,6 +16,7 @@ import { Consequencia } from '../components/rodada/Consequencia';
 import { Cronica } from '../components/rodada/Cronica';
 import { Forja } from '../components/rodada/Forja';
 import { CartaEvento } from '../components/cartas/CartaEvento';
+import { RevelacaoBricolagem, VIRADA_BRICOLAGEM_MS } from '../components/rodada/RevelacaoBricolagem';
 import { Botao } from '../components/ui/Botao';
 import { Guia } from '../components/guia/Guia';
 import { useGrimorio } from '../components/ui/NotificacoesGrimorio';
@@ -38,11 +39,14 @@ const TRAVA_PASSO_MS: Record<Passo, number> = {
   votacao: 1800,
   dado: 1000,
   consequencia: 700,
+  bricolagem: 1200,
   cronica: 1300,
   evento: 1200,
   forja: 1800,
 };
 const TRAVA_FORJA_DESBLOQUEADA_MS = 2600;
+// A Adaptar vira Bricolagem e o pergaminho entra depois.
+const TRAVA_BRICOLAGEM_DESCOBERTA_MS = 2400;
 // Depois que o dado para: números e orbes assentando.
 const TRAVA_REVELACAO_MS = 900;
 const TRAVA_FIM_MS = 1200;
@@ -108,6 +112,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   const podeAvancar =
     estado.terminou ||
     estado.passo === 'situacao' ||
+    estado.passo === 'bricolagem' ||
     estado.passo === 'cronica' ||
     estado.passo === 'evento' ||
     estado.passo === 'forja' ||
@@ -172,9 +177,30 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     // identidade a cada render e recolocaria esse efeito em loop.
   }, [estado.passo]);
 
+  // Na descoberta da Bricolagem, orbes e tapeçaria seguram o estado de antes e
+  // só mudam quando a carta termina de virar. As refs guardam o último passo
+  // antes dela (o bônus e a nova cor entram junto com o passo).
+  const indForaDaBricolagem = useRef(estado.ind);
+  const canvasForaDaBricolagem = useRef(estado.canvas);
+  if (estado.passo !== 'bricolagem') {
+    indForaDaBricolagem.current = estado.ind;
+    canvasForaDaBricolagem.current = estado.canvas;
+  }
+  const [bonusBricolagemVisivel, setBonusBricolagemVisivel] = useState(false);
+  useEffect(() => {
+    setBonusBricolagemVisivel(false);
+    if (estado.passo !== 'bricolagem' || !estado.bricolagem) return;
+    const id = window.setTimeout(() => setBonusBricolagemVisivel(true), VIRADA_BRICOLAGEM_MS + 500);
+    return () => window.clearTimeout(id);
+  }, [estado.passo, estado.bricolagem]);
+  const segurandoBonus = estado.passo === 'bricolagem' && estado.bricolagem && !bonusBricolagemVisivel;
+  const indNosOrbes = indAntes ?? (segurandoBonus ? indForaDaBricolagem.current : estado.ind);
+  const canvasNaTapecaria = segurandoBonus ? canvasForaDaBricolagem.current : estado.canvas;
+
   useEffect(() => {
     if (estado.terminou) travar(TRAVA_FIM_MS);
     else if (estado.passo === 'forja' && desbloqueado) travar(TRAVA_FORJA_DESBLOQUEADA_MS);
+    else if (estado.passo === 'bricolagem' && estado.bricolagem && !segurandoBonus) travar(TRAVA_BRICOLAGEM_DESCOBERTA_MS);
     else travar(TRAVA_PASSO_MS[estado.passo]);
   }, [estado.etapa, estado.passo, estado.terminou]);
 
@@ -208,7 +234,10 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     );
   }
 
-  const blocosAcesos = estado.passo === 'consequencia' && revelado && opcaoAtual ? opcaoAtual.blocos : [];
+  const blocosAcesos =
+    (estado.passo === 'consequencia' && revelado) || (estado.passo === 'bricolagem' && estado.bricolagem)
+      ? (opcaoAtual?.blocos ?? [])
+      : [];
 
   return (
     <section className="flex h-full flex-col px-16 pb-6 pt-4">
@@ -220,14 +249,14 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
           <TrilhaPassos passo={estado.passo} etapa={estado.etapa} opcoes={etapa?.combinar && desbloqueado ? 3 : 2} />
         </div>
         <div data-guia="orbes">
-          <Orbes ind={indAntes ?? estado.ind} />
+          <Orbes ind={indNosOrbes} />
         </div>
       </header>
 
       <div className="mt-2 flex min-h-0 flex-1 gap-10">
         <aside className="flex w-[440px] shrink-0 flex-col justify-end pb-4">
           <div data-guia="tapecaria">
-            <Tapecaria canvas={estado.canvas} destaque={blocosAcesos} />
+            <Tapecaria canvas={canvasNaTapecaria} destaque={blocosAcesos} />
           </div>
         </aside>
 
@@ -252,6 +281,8 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
           {estado.passo === 'consequencia' && opcaoAtual && estado.ultimoDado && (
             <Consequencia dado={estado.ultimoDado} resultado={opcaoAtual.resultado} aoRevelar={aoRevelarDado} aoGirar={() => som.tocar('tic')} />
           )}
+
+          {estado.passo === 'bricolagem' && <RevelacaoBricolagem descoberta={estado.bricolagem} />}
 
           {estado.passo === 'cronica' && escolhaAtual && <Cronica etapa={etapa} escolha={escolhaAtual} />}
 
