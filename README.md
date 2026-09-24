@@ -2,12 +2,15 @@
 
 Jogo de apresentação para a atividade de Empreendedorismo (repositório "Startup Arena"). O redesign em andamento está em [docs/redesign/](./docs/redesign/00-visao-geral.md); o plano original fica em [docs/plano-original.md](./docs/plano-original.md) como histórico.
 
+**Para estudar os artigos:** [docs/artigos-explicados.md](./docs/artigos-explicados.md) explica os dois artigos de forma simples e mostra onde cada ideia aparece no jogo.
+
 ## Pastas
 
 ```
 docs/
   redesign/          plano atual, um arquivo por tópico
   artigos/           PDFs dos dois artigos (não vão para o build)
+  artigos-explicados.md  os dois artigos em linguagem simples
   plano-original.md  primeiro plano, histórico
 public/
   assets/cartas/     arte das cartas (WebP)
