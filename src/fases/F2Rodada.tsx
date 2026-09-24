@@ -4,7 +4,7 @@ import { Icone } from '../components/ui/Icone';
 import { etapas, eventos, combinarDesbloqueado, type Escolha } from '../data/rodada';
 import type { Indicadores } from '../data/conteudo';
 import type { useRodada } from '../engine/useRodada';
-import type { Faixa } from '../engine/motor';
+import type { Faixa, Passo } from '../engine/motor';
 import { Orbes } from '../components/hud/Orbes';
 import { MapaJornada } from '../components/hud/MapaJornada';
 import { Tapecaria } from '../components/hud/Tapecaria';
@@ -19,6 +19,7 @@ import { CartaEvento } from '../components/cartas/CartaEvento';
 import { Botao } from '../components/ui/Botao';
 import { Guia } from '../components/guia/Guia';
 import { useGrimorio } from '../components/ui/NotificacoesGrimorio';
+import { travar } from '../engine/trava';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -30,6 +31,22 @@ interface F2RodadaProps extends FaseProps {
 const TECLAS_AVANCAR = ['ArrowRight', ' ', 'PageDown'];
 // Shift+1/2/3 forçam a faixa do próximo dado (ensaio e emergências, 02 §4).
 const FAIXA_POR_TECLA: Record<string, Faixa> = { Digit1: 'falha', Digit2: 'sucesso', Digit3: 'critico' };
+// Quanto cada passo leva para entrar na mesa (distribuir cartas, virar o
+// evento, forjar a Combinar): até lá, cliques e teclas ficam travados.
+const TRAVA_PASSO_MS: Record<Passo, number> = {
+  situacao: 900,
+  votacao: 1800,
+  dado: 1000,
+  consequencia: 700,
+  cronica: 1300,
+  evento: 1200,
+  forja: 1800,
+};
+const TRAVA_FORJA_DESBLOQUEADA_MS = 2600;
+// Depois que o dado para: números e orbes assentando.
+const TRAVA_REVELACAO_MS = 900;
+const TRAVA_FIM_MS = 1200;
+
 const NOMES_INDICADOR: Record<keyof Indicadores, string> = { caixa: 'Caixa', clientes: 'Clientes', moral: 'Moral' };
 
 function descreverMudanca(antes: Indicadores, depois: Indicadores): string {
@@ -70,6 +87,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   }
 
   function aoRevelarDado() {
+    travar(TRAVA_REVELACAO_MS);
     setRevelado(true);
     const faixa = estado.ultimoDado?.faixa;
     if (faixa === 'critico') {
@@ -153,6 +171,12 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     // som é intencionalmente omitido: o objeto retornado por useSom muda de
     // identidade a cada render e recolocaria esse efeito em loop.
   }, [estado.passo]);
+
+  useEffect(() => {
+    if (estado.terminou) travar(TRAVA_FIM_MS);
+    else if (estado.passo === 'forja' && desbloqueado) travar(TRAVA_FORJA_DESBLOQUEADA_MS);
+    else travar(TRAVA_PASSO_MS[estado.passo]);
+  }, [estado.etapa, estado.passo, estado.terminou]);
 
   if (estado.terminou) {
     return (
