@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useSpring, useTransform } from 'framer-motion';
 import { ESPERA_AMPLIAR_MS } from '../../engine/ampliacao';
 import { useAmpliacao } from './Ampliacao';
 import { VersoCarta } from './VersoCarta';
@@ -23,6 +23,14 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
   const { mostrar, esconder } = useAmpliacao();
   const espera = useRef<number | undefined>(undefined);
   const ampliada = useRef(false);
+
+  // O giro decide qual face aparece: só backface-visibility falha quando o
+  // hover (tilt, escala e o reflexo com mix-blend) promove a carta a outra
+  // camada, e a frente vazava espelhada antes do clique.
+  const giro = useSpring(virada ? 0 : 180, { stiffness: 300, damping: 26 });
+  const visibilidadeFrente = useTransform(giro, (v) => (v < 90 ? 'visible' : 'hidden'));
+  const visibilidadeVerso = useTransform(giro, (v) => (v < 90 ? 'hidden' : 'visible'));
+  useEffect(() => giro.set(virada ? 0 : 180), [virada, giro]);
 
   function pararAmpliacao() {
     window.clearTimeout(espera.current);
@@ -72,13 +80,8 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
       transition={{ type: 'spring', stiffness: 260, damping: 20 }}
     >
       <div style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`, transformStyle: 'preserve-3d' }}>
-        <motion.div
-          className="relative"
-          animate={{ rotateY: virada ? 0 : 180 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-          <div className="relative" style={{ backfaceVisibility: 'hidden' }}>
+        <motion.div className="relative" style={{ rotateY: giro, transformStyle: 'preserve-3d' }}>
+          <motion.div className="relative" style={{ backfaceVisibility: 'hidden', visibility: visibilidadeFrente }}>
             {frente}
             {/* Reflexo de vela que acompanha o cursor pelo verniz da carta. */}
             <div
@@ -91,10 +94,13 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
               }}
               aria-hidden
             />
-          </div>
-          <div className="absolute inset-0" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+          </motion.div>
+          <motion.div
+            className="absolute inset-0"
+            style={{ backfaceVisibility: 'hidden', rotateY: 180, visibility: visibilidadeVerso }}
+          >
             <VersoCarta corPrincipal={corPrincipal} tamanho={tamanho} />
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </motion.div>
