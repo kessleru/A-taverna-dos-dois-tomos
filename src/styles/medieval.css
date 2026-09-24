@@ -246,17 +246,23 @@
     0 3px 6px rgb(0 0 0 / 0.6);
 }
 
-/* Filigrana dourada em volta de um título: ✦ entre dois fios que afinam. */
+/* Filigrana dourada em volta de um título: ✦ entre dois fios que afinam.
+   O título nunca quebra linha; sem espaço, são os fios que encurtam. */
 .filigrana {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 18px;
+  max-width: 100%;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .filigrana::before,
 .filigrana::after {
   content: '';
-  flex: 0 0 90px;
+  flex: 0 1 90px;
+  min-width: 28px;
   height: 10px;
   background:
     radial-gradient(circle at 100% 50%, var(--ouro) 0 3px, transparent 3.5px),

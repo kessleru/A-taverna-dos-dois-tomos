@@ -42,6 +42,7 @@ export function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; a
         {preenchido(equipe) && <span className="font-texto">{equipe}</span>}
         <button
           onClick={alternarMudo}
+          data-sem-trava
           className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${
             mudo ? 'border-dano/60 text-dano' : 'border-ouro/40 text-ouro/80 hover:border-ouro hover:text-ouro'
           }`}
