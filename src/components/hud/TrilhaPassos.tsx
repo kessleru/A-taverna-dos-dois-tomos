@@ -14,7 +14,7 @@ const CICLO: No[] = [
   { id: 'desafio', rotulo: 'Desafio', passos: ['situacao'] },
   { id: 'voto', rotulo: 'Voto', passos: ['votacao'] },
   { id: 'dado', rotulo: 'Dado', passos: ['dado', 'consequencia'] },
-  { id: 'cronica', rotulo: 'Crônica', passos: ['cronica'] },
+  { id: 'cronica', rotulo: 'Crônica', passos: ['bricolagem', 'cronica'] },
 ];
 const DESTINO: No = { id: 'destino', rotulo: 'Destino', passos: ['evento'] };
 const FORJA: No = { id: 'forja', rotulo: 'Forja', passos: ['forja'] };
@@ -30,6 +30,8 @@ function dica(passo: Passo, opcoes: number): string {
       return 'O contexto dá bônus. Rolem o Dado do Destino!';
     case 'consequencia':
       return 'Vejam o que a escolha causou nos marcadores.';
+    case 'bricolagem':
+      return 'O Adaptar da fundação escondia outra carta.';
     case 'cronica':
       return 'Agora os tomos contam o que aconteceu de verdade.';
     case 'evento':

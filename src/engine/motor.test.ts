@@ -23,7 +23,8 @@ function jogarRodada(escolhas: Escolha[], faixa: Faixa = 'sucesso'): EstadoRodad
     estado = proximoPasso(estado); // situacao -> votacao
     estado = escolher(estado, escolha); // votacao -> dado
     estado = rolarDado(forcarFaixa(estado, faixa)); // dado -> consequencia
-    estado = proximoPasso(estado); // consequencia -> cronica
+    estado = proximoPasso(estado); // consequencia -> cronica | bricolagem (fundação)
+    if (estado.passo === 'bricolagem') estado = proximoPasso(estado); // bricolagem -> cronica
     estado = proximoPasso(estado); // cronica -> evento | avança etapa
     if (estado.passo === 'evento') estado = proximoPasso(estado); // resolve -> avança
     if (estado.passo === 'forja') estado = proximoPasso(estado); // forja -> situacao
@@ -115,7 +116,8 @@ describe('escolha e dado', () => {
 describe('Canvas da turma', () => {
   it('acumula os blocos tocados por cada carta, na lógica da carta', () => {
     const estado = jogarRodada(['adaptar', 'planejar']);
-    expect(estado.canvas.parcerias).toEqual(['adaptar']);
+    // O Adaptar da fundação vira Bricolagem na tapeçaria.
+    expect(estado.canvas.parcerias).toEqual(['bricolagem']);
     expect(estado.canvas.custos).toEqual(['planejar']);
     expect(estado.canvas.atividades).toEqual(['planejar']);
   });
@@ -138,5 +140,45 @@ describe('eventos', () => {
     const base: EstadoRodada = { ...estadoInicial(), etapa: 1, passo: 'evento', escolhas: ['adaptar', 'planejar'] };
     expect(resolverEvento(base).ultimoEvento?.titulo).toBe('Perda Aceitável!');
     expect(resolverEvento({ ...base, escolhas: ['planejar', 'adaptar'] }).ultimoEvento?.titulo).toBe('Máquinas caras demais');
+  });
+});
+
+describe('Bricolagem na fundação', () => {
+  function ateConsequencia(escolha: Escolha): EstadoRodada {
+    return rolarDado(forcarFaixa(escolher(proximoPasso(estadoInicial()), escolha), 'sucesso'));
+  }
+
+  it('Adaptar revela a Bricolagem: devolve o caixa e repinta os blocos da jogada', () => {
+    const antes = ateConsequencia('adaptar');
+    const estado = proximoPasso(antes);
+    expect(estado.passo).toBe('bricolagem');
+    expect(estado.bricolagem).toBe(true);
+    expect(estado.ind.caixa).toBe(antes.ind.caixa + 5);
+    expect(estado.canvas.parcerias).toEqual(['bricolagem']);
+    expect(estado.canvas.recursos).toEqual(['bricolagem']);
+    expect(estado.canvas.proposta).toEqual(['bricolagem']);
+    expect(proximoPasso(estado).passo).toBe('cronica');
+  });
+
+  it('Planejar mostra a carta perdida, sem bônus nem mudança na tapeçaria', () => {
+    const antes = ateConsequencia('planejar');
+    const estado = proximoPasso(antes);
+    expect(estado.passo).toBe('bricolagem');
+    expect(estado.bricolagem).toBe(false);
+    expect(estado.ind).toEqual(antes.ind);
+    expect(estado.canvas).toEqual(antes.canvas);
+  });
+
+  it('só acontece na fundação', () => {
+    let estado = jogarRodada(['adaptar']);
+    estado = rolarDado(forcarFaixa(escolher(proximoPasso(estado), 'adaptar'), 'sucesso'));
+    expect(proximoPasso(estado).passo).toBe('cronica');
+  });
+
+  it('descobrir a Bricolagem não muda o perfil nem o desbloqueio da Combinar', () => {
+    const estado = jogarRodada(['adaptar', 'adaptar', 'planejar', 'combinar']);
+    expect(estado.bricolagem).toBe(true);
+    expect(estado.escolhas[0]).toBe('adaptar');
+    expect(combinarDesbloqueado(estado.escolhas.slice(0, 3))).toBe(true);
   });
 });

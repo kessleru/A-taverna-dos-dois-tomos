@@ -50,7 +50,7 @@ export const briefing = {
     cartas: [
       { id: 'planejar', icone: '📋', nome: 'Planejar', teoria: 'Causation', resumo: 'Defina a meta, estude o mercado, faça o plano e execute.' },
       { id: 'adaptar', icone: '🧭', nome: 'Adaptar', teoria: 'Effectuation', resumo: 'Comece pelo que você tem, arrisque só o que pode perder e faça parcerias.' },
-      { id: 'bricolagem', icone: '🔧', nome: 'Bricolagem', teoria: 'Bricolage', resumo: 'Faça com o que está à mão. Aparece dentro do Adaptar, na fundação.' },
+      { id: 'bricolagem', icone: '🔧', nome: 'Bricolagem', teoria: 'Bricolage', resumo: 'Faça com o que está à mão. Fica escondida no Adaptar da fundação.' },
       { id: 'combinar', icone: '🔒', nome: 'Combinar', teoria: 'Carta secreta', resumo: 'Trancada. Descubram como forjá-la durante o jogo.' },
     ],
   },
@@ -88,6 +88,30 @@ export type Bloco =
 
 // Lógica de cada decisão; a bricolagem aparece na fundação real e nos tomos.
 export type Logica = Escolha | 'bricolagem';
+
+// A Bricolagem é uma carta escondida dentro do Adaptar (Artigo B, Tabela 4):
+// na fundação, quem começa pelo que já tem à mão a descobre. Ela devolve o
+// caixa que o Adaptar custou e pinta a Tapeçaria da turma com a cor dela, como
+// na Tapeçaria real. Quem planeja vê a carta que a Healthy Skin jogou ali.
+export const revelacaoBricolagem = {
+  etapa: 0,
+  gatilho: 'adaptar' as Escolha,
+  bonus: { caixa: 5 } satisfies Partial<Indicadores>,
+  descoberta: {
+    titulo: 'Vocês descobriram a Bricolagem',
+    texto:
+      'Vocês não pediram dinheiro nem compraram nada: juntaram colegas, experiência e contatos que já tinham. Dentro do Adaptar, isso tem nome.',
+    ganho: 'O que estava à mão não custou nada: +5 de Caixa.',
+    tapecaria: 'Na Tapeçaria, esses blocos ganham a cor da Bricolagem, como na Healthy Skin.',
+  },
+  perdida: {
+    titulo: 'Uma carta ficou na mesa',
+    texto:
+      'A Healthy Skin não planejou: juntou o que tinha à mão. Essa carta só aparece para quem começa pelo que já tem.',
+  },
+  // Proposição do Artigo B, que a carta antecipa para a turma.
+  licao: 'O que está à mão na fundação vira quem você é.',
+};
 
 interface Opcao { texto: string; efeito: Indicadores; resultado: string; blocos: Bloco[] }
 
