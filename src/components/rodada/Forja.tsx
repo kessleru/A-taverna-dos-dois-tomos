@@ -26,8 +26,16 @@ export function Forja({ desbloqueado, aoFundir }: { desbloqueado: boolean; aoFun
   const mensagem = desbloqueado ? mensagensCombinar.desbloqueou : mensagensCombinar.trancada;
 
   return (
-    <div className="relative flex w-full max-w-[1320px] flex-col items-center gap-8">
-      <div className="relative flex h-[610px] w-full items-center justify-center">
+    <div className="relative flex w-full max-w-[1320px] flex-col items-center gap-4">
+      {/* A mensagem vai acima da carta para não ficar sob o botão Continuar. */}
+      <p
+        className={`max-w-[860px] text-center font-titulo text-[30px] font-bold leading-tight [text-shadow:0_2px_4px_rgb(0_0_0/0.9)] ${
+          desbloqueado ? 'text-ouro' : 'text-pergaminho/80'
+        }`}
+      >
+        {mensagem.replace(/^\S+\s/, '')}
+      </p>
+      <div className="relative flex h-[540px] w-full items-center justify-center">
         {desbloqueado && fase === 'juntando' && (
           <>
             <motion.div className="absolute" initial={{ x: -420, rotate: -10 }} animate={{ x: -40, rotate: 20, scale: 0.8 }} transition={{ duration: 1.2, ease: 'easeIn' }}>
@@ -55,7 +63,7 @@ export function Forja({ desbloqueado, aoFundir }: { desbloqueado: boolean; aoFun
               transition={desbloqueado ? { ...mola.impacto, duration: 1.2 } : { duration: 0.6, repeat: 2 }}
               style={desbloqueado ? { filter: 'drop-shadow(0 0 30px var(--ouro))' } : undefined}
             >
-              <div style={{ zoom: 0.9 }} data-guia="combinar">
+              <div style={{ zoom: 0.8 }} data-guia="combinar">
                 <CartaDecisao
                   id="combinar"
                   nome="Combinar"
@@ -82,13 +90,6 @@ export function Forja({ desbloqueado, aoFundir }: { desbloqueado: boolean; aoFun
         )}
       </div>
 
-      <p
-        className={`max-w-[1100px] text-center font-titulo text-[32px] font-bold leading-tight [text-shadow:0_2px_4px_rgb(0_0_0/0.9)] ${
-          desbloqueado ? 'text-ouro' : 'text-pergaminho/80'
-        }`}
-      >
-        {mensagem.replace(/^\S+\s/, '')}
-      </p>
     </div>
   );
 }

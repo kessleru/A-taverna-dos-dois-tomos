@@ -11,7 +11,8 @@ const BLOCOS: { id: Bloco; nome: string; icone: string; area: string }[] = [
   { id: 'atividades', nome: 'Atividades', icone: 'gears', area: '1 / 3 / 2 / 5' },
   { id: 'recursos', nome: 'Recursos', icone: 'chest', area: '2 / 3 / 3 / 5' },
   { id: 'proposta', nome: 'Proposta de valor', icone: 'gem-pendant', area: '1 / 5 / 3 / 7' },
-  { id: 'relacionamento', nome: 'Relacionamento', icone: 'conversation', area: '1 / 7 / 2 / 9' },
+  // Hífen opcional: a palavra inteira não cabe na célula estreita.
+  { id: 'relacionamento', nome: 'Relacio\u00ADnamento', icone: 'conversation', area: '1 / 7 / 2 / 9' },
   { id: 'canais', nome: 'Canais', icone: 'shop', area: '2 / 7 / 3 / 9' },
   { id: 'segmentos', nome: 'Segmentos', icone: 'three-friends', area: '1 / 9 / 3 / 11' },
   { id: 'custos', nome: 'Custos', icone: 'money-stack', area: '3 / 1 / 4 / 6' },
@@ -49,7 +50,9 @@ export function Tapecaria({ canvas, destaque = [], largura = LARGURA_BASE, titul
   return (
     <div style={{ zoom: largura / LARGURA_BASE }} className="w-[420px]">
       <p className="mb-2 font-titulo text-[22px] font-bold text-ouro [text-shadow:0_2px_3px_rgb(0_0_0/0.9)]">{titulo}</p>
-      <div className="grid h-[240px] grid-cols-10 grid-rows-3 gap-1 rounded-md border-2 border-ouro-escuro bg-madeira-profunda/90 p-1 shadow-carta">
+      {/* Tear de madeira escura com cantoneiras de ferro segurando o pano. */}
+      <div className="quadro-madeira !rounded-[4px] !p-[9px]">
+      <div className="grid h-[240px] grid-cols-10 grid-rows-3 gap-1 bg-madeira-profunda p-1 shadow-[inset_0_0_12px_rgb(0_0_0/0.8)]">
         {BLOCOS.map((bloco) => {
           const logicas = canvas[bloco.id] ?? [];
           const fundo = pintura(logicas);
@@ -57,9 +60,9 @@ export function Tapecaria({ canvas, destaque = [], largura = LARGURA_BASE, titul
           return (
             <div
               key={bloco.id}
-              className="relative flex flex-col items-center justify-center gap-0.5 overflow-hidden rounded-sm border border-pergaminho/15 bg-madeira text-center"
+              className="trama relative flex flex-col items-center justify-center gap-0.5 overflow-hidden rounded-[1px] bg-madeira text-center shadow-[inset_0_0_0_1px_rgb(243_230_200/0.08),inset_0_0_10px_rgb(0_0_0/0.55)]"
               style={{ gridArea: bloco.area }}
-              title={bloco.nome}
+              title={bloco.nome.replace('\u00AD', '')}
             >
               {fundo && (
                 <motion.div
@@ -70,6 +73,9 @@ export function Tapecaria({ canvas, destaque = [], largura = LARGURA_BASE, titul
                   transition={{ duration: 0.9, ease: 'easeOut' }}
                 />
               )}
+              {/* Trama do linho por cima da tinta e, no bloco pintado, a costura à mão. */}
+              <span className="trama pointer-events-none absolute inset-0" aria-hidden />
+              {fundo && <span className="pointer-events-none absolute inset-[3px] rounded-[1px] border border-dashed border-pergaminho/35" aria-hidden />}
               {/* Sigilos das lógicas que construíram o bloco. */}
               {fundo && (
                 <span className="absolute right-0.5 top-0.5 flex gap-px">
@@ -84,7 +90,7 @@ export function Tapecaria({ canvas, destaque = [], largura = LARGURA_BASE, titul
                 <Icone nome={bloco.icone} className="h-7 w-7" />
               </span>
               <span
-                className={`relative px-0.5 font-texto text-[13px] font-bold leading-none [text-shadow:0_1px_2px_rgb(0_0_0/0.9)] ${
+                className={`relative px-0.5 font-texto text-[13px] font-bold leading-none [hyphens:manual] [text-shadow:0_1px_2px_rgb(0_0_0/0.9)] ${
                   fundo ? 'text-pergaminho' : 'text-pergaminho/40'
                 }`}
               >
@@ -93,6 +99,10 @@ export function Tapecaria({ canvas, destaque = [], largura = LARGURA_BASE, titul
             </div>
           );
         })}
+      </div>
+      {['no', 'ne', 'se', 'so'].map((canto) => (
+        <span key={canto} className={`cantoneira-pequena ${canto}`} aria-hidden />
+      ))}
       </div>
       {legenda && (
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-texto text-[17px] font-bold text-pergaminho [text-shadow:0_1px_2px_rgb(0_0_0/0.9)]">

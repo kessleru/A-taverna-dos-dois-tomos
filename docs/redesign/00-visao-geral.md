@@ -105,3 +105,13 @@ Pedidas durante o desenvolvimento, para depois do essencial. Todas **feitas**:
 - **Fusão animada na F5** — os dois tomos orbitam cada vez mais rápido, clarão com faíscas, nasce a lendária Aprendizados no centro e desliza para o seu lugar.
 - **Tela inicial (F0)** — o Grimório escreve a abertura e sai (clicar nele pula); entra a tela de título centralizada, com brasão dos dois tomos, raios de luz girando, "A Taverna / dos Dois Tomos" com filetes dourados, faixa vermelha com o subtítulo, os dois tomos flutuando dos lados e o botão pulsando.
 - **Partículas sem exagero** — poeira dourada (`Poeira.tsx`) só no título, na lendária e no rank Grão-Mestre; faíscas só na carta escolhida e na fusão. Com movimento reduzido, nada disso aparece.
+
+## 8. Polimento (24/09)
+
+Correções pedidas em `correcao/` e uma rodada de melhorias gerais:
+
+- **Correções** — a carta escolhida não é mais cortada no zoom (o recorte da queima só existe na carta descartada); a mesa não "puxa carta" quatro vezes na votação (um farfalhar para a Leitura do Mapa, um embaralhar para as cartas; no Confronto, um deslizar por folha); a seta → volta a rolar o Dado do Destino.
+- **Explicação do jogo** — trilha no alto da rodada (Desafio → Voto → Dado → Crônica → Destino) com uma linha dizendo o que a turma faz agora; o mesmo ciclo aparece na folha "Como funciona" do briefing; o painel do dado mostra a régua das 20 faces pintada em falha, sucesso e crítico, com a face mínima e a chance; a revelação marca a face que saiu na régua e troca "(CD 11)" por "precisavam de 11".
+- **Efeitos** — crítico com faíscas, clarão dourado e chuva de ouro; falha com a mesa tremendo e clarão vermelho; anel de luz nos orbes quando um marcador muda; reflexo de vela que segue o cursor nas cartas.
+- **Visual medieval** (`src/styles/medieval.css`) — as caixas de borda sólida viraram peças de ofício: placas de ferro rebitadas com filete dourado (Leitura do Mapa, Carta do Destino, divergências do Confronto, régua do dado, barra de carregamento), fita de pano costurada (faixa do dado, veredito), botões de placa dourada chanfrada e tábua escura, medalhões de anéis dourados nos retratos e no mapa da jornada, selos de cera no progresso das folhas, tapeçaria com trama de linho, costura e cantoneiras, holofote do tutorial com halo de vela e cantoneiras de manuscrito.
+- **HUD** — nome da fase com acento ("Confronto dos Tomos", "Fusão"), ícone de som desenhado e o marcador PREENCHER escondido da tela (o nome da equipe aparece quando for preenchido em `src/data/conteudo.ts`).

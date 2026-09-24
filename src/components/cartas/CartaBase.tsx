@@ -18,6 +18,8 @@ interface CartaBaseProps {
 
 export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'grande', onClick, layoutId }: CartaBaseProps) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  // Onde o reflexo de vela bate na carta (em %), ou null sem o cursor em cima.
+  const [reflexo, setReflexo] = useState<{ x: number; y: number } | null>(null);
   const { mostrar, esconder } = useAmpliacao();
   const espera = useRef<number | undefined>(undefined);
   const ampliada = useRef(false);
@@ -47,6 +49,7 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
     const px = (evento.clientX - caixa.left) / caixa.width - 0.5;
     const py = (evento.clientY - caixa.top) / caixa.height - 0.5;
     setTilt({ x: py * -12, y: px * 12 });
+    setReflexo({ x: (px + 0.5) * 100, y: (py + 0.5) * 100 });
   }
 
   return (
@@ -58,6 +61,7 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
       onMouseMove={aoMoverMouse}
       onMouseLeave={() => {
         setTilt({ x: 0, y: 0 });
+        setReflexo(null);
         pararAmpliacao();
       }}
       onClick={() => {
@@ -74,7 +78,20 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
           transition={{ type: 'spring', stiffness: 300, damping: 26 }}
           style={{ transformStyle: 'preserve-3d' }}
         >
-          <div style={{ backfaceVisibility: 'hidden' }}>{frente}</div>
+          <div className="relative" style={{ backfaceVisibility: 'hidden' }}>
+            {frente}
+            {/* Reflexo de vela que acompanha o cursor pelo verniz da carta. */}
+            <div
+              className="pointer-events-none absolute inset-[4%] rounded-[12px] mix-blend-soft-light transition-opacity duration-300"
+              style={{
+                opacity: reflexo ? 1 : 0,
+                background: reflexo
+                  ? `radial-gradient(circle at ${reflexo.x}% ${reflexo.y}%, rgb(255 244 214 / 0.85), rgb(255 220 150 / 0.25) 30%, transparent 60%)`
+                  : undefined,
+              }}
+              aria-hidden
+            />
+          </div>
           <div className="absolute inset-0" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
             <VersoCarta corPrincipal={corPrincipal} tamanho={tamanho} />
           </div>

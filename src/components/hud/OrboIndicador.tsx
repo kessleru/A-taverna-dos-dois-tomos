@@ -82,7 +82,17 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
         </span>
 
         <AnimatePresence>
-          {flutuantes.map((f) => (
+          {flutuantes.map((f) => [
+            // Anel de luz que sai do vidro na cor do ganho ou da perda.
+            <motion.span
+              key={`anel-${f.id}`}
+              className="pointer-events-none absolute inset-[14%] rounded-full border-[5px]"
+              style={{ borderColor: f.delta > 0 ? 'var(--cura)' : 'var(--dano)', boxShadow: `0 0 18px ${f.delta > 0 ? 'var(--cura)' : 'var(--dano)'}` }}
+              initial={{ scale: 0.9, opacity: 0.95 }}
+              animate={{ scale: 1.7, opacity: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduzido ? 0 : 0.9, ease: 'easeOut' }}
+            />,
             <motion.span
               key={f.id}
               className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 font-titulo text-[56px] font-bold [text-shadow:0_3px_6px_rgb(0_0_0/0.9)]"
@@ -92,8 +102,8 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
               transition={{ duration: 1.5 }}
             >
               {f.delta > 0 ? `+${f.delta}` : f.delta}
-            </motion.span>
-          ))}
+            </motion.span>,
+          ])}
         </AnimatePresence>
       </motion.div>
 

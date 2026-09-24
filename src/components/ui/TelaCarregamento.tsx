@@ -30,13 +30,16 @@ export function TelaCarregamento({ progresso }: { progresso: number }) {
       aria-label="Carregando o jogo"
     >
       <h1 className="titulo-ouro font-titulo text-[72px] font-bold tracking-[0.04em]">A Taverna dos Dois Tomos</h1>
+      <div className="filigrana text-[22px] text-ouro" aria-hidden>✦</div>
       <p className="font-texto text-[34px] italic text-pergaminho/80">Preparando a taverna...</p>
-      {/* Barra em latão com o enchimento dourado. */}
-      <div className="h-7 w-[900px] rounded-full border-2 border-ouro-escuro bg-madeira p-1 shadow-carta">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-ouro-escuro via-ouro to-ouro-claro transition-[width] duration-200"
-          style={{ width: `${porcento}%` }}
-        />
+      {/* Barra de ouro forjado numa placa de ferro rebitada. */}
+      <div className="placa-ferro h-11 w-[900px] px-5 py-[11px]">
+        <div className="h-full bg-[#0b0806] shadow-[inset_0_2px_4px_rgb(0_0_0/0.9)]">
+          <div
+            className="barra-forjada h-full bg-gradient-to-r from-ouro-escuro via-ouro to-ouro-claro transition-[width] duration-200"
+            style={{ width: `${porcento}%` }}
+          />
+        </div>
       </div>
       <p className="font-titulo text-[32px] font-bold text-ouro">{porcento}%</p>
     </motion.div>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { conteudo } from '../data/conteudo';
+import { conteudo, preenchido } from '../data/conteudo';
 import { useFolhas } from '../engine/useFolhas';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
@@ -210,6 +210,7 @@ function Linha({ numero, texto, nova }: { numero: number; texto: string; nova: b
 
 function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
   const reduzido = useReducedMotion();
+  const membros = conteudo.equipe.membros.filter(preenchido);
   const falou = useRef(false);
 
   useEffect(() => {
@@ -224,7 +225,7 @@ function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
   return (
     <div className="flex h-full flex-col gap-6">
       <div className="flex items-center gap-6">
-        <img src={TAVERNEIRO} alt="" className="h-[140px] w-[140px] shrink-0 rounded-full border-4 border-ouro object-cover object-top shadow-carta" />
+        <img src={TAVERNEIRO} alt="" className="h-[140px] w-[140px] shrink-0 medalhao m-2 object-cover object-top" />
         <p className="font-texto text-[40px] font-bold italic leading-tight text-ouro [text-shadow:0_3px_6px_rgb(0_0_0/0.9)]">
           “A lenda continua. Obrigado por puxarem uma cadeira.”
         </p>
@@ -238,7 +239,7 @@ function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
             animate={{ y: '0%' }}
             transition={{ duration: 6, ease: 'easeOut' }}
           >
-            <Bloco titulo="Equipe">{conteudo.equipe.membros.join(' · ')}</Bloco>
+            {membros.length > 0 && <Bloco titulo="Equipe">{membros.join(' · ')}</Bloco>}
             <Bloco titulo="Referências">
               {conteudo.artigos.map((artigo) => (
                 <p key={artigo.id} className="mb-3 text-[22px]">

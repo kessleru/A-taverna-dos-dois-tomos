@@ -3,9 +3,17 @@ import type { Retangulo } from '../../engine/guia';
 import { ALTURA_PALCO, LARGURA_PALCO } from '../../engine/palco';
 
 const FOLGA = 16;
+const CANTO = 44;
+
+// Tracejado que desenha só os cantos de um retângulo (começa no canto de cima à esquerda).
+function cantos(largura: number, altura: number): string {
+  const l = Math.min(CANTO, largura / 2);
+  const a = Math.min(CANTO, altura / 2);
+  return [l, largura - 2 * l, l, 0, a, altura - 2 * a, a, 0, l, largura - 2 * l, l, 0, a, altura - 2 * a, a, 0].join(' ');
+}
 
 // Palco escurecido com um buraco arredondado em volta do alvo; o buraco
-// desliza de um alvo para o outro e ganha um anel dourado pulsando.
+// desliza de um alvo para o outro, com halo de vela e cantoneiras douradas.
 export function Holofote({ alvo, reduzido }: { alvo: Retangulo | null; reduzido: boolean }) {
   const buraco = alvo
     ? { x: alvo.x - FOLGA, y: alvo.y - FOLGA, width: alvo.largura + FOLGA * 2, height: alvo.altura + FOLGA * 2 }
@@ -29,16 +37,30 @@ export function Holofote({ alvo, reduzido }: { alvo: Retangulo | null; reduzido:
         animate={{ opacity: 1 }}
       />
       {alvo && (
-        <motion.rect
-          rx={18}
-          fill="none"
-          stroke="var(--ouro)"
-          strokeWidth={4}
-          initial={false}
-          animate={{ ...buraco, opacity: reduzido ? 0.9 : [0.95, 0.35, 0.95] }}
-          transition={{ ...transicao, opacity: { duration: 1.2, repeat: Infinity } }}
-          style={{ filter: 'drop-shadow(0 0 10px var(--ouro))' }}
-        />
+        <>
+          {/* Luz de vela em volta do alvo: um halo quente, sem contorno chapado. */}
+          <motion.rect
+            rx={18}
+            fill="none"
+            stroke="rgb(255 190 90 / 0.35)"
+            strokeWidth={10}
+            initial={false}
+            animate={{ ...buraco, opacity: reduzido ? 0.7 : [0.8, 0.35, 0.8] }}
+            transition={{ ...transicao, opacity: { duration: 1.6, repeat: Infinity } }}
+            style={{ filter: 'blur(8px)' }}
+          />
+          {/* Cantoneiras douradas de manuscrito: só os quatro cantos do retângulo. */}
+          <motion.rect
+            fill="none"
+            stroke="var(--ouro)"
+            strokeWidth={5}
+            strokeLinecap="square"
+            initial={false}
+            animate={{ ...buraco, strokeDasharray: cantos(buraco.width, buraco.height) }}
+            transition={transicao}
+            style={{ filter: 'drop-shadow(0 0 6px var(--ouro)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.8))' }}
+          />
+        </>
       )}
     </svg>
   );

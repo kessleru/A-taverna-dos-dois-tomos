@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { dadoDoDestino, type Escolha, type Etapa } from '../../data/rodada';
 import { bonusDoContexto } from '../../engine/motor';
 import { Icone } from '../ui/Icone';
+import { ReguaDado, minimoNoDado } from './ReguaDado';
 
 function comSinal(valor: number) {
   return valor > 0 ? `+${valor}` : `${valor}`;
@@ -19,6 +20,7 @@ export function DadoDestino({ etapa, etapaIndice, escolha, onRolar }: { etapa: E
     ['Macro', etapa.leitura.macro.setas[escolha] ?? 0],
   ] as const;
   const bonus = bonusDoContexto(etapaIndice, escolha);
+  const { minimo, chance } = minimoNoDado(bonus);
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
@@ -47,16 +49,13 @@ export function DadoDestino({ etapa, etapaIndice, escolha, onRolar }: { etapa: E
       </motion.button>
 
       <div className="pergaminho-sombra w-[620px]">
-        <div className="pergaminho pergaminho-aviso !py-10">
+        <div className="pergaminho pergaminho-aviso !py-8">
           <h2 className="font-titulo text-[48px] font-bold leading-none">Dado do Destino</h2>
-          <p className="mt-4 font-texto text-[30px] leading-snug">
-            Tirem <strong className="font-titulo text-[40px]">{dadoDoDestino.cd}</strong> ou mais para a carta render o esperado.
+          <p className="mt-3 font-texto text-[28px] leading-snug">
+            Dado + bônus do contexto: <strong className="font-titulo text-[36px]">{dadoDoDestino.cd}</strong> ou mais faz a carta render o esperado.
           </p>
-          <div className="ornamento my-4" aria-hidden>
-            ❦
-          </div>
-          <p className="font-titulo text-[26px] font-bold">Bônus do contexto</p>
-          <ul className="mt-2 space-y-1 font-texto text-[28px]">
+          <p className="mt-4 font-titulo text-[24px] font-bold">Bônus do contexto</p>
+          <ul className="mt-1 space-y-0.5 font-texto text-[26px]">
             {niveis.map(([nome, valor]) => (
               <li key={nome} className="flex justify-between">
                 <span>{nome}</span>
@@ -76,7 +75,14 @@ export function DadoDestino({ etapa, etapaIndice, escolha, onRolar }: { etapa: E
               </span>
             </li>
           </ul>
-          <p className="mt-5 font-texto text-[24px] italic text-tinta/75">Clique no dado ou aperte → para rolar.</p>
+          <p className="mt-5 font-texto text-[26px] leading-tight">
+            No dado, tirem <strong className="font-titulo text-[32px]">{minimo}</strong> ou mais
+            <span className="italic text-tinta/70"> · {chance}% de chance</span>
+          </p>
+          <div className="mt-2">
+            <ReguaDado bonus={bonus} claro />
+          </div>
+          <p className="mt-4 font-texto text-[22px] italic text-tinta/75">Clique no dado ou aperte → para rolar.</p>
         </div>
       </div>
     </div>

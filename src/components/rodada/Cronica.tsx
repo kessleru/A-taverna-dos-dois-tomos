@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { motion } from 'framer-motion';
 import type { Escolha, Etapa } from '../../data/rodada';
 import { briefing } from '../../data/rodada';
@@ -14,8 +15,8 @@ function Retrato({ id }: { id: 'A' | 'B' }) {
     <img
       src={artesArtigos[id].imagem}
       alt=""
-      className="h-[132px] w-[132px] shrink-0 rounded-full border-4 object-cover shadow-carta"
-      style={{ borderColor: cor }}
+      className="medalhao m-2 h-[132px] w-[132px] shrink-0 object-cover"
+      style={{ '--gema': cor } as CSSProperties}
     />
   );
 }
