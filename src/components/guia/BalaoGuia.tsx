@@ -34,7 +34,7 @@ export function BalaoGuia({ texto, x, y, largura, ultimo, reduzido }: BalaoGuiaP
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
     >
       <div className="pergaminho flex items-start gap-5 px-7 pb-5 pt-6">
-        <img src={TAVERNEIRO} alt="" className="h-[104px] w-[104px] shrink-0 rounded-full border-4 border-ouro-escuro object-cover object-top" />
+        <img src={TAVERNEIRO} alt="" className="h-[104px] w-[104px] shrink-0 medalhao m-2 object-cover object-top" />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="font-titulo text-[22px] font-bold leading-none text-cera">O Taverneiro</p>
           {/* O texto inteiro ocupa o espaço desde o começo; só a parte digitada aparece. */}

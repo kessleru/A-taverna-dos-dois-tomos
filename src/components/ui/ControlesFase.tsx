@@ -13,10 +13,10 @@ export function ControlesFase({ avancar, voltar, primeiraFase, ultimaFase, rotul
     <div className="mt-10 flex items-center gap-4">
       {!primeiraFase && (
         <Botao variante="fantasma" onClick={voltar}>
-          ← Voltar
+          Voltar
         </Botao>
       )}
-      {!ultimaFase && <Botao onClick={avancar}>{rotuloAvancar ?? 'Avançar →'}</Botao>}
+      {!ultimaFase && <Botao onClick={avancar}>{rotuloAvancar ?? 'Continuar'}</Botao>}
     </div>
   );
 }

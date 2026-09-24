@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useIsPresent } from 'framer-motion';
 import type { Escolha, Etapa } from '../../data/rodada';
 import { CartaDecisao } from '../cartas/CartaDecisao';
 import { LeituraMapa } from './LeituraMapa';
 import { Faiscas } from '../ui/Faiscas';
+import { Baforada, Chuva } from '../ui/Particulas';
 import { COR } from '../cartas/logicas';
 
 interface VotacaoProps {
@@ -18,6 +19,12 @@ const TEORIAS: Record<Escolha, string> = { planejar: 'Causation', adaptar: 'Effe
 const ROTACOES = [-4, 0, 4];
 // Suspense entre a turma escolher e a carta ser jogada (rufar de tambor).
 const ATRASO_REVELACAO_MS = 1500;
+
+// Brasas subindo da carta descartada enquanto ela queima (só durante a saída).
+function BrasasDaQueima() {
+  const presente = useIsPresent();
+  return presente ? null : <Chuva tipo="brasas" quantidade={22} queima={0.9} semente={21} />;
+}
 
 // Votação (02-jogabilidade.md §2): a Leitura do Mapa, a pergunta grande e as
 // cartas numeradas; a turma levanta a mão e o apresentador clica ou tecla 1/2/3.
@@ -65,10 +72,12 @@ export function Votacao({ etapa, combinarLiberado, onEscolher, aoSelecionar }: V
                 className="relative"
                 layout
                 initial={{ opacity: 0, y: 60, rotate: -10 }}
-                animate={{ opacity: 1, y: 0, rotate: 0, clipPath: 'inset(-50% -50% -50% -50%)' }}
-                // A carta descartada queima de baixo para cima.
+                animate={{ opacity: 1, y: 0, rotate: 0 }}
+                // A carta descartada queima de baixo para cima. O recorte só
+                // existe na saída: na carta escolhida ele cortava o zoom dela
+                // durante a animação de layout.
                 exit={{
-                  clipPath: 'inset(-50% -50% 100% -50%)',
+                  clipPath: ['inset(-50% -50% -50% -50%)', 'inset(-50% -50% 100% -50%)'],
                   filter: 'sepia(1) saturate(4) hue-rotate(-20deg) brightness(0.8)',
                   transition: { duration: 0.9, ease: 'easeIn' },
                 }}
@@ -85,6 +94,9 @@ export function Votacao({ etapa, combinarLiberado, onEscolher, aoSelecionar }: V
                   tecla={indice + 1}
                 />
                 {escolha === selecionada && <Faiscas cor={COR[escolha]} />}
+                {/* A carta bate na mesa ao ser distribuída e levanta poeira. */}
+                <Baforada atraso={1.45 + indice * 0.15} semente={indice + 1} />
+                <BrasasDaQueima />
               </motion.div>
             );
           })}

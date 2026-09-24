@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Icone } from '../components/ui/Icone';
 import { etapas, eventos, combinarDesbloqueado, type Escolha } from '../data/rodada';
 import type { Indicadores } from '../data/conteudo';
 import type { useRodada } from '../engine/useRodada';
@@ -6,6 +8,7 @@ import type { Faixa } from '../engine/motor';
 import { Orbes } from '../components/hud/Orbes';
 import { MapaJornada } from '../components/hud/MapaJornada';
 import { Tapecaria } from '../components/hud/Tapecaria';
+import { TrilhaPassos } from '../components/hud/TrilhaPassos';
 import { CartaDesafio } from '../components/rodada/CartaDesafio';
 import { Votacao } from '../components/rodada/Votacao';
 import { DadoDestino } from '../components/rodada/DadoDestino';
@@ -108,6 +111,10 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
         notificar(`Próximo dado: ${faixa === 'critico' ? 'crítico' : faixa}.`);
         return;
       }
+      // No passo do dado a seta rola o dado: quem trata é o DadoDestino. Ele
+      // registra o ouvinte de novo a cada render, depois deste, então aqui a
+      // tecla precisa passar sem ser consumida.
+      if (TECLAS_AVANCAR.includes(evento.key) && estado.passo === 'dado') return;
       if (TECLAS_AVANCAR.includes(evento.key)) {
         // Na rodada a seta avança os passos, não a fase.
         evento.preventDefault();
@@ -149,9 +156,29 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
 
   if (estado.terminou) {
     return (
-      <section className="flex h-full flex-col items-center justify-center gap-10 text-center">
-        <h2 className="titulo-ouro font-titulo text-[96px] font-bold">A crônica terminou</h2>
-        <p className="font-texto text-[36px] italic text-pergaminho/85">Vamos ver o que a guilda construiu.</p>
+      <section className="flex h-full flex-col items-center justify-center gap-8 text-center">
+        {/* O tomo da crônica se fecha com o selo da guilda. */}
+        <motion.div
+          className="relative text-ouro drop-shadow-[0_12px_20px_rgb(0_0_0/0.8)]"
+          initial={{ scale: 0.6, opacity: 0, rotate: -8 }}
+          animate={{ scale: 1, opacity: 1, rotate: 0 }}
+          transition={{ type: 'spring', stiffness: 160, damping: 14 }}
+        >
+          <Icone nome="scroll-quill" className="h-[170px] w-[170px]" />
+          <motion.span
+            className="selo-cera absolute -bottom-3 -right-6"
+            initial={{ scale: 3, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.6 }}
+          >
+            <Icone nome="wax-seal" className="h-20 w-20" />
+          </motion.span>
+        </motion.div>
+        <h2 className="titulo-ouro font-titulo text-[96px] font-bold leading-none">A crônica terminou</h2>
+        <div className="filigrana text-[26px] text-ouro" aria-hidden>
+          ✦
+        </div>
+        <p className="font-texto text-[36px] italic text-pergaminho/85">Quatro decisões escritas. Vamos ver o que a guilda construiu.</p>
         <Botao onClick={avancarFase}>Ver o resultado</Botao>
       </section>
     );
@@ -164,6 +191,9 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
       <header className="flex items-start justify-between">
         <div data-guia="jornada">
           <MapaJornada etapaAtual={estado.etapa} escolhas={estado.escolhas} />
+        </div>
+        <div className="pt-3">
+          <TrilhaPassos passo={estado.passo} etapa={estado.etapa} opcoes={etapa?.combinar && desbloqueado ? 3 : 2} />
         </div>
         <div data-guia="orbes">
           <Orbes ind={indAntes ?? estado.ind} />

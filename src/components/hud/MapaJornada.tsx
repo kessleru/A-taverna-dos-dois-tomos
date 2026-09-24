@@ -1,8 +1,10 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useReducedMotion, type MotionStyle } from 'framer-motion';
 import { etapas, type Escolha } from '../../data/rodada';
 import { marcosDaJornada } from '../../engine/jornada';
 import { COR, SIGILO } from '../cartas/logicas';
 import { Icone } from '../ui/Icone';
+import { Impacto } from '../ui/Particulas';
 
 const ROMANOS = ['I', 'II', 'III', 'IV'];
 
@@ -16,11 +18,13 @@ export function MapaJornada({ etapaAtual, escolhas }: { etapaAtual: number; esco
     escolhas,
     etapas.map((e) => e.ideal),
   );
+  // Marcos já feitos ao montar (recarregar a página, voltar à rodada) não comemoram de novo.
+  const feitosAoMontar = useRef(new Set(marcos.flatMap((m, i) => (m.estado === 'feito' ? [i] : []))));
 
   return (
     <div className="relative flex w-[560px] items-start justify-between px-6" aria-label="Mapa da jornada">
       {/* A estrada: linha tracejada de terra batida atrás dos marcos. */}
-      <div className="absolute left-12 right-12 top-[30px] h-2 rounded-full bg-madeira-clara/80 [background-image:repeating-linear-gradient(90deg,rgb(232_182_74/0.5)_0_14px,transparent_14px_26px)]" />
+      <div className="absolute left-12 right-12 top-[27px] h-2 rounded-full bg-madeira-clara/80 [background-image:repeating-linear-gradient(90deg,rgb(232_182_74/0.5)_0_14px,transparent_14px_26px)]" />
       {marcos.map((marco, i) => {
         const nome = etapas[i].fase.replace(/^\d+\s*·\s*/, '');
         const atual = marco.estado === 'atual';
@@ -29,8 +33,8 @@ export function MapaJornada({ etapaAtual, escolhas }: { etapaAtual: number; esco
         return (
           <div key={etapas[i].id} className="relative flex w-[112px] flex-col items-center gap-1">
             <motion.div
-              className="relative flex h-[68px] w-[68px] items-center justify-center rounded-full border-4 bg-madeira-profunda"
-              style={{ borderColor: cor, boxShadow: feito || atual ? `0 0 14px ${cor}` : undefined }}
+              className="medalhao relative flex h-[62px] w-[62px] items-center justify-center bg-[radial-gradient(circle_at_40%_35%,#3a2616,#140d08_70%)]"
+              style={{ '--gema': cor, filter: feito || atual ? `drop-shadow(0 0 10px ${cor})` : 'saturate(0.4) brightness(0.8)' } as MotionStyle}
               animate={atual && !reduzido ? { scale: [1, 1.1, 1] } : { scale: 1 }}
               transition={atual ? { duration: 1.4, repeat: Infinity } : { duration: 0.2 }}
             >
@@ -43,6 +47,7 @@ export function MapaJornada({ etapaAtual, escolhas }: { etapaAtual: number; esco
                   {ROMANOS[i]}
                 </span>
               )}
+              {feito && !feitosAoMontar.current.has(i) && <Impacto cor={cor} onda={80} raio={62} quantidade={8} atraso={0.15} />}
               {feito && marco.bateuReal && (
                 <span className="selo-cera absolute -bottom-2 -right-3" title="Como na história real">
                   <Icone nome="wax-seal" className="h-8 w-8" />

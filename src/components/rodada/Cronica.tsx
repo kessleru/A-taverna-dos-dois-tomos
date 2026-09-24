@@ -1,9 +1,11 @@
+import type { CSSProperties } from 'react';
 import { motion } from 'framer-motion';
 import type { Escolha, Etapa } from '../../data/rodada';
 import { briefing } from '../../data/rodada';
 import { artesArtigos } from '../../data/artes';
 import { Icone } from '../ui/Icone';
 import { mola } from '../../styles/movimento';
+import { Impacto } from '../ui/Particulas';
 import { useSonsEmSequencia } from '../../engine/useSonsEmSequencia';
 
 const NOMES: Record<Escolha, string> = { planejar: 'Planejar', adaptar: 'Adaptar', combinar: 'Combinar' };
@@ -14,8 +16,8 @@ function Retrato({ id }: { id: 'A' | 'B' }) {
     <img
       src={artesArtigos[id].imagem}
       alt=""
-      className="h-[132px] w-[132px] shrink-0 rounded-full border-4 object-cover shadow-carta"
-      style={{ borderColor: cor }}
+      className="medalhao m-2 h-[132px] w-[132px] shrink-0 object-cover"
+      style={{ '--gema': cor } as CSSProperties}
     />
   );
 }
@@ -40,7 +42,8 @@ export function Cronica({ etapa, escolha }: { etapa: Etapa; escolha: Escolha }) 
         animate={{ scale: 1, opacity: 1, rotate: -6 }}
         transition={{ ...mola.impacto, delay: 0.8 }}
       >
-        <span className={igual ? 'selo-cera' : 'text-dano'}>
+        <span className={`relative ${igual ? 'selo-cera' : 'text-dano'}`}>
+          <Impacto cor={igual ? 'var(--cera)' : 'var(--dano)'} gotas onda={110} raio={80} quantidade={9} atraso={0.95} />
           <Icone nome="wax-seal" className="h-24 w-24" />
         </span>
         <span
