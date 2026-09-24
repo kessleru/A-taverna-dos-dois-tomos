@@ -3,12 +3,17 @@ import { AnimatePresence } from 'framer-motion';
 import { briefing } from '../../data/rodada';
 import { conteudo } from '../../data/conteudo';
 import { proximoEstadoTomo, type EstadoTomo } from '../../engine/tomos';
+import { CARACTERES_POR_SEGUNDO } from '../../engine/digitacao';
+import { TRAVA_PADRAO_MS, travar } from '../../engine/trava';
 import { CartaArtigo } from '../../components/cartas/CartaArtigo';
 import { Pergaminho } from '../../components/ui/Pergaminho';
 import { useGrimorio } from '../../components/ui/NotificacoesGrimorio';
 import type { useSom } from '../../engine/useSom';
 
 type IdTomo = 'A' | 'B';
+
+// Folga para o aviso do Grimório entrar antes de começar a ser escrito.
+const ENTRADA_AVISO_MS = 300;
 
 // Cartas nas pontas do quadro e a fala de cada narrador ao lado, espelhadas.
 // As cartas ficam um pouco menores que o padrão (zoom 0,8 sobre o 1,8 geral)
@@ -32,7 +37,11 @@ export function FolhaTomos({ som }: { som: ReturnType<typeof useSom> }) {
         const artigo = conteudo.artigos.find((a) => a.id === id);
         if (artigo) {
           const [primeiro, segundo] = artigo.numeros;
-          notificar(`Tomo ${id}: ${primeiro.valor} ${primeiro.rotulo}; ${segundo.valor} ${segundo.rotulo}.`);
+          const aviso = `Tomo ${id}: ${primeiro.valor} ${primeiro.rotulo}; ${segundo.valor} ${segundo.rotulo}.`;
+          notificar(aviso);
+          // A outra carta só abre depois que o Grimório termina de escrever
+          // este aviso, senão os dois se atropelam no canto.
+          travar(Math.max(TRAVA_PADRAO_MS, ENTRADA_AVISO_MS + (aviso.length / CARACTERES_POR_SEGUNDO) * 1000));
         }
       } else {
         som.tocar('pagina');
