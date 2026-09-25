@@ -33,7 +33,11 @@ img {
   -webkit-touch-callout: none;
 }
 
+/* É um jogo, não uma página: nada de selecionar texto com arrasto ou duplo
+   clique (o azul da seleção quebrava o clima e atrapalhava quem apresenta). */
 body {
+  -webkit-user-select: none;
+  user-select: none;
   background: #000;
   color: var(--pergaminho);
   font-family: 'Alegreya', serif;

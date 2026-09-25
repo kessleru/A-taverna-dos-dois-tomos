@@ -161,3 +161,8 @@
   color: var(--cera);
   filter: drop-shadow(0 3px 0 #5c1119) drop-shadow(0 8px 10px rgb(0 0 0 / 0.5));
 }
+
+/* O selo pintado (ArtePintada "selo") já tem volume próprio: só a sombra na mesa. */
+.selo-pintado {
+  filter: drop-shadow(0 8px 10px rgb(0 0 0 / 0.55));
+}

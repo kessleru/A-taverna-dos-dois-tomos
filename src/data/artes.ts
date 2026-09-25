@@ -52,8 +52,7 @@ export const artesArtigos: Record<'A' | 'B', ArteCarta> = {
   },
 };
 
-// Retratos dos narradores nos balões (Crônica, Confronto). Hoje são cópias da
-// arte das cartas dos tomos; trocar o arquivo por um retrato próprio basta.
+// Retratos dos narradores nos balões (Crônica, Confronto).
 export const retratosNarradores: Record<'A' | 'B', string> = {
   A: caminhoAsset('personagens/cartografo.webp'),
   B: caminhoAsset('personagens/cronista.webp'),
