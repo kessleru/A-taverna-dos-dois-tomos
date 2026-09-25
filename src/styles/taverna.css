@@ -5,8 +5,10 @@
   inset: -12px;
   background-size: cover;
   background-position: center;
-  filter: blur(3px) brightness(0.55) saturate(1.1);
+  /* Desfoque (3px), brilho 0,55 e saturação 1,1 já vêm no arquivo
+     taverna-fundo-noite.webp; o original sem filtro é taverna-fundo.webp. */
   animation: taverna-deriva 20s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 /* Centro mais escuro, onde ficam as cartas. */
@@ -68,11 +70,12 @@
 
 .taverna-tampo {
   position: absolute;
-  inset: auto 0 0 0;
+  /* Sobra dos lados para o parallax do mouse não mostrar a borda. */
+  inset: auto -12px 0 -12px;
   height: 300px;
   background-size: cover;
   background-position: center top;
-  filter: brightness(0.6);
+  /* Brilho 0,6 já vem no arquivo tampo-mesa-noite.webp. */
   -webkit-mask-image: linear-gradient(to top, #000 55%, transparent);
   mask-image: linear-gradient(to top, #000 55%, transparent);
 }
@@ -176,4 +179,202 @@
   z-index: 20;
   pointer-events: none;
   background: linear-gradient(to right, rgb(10 6 3 / 0.85), rgb(10 6 3 / 0.55) 60%, rgb(10 6 3 / 0.3));
+}
+
+/* Vela da tela de carregamento: a chama tremula (escala e brilho), com um
+   halo quente que respira junto. Só transform, opacidade e filtro fixo. */
+.vela-carregando {
+  position: relative;
+  display: inline-block;
+  transform-origin: 50% 90%;
+  filter: drop-shadow(0 0 18px rgb(255 170 80 / 0.7));
+  animation: vela-tremula 2.4s ease-in-out infinite;
+}
+
+.vela-carregando::before {
+  content: '';
+  position: absolute;
+  inset: -60px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgb(255 170 80 / 0.35), transparent 60%);
+  animation: taverna-vela 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes vela-tremula {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  20% {
+    transform: scale(1.02, 0.98) rotate(-1deg);
+  }
+  45% {
+    transform: scale(0.99, 1.03) rotate(0.8deg);
+  }
+  70% {
+    transform: scale(1.01, 0.99) rotate(-0.4deg);
+  }
+}
+
+/* Cartas da votação respiram na mesa (micro-movimento do Balatro): cada uma
+   no seu tempo, para a mão parecer viva enquanto a turma decide. */
+.carta-respira {
+  animation: carta-respira 3.4s ease-in-out infinite;
+}
+
+@keyframes carta-respira {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(0.7deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vela-carregando,
+  .vela-carregando::before,
+  .carta-respira {
+    animation: none;
+  }
+}
+
+/* Halo de vela do holofote do tutorial (Holofote.tsx): brilho quente em volta
+   do alvo que pulsa só na opacidade. */
+.holofote-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  box-shadow:
+    0 0 18px 6px rgb(255 190 90 / 0.35),
+    inset 0 0 18px 4px rgb(255 190 90 / 0.25);
+  animation: holofote-halo 1.6s ease-in-out infinite;
+}
+
+@keyframes holofote-halo {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holofote-halo {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* Brilho pulsante (botão da entrada, orbe em alerta): a sombra é fixa e só
+   a opacidade anima, então o pulso roda no compositor sem repintar. */
+.brilho-pulsante {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  animation: brilho-pulsante 2.2s ease-in-out infinite;
+}
+
+.brilho-pulsante.brilho-rapido {
+  animation-duration: 1.2s;
+}
+
+@keyframes brilho-pulsante {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brilho-pulsante {
+    animation: none;
+  }
+}
+
+/* Onda do líquido dos orbes (OrboIndicador): desliza um período em loop. */
+.orbe-onda {
+  animation: orbe-onda 2.4s linear infinite;
+  will-change: transform;
+}
+
+@keyframes orbe-onda {
+  to {
+    transform: translateX(-25%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbe-onda {
+    animation: none;
+  }
+}
+
+/* Cintilas (Particulas.tsx): a estrela acende girando um pouco e apaga, em
+   loop, cada uma no seu atraso. */
+.cintila {
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  opacity: 0;
+  transform: scale(0);
+  animation: cintila 2.2s ease-in-out infinite backwards;
+}
+
+@keyframes cintila {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1) rotate(20deg);
+  }
+  55%,
+  100% {
+    opacity: 0;
+    transform: scale(0.2) rotate(45deg);
+  }
+}
+
+/* Redemoinho da passagem do tempo (PassagemDoTempo.tsx): gira em volta da
+   ampulheta. A textura é máscara; a cor vem do fundo. */
+.redemoinho {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  background: radial-gradient(circle, var(--ouro-claro), var(--ouro) 55%, var(--ouro-escuro));
+  animation: redemoinho 1.6s linear infinite;
+  will-change: transform;
+}
+
+@keyframes redemoinho {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cintila,
+  .redemoinho {
+    animation: none;
+  }
 }

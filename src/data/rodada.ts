@@ -119,9 +119,25 @@ interface Opcao { texto: string; efeito: Indicadores; resultado: string; blocos:
 // carta (+1 por ▲, −1 por ▼); a soma é o bônus do contexto no d20.
 interface NivelLeitura { texto: string; setas: Partial<Record<Escolha, number>> }
 
+// Capítulo da história: abre cada etapa antes do desafio, marca a passagem do
+// tempo e liga o que veio antes ao que vem agora (a ponte da narrativa).
+export interface Capitulo {
+  numero: string;
+  periodo: string;
+  // Ano em que o capítulo começa: a passagem do tempo folheia os anos até ele.
+  ano: number;
+  // Rótulo curto dos anos, embaixo do marco no mapa da jornada.
+  anos: string;
+  abertura: string;
+  // Frase da passagem do tempo que leva a este capítulo (o que acontece entre
+  // um capítulo e outro). O primeiro não tem: a história começa nele.
+  passagem?: string;
+}
+
 export interface Etapa {
   id: string;
   fase: string;
+  capitulo: Capitulo;
   titulo: string;
   situacao: string;
   planejar: Opcao;
@@ -140,8 +156,15 @@ export const etapas: Etapa[] = [
   {
     id: 'fundacao',
     fase: '1 · Fundação',
+    capitulo: {
+      numero: 'I',
+      periodo: '2016',
+      ano: 2016,
+      anos: '2016',
+      abertura: 'Pacientes com câncer interrompem a quimio e a radioterapia por causa de lesões graves na pele. Vocês têm uma ideia de produto para ajudar.',
+    },
     titulo: 'A ideia foi recusada',
-    situacao: 'Você propôs o produto na farmacêutica onde trabalha. A empresa recusou sem nem pedir um plano de negócios.',
+    situacao: 'Uma de vocês propôs o produto na farmacêutica onde trabalhava. A empresa recusou sem nem pedir um plano de negócios.',
     planejar: { texto: 'Fazer pesquisa de mercado e um plano completo antes de sair.', efeito: { caixa: -15, clientes: 0, moral: -10 }, resultado: 'Meses de planilhas para um mercado que ainda não existe.', blocos: ['segmentos', 'custos'] },
     adaptar: { texto: 'Chamar duas colegas de confiança e começar com o que vocês já sabem.', efeito: { caixa: -5, clientes: 5, moral: 20 }, resultado: 'Farmácia, P&D e cosméticos naturais: uma equipe montada com o que estava à mão.', blocos: ['parcerias', 'recursos', 'proposta'] },
     ideal: 'adaptar',
@@ -161,8 +184,16 @@ export const etapas: Etapa[] = [
   {
     id: 'lancamento',
     fase: '2 · Primeiros anos',
+    capitulo: {
+      numero: 'II',
+      periodo: '2017 e 2018',
+      ano: 2017,
+      anos: '2017–18',
+      passagem: 'Meses de laboratório, testes e ajustes na fórmula.',
+      abertura: 'A empresa nasceu e o primeiro produto ficou pronto. Mas ainda não pode ser vendido.',
+    },
     titulo: 'Remédio ou cosmético?',
-    situacao: 'O produto funciona. Registrar como medicamento leva anos e custa caro. Como cosmético é mais simples, mas ainda exige estudos.',
+    situacao: 'Para vender, é preciso registrar o produto na Anvisa. Como medicamento leva anos e custa caro; como cosmético é mais simples, mas ainda exige estudos.',
     planejar: { texto: 'Seguir o caminho tradicional e registrar como medicamento.', efeito: { caixa: -20, clientes: -5, moral: -5 }, resultado: 'Anos de espera sem vender nada.', blocos: ['atividades', 'custos'] },
     adaptar: { texto: 'Registrar como cosmético e publicar estudos clínicos mesmo assim.', efeito: { caixa: 5, clientes: 20, moral: 10 }, resultado: 'No mercado rápido e barato, sem perder a confiança dos médicos.', blocos: ['atividades', 'canais', 'parcerias'] },
     ideal: 'adaptar',
@@ -182,8 +213,16 @@ export const etapas: Etapa[] = [
   {
     id: 'investidores',
     fase: '3 · Investidores anjo',
+    capitulo: {
+      numero: 'III',
+      periodo: '2019',
+      ano: 2019,
+      anos: '2019',
+      passagem: 'Registro, primeiras vendas, primeiros pacientes: os anos passam depressa.',
+      abertura: 'O produto enfim está registrado e vendendo. A startup quer crescer, e crescer custa dinheiro.',
+    },
     titulo: 'Os investidores chegaram',
-    situacao: 'Deu certo! Seis investidores anjo colocaram dinheiro na startup e querem saber para onde ele vai.',
+    situacao: 'Seis investidores anjo colocaram dinheiro na startup e agora querem saber para onde ele vai.',
     planejar: { texto: 'Criar conselho, metas, relatórios e reuniões regulares.', efeito: { caixa: 20, clientes: 5, moral: 5 }, resultado: 'Investidores confiantes e operação mais estável.', blocos: ['atividades', 'custos', 'relacionamento'] },
     adaptar: { texto: 'Continuar decidindo tudo no improviso, como no começo.', efeito: { caixa: -20, clientes: -5, moral: -15 }, resultado: 'Os investidores ficaram nervosos.', blocos: ['atividades'] },
     ideal: 'planejar',
@@ -202,8 +241,16 @@ export const etapas: Etapa[] = [
   {
     id: 'novo-mercado',
     fase: '4 · Anos recentes',
+    capitulo: {
+      numero: 'IV',
+      periodo: '2020 em diante',
+      ano: 2020,
+      anos: '2020+',
+      passagem: 'Vem a pandemia, e o mundo inteiro muda de ritmo.',
+      abertura: 'A empresa já é conhecida entre os oncologistas. Então uma das investidoras aponta um caminho bem maior.',
+    },
     titulo: 'Um mercado novo apareceu',
-    situacao: 'O produto também ajuda em outras doenças de pele. Mas o mercado é mais caro: cerca de 12 mil dermatologistas, contra 3 mil oncologistas.',
+    situacao: 'O produto também ajuda em outras doenças de pele, como a psoríase. Mas esse mercado é caro de alcançar: cerca de 12 mil dermatologistas, contra 3 mil oncologistas.',
     planejar: { texto: 'Montar uma equipe de vendas própria com plano nacional.', efeito: { caixa: -20, clientes: 10, moral: -5 }, resultado: 'O custo de distribuição engoliu o caixa.', blocos: ['canais', 'relacionamento', 'custos'] },
     adaptar: { texto: 'Entrar aos poucos, testando com médicos conhecidos.', efeito: { caixa: 0, clientes: 10, moral: 5 }, resultado: 'Cresce devagar, mas sem grandes riscos.', blocos: ['canais', 'relacionamento'] },
     combinar: { texto: 'Licenciar para uma farmacêutica como marca branca, com contrato de royalties e estudos planejados.', efeito: { caixa: 20, clientes: 25, moral: 10 }, resultado: 'Parceria para chegar longe, plano para chegar com segurança.', blocos: ['parcerias', 'canais', 'receitas'] },
@@ -242,6 +289,8 @@ export interface Evento {
   depoisDaEtapa: number; // índice 0–2
   nome: string;
   condicao: (escolhas: Escolha[], ind: Indicadores) => boolean;
+  // Por que o destino saiu assim: a ligação com o que a turma fez antes.
+  causa: (escolhas: Escolha[], ind: Indicadores) => string;
   seSim: Desfecho;
   seNao: Desfecho;
   conceito: string;
@@ -252,6 +301,10 @@ export const eventos: Evento[] = [
     depoisDaEtapa: 0,
     nome: 'Quem vocês conhecem?',
     condicao: (e) => e[0] === 'adaptar',
+    causa: (e) =>
+      e[0] === 'adaptar'
+        ? 'Na Fundação, vocês começaram pelas colegas e contatos que já tinham.'
+        : 'Na Fundação, vocês ficaram no plano, sem trazer ninguém de fora.',
     seSim: { titulo: 'Colcha de Retalhos!', texto: 'Um hospital conhecido topou testar os protótipos com pacientes.', efeito: { clientes: 10, moral: 5 } },
     seNao: { titulo: 'Plano pronto, porta fechada', texto: 'O plano ficou lindo, mas nenhum hospital conhece vocês para testar o produto.', efeito: { clientes: -5, moral: -5 } },
     conceito: 'Parcerias como colcha de retalhos (Artigo A). A startup real testou com hospitais parceiros (Artigo B).',
@@ -261,16 +314,24 @@ export const eventos: Evento[] = [
     nome: 'Quem vai fabricar?',
     // A rede de contatos das fundadoras vem da etapa 1 (03 §5).
     condicao: (e) => e[0] === 'adaptar',
+    causa: (e) =>
+      e[0] === 'adaptar'
+        ? 'Na Fundação, vocês trouxeram colegas que conheciam a indústria.'
+        : 'Na Fundação, vocês não trouxeram ninguém da indústria.',
     seSim: { titulo: 'Perda Aceitável!', texto: 'Uma das fundadoras conhecia um fabricante que produz lotes pequenos. Nada de comprar máquinas.', efeito: { caixa: 10 } },
-    seNao: { titulo: 'Máquinas caras demais', texto: 'Sem contatos na indústria, só sobrou montar uma fábrica.', efeito: { caixa: -10, moral: -5 } },
+    seNao: { titulo: 'Máquinas caras demais', texto: 'Ninguém para produzir em lotes pequenos: só sobrou comprar máquinas e montar uma fábrica.', efeito: { caixa: -10, moral: -5 } },
     conceito: 'Arrisque só o que pode perder (Artigo A). A Healthy Skin terceiriza a produção até hoje (Artigo B).',
   },
   {
     depoisDaEtapa: 2,
     nome: 'A incubadora abriu vagas',
     condicao: (_e, ind) => ind.caixa >= 50 && ind.moral >= 60,
+    causa: (_e, ind) =>
+      ind.caixa >= 50 && ind.moral >= 60
+        ? `Caixa ${ind.caixa} e Moral ${ind.moral}: a startup chegou saudável até aqui.`
+        : `Caixa ${ind.caixa} e Moral ${ind.moral}: a incubadora pedia pelo menos 50 e 60.`,
     seSim: { titulo: 'Portas abertas', texto: 'Vocês entraram na incubadora de um grande hospital.', efeito: { clientes: 10, moral: 5 } },
-    seNao: { titulo: 'Não foi dessa vez', texto: 'Com caixa ou moral baixos, a incubadora preferiu outra startup.', efeito: { moral: -5 } },
+    seNao: { titulo: 'Não foi dessa vez', texto: 'A incubadora preferiu outra startup.', efeito: { moral: -5 } },
     conceito: 'A startup real foi incubada na Eretz.bio, do Hospital Albert Einstein (Artigo B).',
   },
 ];

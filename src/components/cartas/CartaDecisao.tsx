@@ -6,6 +6,7 @@ import { MolduraCarta } from './MolduraCarta';
 import { FormaGema } from './FormaGema';
 import { Icone } from '../ui/Icone';
 import { COR as CORES, SIGILO as SIGILOS } from './logicas';
+import { GLOSSARIO } from '../../data/glossario';
 
 interface CartaDecisaoProps {
   id: Escolha | 'bricolagem';
@@ -44,6 +45,8 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
         tamanho={tamanho}
         onClick={trancada ? undefined : onClick}
         layoutId={`decisao-${id}`}
+        holografica={arteOriginal.raridade === 'lendaria' && !trancada}
+        palavrasChave={GLOSSARIO[id]}
         frente={
           <div className="relative">
             <div className={trancada ? 'grayscale' : undefined}>

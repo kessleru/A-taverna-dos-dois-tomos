@@ -40,8 +40,9 @@ export function Baforada({ atraso = 0, semente = 3, largura = 1, className = '' 
           style={{
             width: n.tamanho,
             height: n.tamanho * 0.7,
-            background: 'radial-gradient(circle, rgb(226 200 156 / 0.75), rgb(170 132 88 / 0.35) 55%, transparent 72%)',
-            filter: 'blur(3px)',
+            // O degradê já some nas bordas; um blur por nuvem custava um passe de
+            // filtro a cada quadro.
+            background: 'radial-gradient(circle, rgb(226 200 156 / 0.7), rgb(170 132 88 / 0.3) 50%, transparent 70%)',
           }}
           initial={{ x: 0, y: 0, scale: 0.3, opacity: 0 }}
           animate={{ x: n.x, y: n.y, scale: 1.6, opacity: [0, 0.9, 0] }}
@@ -179,6 +180,50 @@ export function Bolhas({ cor = '#fff', semente = 9, className = '' }: Comum & { 
           transition={{ delay: b.atraso, duration: b.duracao, ease: 'easeOut' }}
         />
       ))}
+    </div>
+  );
+}
+
+const PARTICULAS = `${import.meta.env.BASE_URL}assets/particulas/`;
+
+export interface Cintila {
+  // Posição em % do elemento pai, tamanho em px e atraso em s.
+  x: number;
+  y: number;
+  tamanho: number;
+  atraso: number;
+}
+
+// Brilhos em forma de estrela (Kenney Particle Pack) que acendem e apagam em
+// volta de algo mágico: a Carta do Destino, o ano da passagem do tempo. A
+// estrela é uma máscara pintada na cor pedida; o piscar é animação CSS, que
+// roda no compositor sem repintar.
+export function Cintilas({ pontos, cor = 'var(--ouro-claro)', atraso = 0, className = '' }: { pontos: Cintila[]; cor?: string; atraso?: number; className?: string }) {
+  const reduzido = useReducedMotion();
+  if (reduzido) return null;
+  return (
+    <div className={`pointer-events-none absolute inset-0 z-10 ${className}`} aria-hidden>
+      {pontos.map((p, i) => {
+        const textura = `url(${PARTICULAS}star-0${6 + (i % 3)}.webp)`;
+        return (
+          <span
+            key={i}
+            className="cintila absolute"
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: p.tamanho,
+              height: p.tamanho,
+              marginLeft: -p.tamanho / 2,
+              marginTop: -p.tamanho / 2,
+              background: `radial-gradient(circle, #fff 0 18%, ${cor} 45%)`,
+              WebkitMaskImage: textura,
+              maskImage: textura,
+              animationDelay: `${atraso + p.atraso}s`,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }

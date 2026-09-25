@@ -1,0 +1,23 @@
+/* Cursor da taverna: seta de ouro batido no palco e manopla dourada sobre o
+   que dá para clicar (o Hearthstone troca o cursor por uma manopla). Enquanto
+   o botão está apertado, as duas escurecem e a manopla desce um pouco, como
+   se tocasse a mesa. Hotspot: a ponta da seta e a ponta do dedo. */
+.palco-jogo,
+.palco-jogo * {
+  cursor: url('/assets/ui/cursor-seta.svg') 3 2, auto;
+}
+
+.palco-jogo :is(button, a[href], [role='button'], label, .cursor-pointer),
+.palco-jogo :is(button, a[href], [role='button'], label, .cursor-pointer) * {
+  cursor: url('/assets/ui/cursor-mao.svg') 2 3, pointer;
+}
+
+.palco-jogo[data-apertando],
+.palco-jogo[data-apertando] * {
+  cursor: url('/assets/ui/cursor-seta-apertando.svg') 3 2, auto;
+}
+
+.palco-jogo[data-apertando] :is(button, a[href], [role='button'], label, .cursor-pointer),
+.palco-jogo[data-apertando] :is(button, a[href], [role='button'], label, .cursor-pointer) * {
+  cursor: url('/assets/ui/cursor-mao-apertando.svg') 2 3, pointer;
+}

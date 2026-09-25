@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { ALTURA_PALCO, LARGURA_PALCO, enquadrarPalco } from '../../engine/palco';
 
 // Escala atual, para quem precisar converter coordenadas da tela para o
@@ -15,6 +15,7 @@ function medir() {
 
 export function Palco({ children }: { children: ReactNode }) {
   const [quadro, setQuadro] = useState(medir);
+  const raiz = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const aoRedimensionar = () => setQuadro(medir());
@@ -22,8 +23,28 @@ export function Palco({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('resize', aoRedimensionar);
   }, []);
 
+  // Cursor "apertando" (src/styles/cursor.css) enquanto algum botão do mouse
+  // está pressionado. Direto no atributo, sem estado: não re-renderiza o jogo.
+  useEffect(() => {
+    const elemento = raiz.current;
+    if (!elemento) return;
+    const apertar = () => elemento.setAttribute('data-apertando', '');
+    const soltar = () => elemento.removeAttribute('data-apertando');
+    window.addEventListener('pointerdown', apertar, true);
+    window.addEventListener('pointerup', soltar, true);
+    window.addEventListener('pointercancel', soltar, true);
+    window.addEventListener('blur', soltar);
+    return () => {
+      window.removeEventListener('pointerdown', apertar, true);
+      window.removeEventListener('pointerup', soltar, true);
+      window.removeEventListener('pointercancel', soltar, true);
+      window.removeEventListener('blur', soltar);
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 overflow-hidden bg-black">
+    // O botão direito é do jogo (amplia cartas): o menu do navegador não abre no palco.
+    <div ref={raiz} className="palco-jogo fixed inset-0 overflow-hidden bg-black" onContextMenu={(evento) => evento.preventDefault()}>
       {/* O transform faz deste div o bloco de contenção dos filhos com
           position: fixed, então HUD e overlays ficam presos ao palco. */}
       <div

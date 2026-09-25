@@ -6,8 +6,8 @@ import { arteEventos, arteLendaria, artesArtigos, artesDecisoes, artesEtapas } f
 const base = `${import.meta.env.BASE_URL}assets/`;
 
 const FIXAS = [
-  'cenario/taverna-fundo.webp',
-  'cenario/tampo-mesa.webp',
+  'cenario/taverna-fundo-noite.webp',
+  'cenario/tampo-mesa-noite.webp',
   'cenario/pergaminho.webp',
   'cenario/quadro-tabuas.webp',
   'texturas/ferro-placas.webp',
@@ -20,6 +20,17 @@ const FIXAS = [
   'molduras/carta-prata.webp',
   'molduras/carta-ouro.webp',
   'ui/orbe.webp',
+  // Cursores (sem eles pré-carregados, a seta do sistema piscava no começo).
+  'ui/cursor-seta.svg',
+  'ui/cursor-seta-apertando.svg',
+  'ui/cursor-mao.svg',
+  'ui/cursor-mao-apertando.svg',
+  'texturas/estrelas-mascara.webp',
+  // Partículas do Kenney Particle Pack (CC0): poeira do clique, redemoinhos e
+  // brilhos da passagem do tempo e da Carta do Destino.
+  ...['smoke-02', 'smoke-04', 'smoke-05', 'smoke-07', 'smoke-08', 'dirt-01', 'dirt-02', 'twirl-01', 'twirl-02', 'twirl-03', 'star-06', 'star-07', 'star-08', 'light-01'].map(
+    (nome) => `particulas/${nome}.webp`,
+  ),
 ].map((arquivo) => base + arquivo);
 
 const DAS_CARTAS = [

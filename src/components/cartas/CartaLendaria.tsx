@@ -3,6 +3,7 @@ import { arteLendaria } from '../../data/artes';
 import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
 import { Icone } from '../ui/Icone';
+import { GLOSSARIO } from '../../data/glossario';
 
 export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
   return (
@@ -23,6 +24,8 @@ export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
       <CartaBase
         corPrincipal="var(--ouro)"
         tamanho="grande"
+        holografica
+        palavrasChave={GLOSSARIO.aprendizados}
         frente={
           <MolduraCarta
             nome={nome}

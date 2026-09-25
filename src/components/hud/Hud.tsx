@@ -1,5 +1,7 @@
+import { memo } from 'react';
 import { conteudo, preenchido } from '../../data/conteudo';
 import type { Fase } from '../../types';
+import { definirAjuda } from '../../engine/ajuda';
 
 // Nome de cada fase como a turma a conhece (a chave interna não tem acento).
 const NOME_FASE: Record<Fase, string> = {
@@ -28,7 +30,8 @@ function IconeSom({ mudo }: { mudo: boolean }) {
   );
 }
 
-export function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; alternarMudo: () => void }) {
+// memo: as props só mudam com a fase e o mudo, não a cada ação da rodada.
+export const Hud = memo(function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; alternarMudo: () => void }) {
   const equipe = conteudo.equipe.nome;
   return (
     <header className="fixed inset-x-0 top-0 z-20 flex items-center justify-between px-6 py-3 text-[18px] text-pergaminho/70">
@@ -40,6 +43,15 @@ export function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; a
       </span>
       <div className="flex items-center gap-3">
         {preenchido(equipe) && <span className="font-texto">{equipe}</span>}
+        <button
+          onClick={() => definirAjuda(true)}
+          data-sem-trava
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-ouro/40 font-titulo text-[20px] font-bold text-ouro/80 transition-colors hover:border-ouro hover:text-ouro"
+          title="? ou H: atalhos"
+          aria-label="Ver os atalhos"
+        >
+          ?
+        </button>
         <button
           onClick={alternarMudo}
           data-sem-trava
@@ -54,4 +66,4 @@ export function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; a
       </div>
     </header>
   );
-}
+});

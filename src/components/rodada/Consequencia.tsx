@@ -2,12 +2,13 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { dadoDoDestino } from '../../data/rodada';
 import type { ResultadoDado } from '../../engine/motor';
-import confetti from 'canvas-confetti';
 import { Icone } from '../ui/Icone';
+import { chuvaDeOuro } from '../ui/confete';
 import { Faiscas } from '../ui/Faiscas';
 import { Baforada } from '../ui/Particulas';
 import { ReguaDado } from './ReguaDado';
 import { mola } from '../../styles/movimento';
+import { TREMOR, useTremor } from '../ui/Tremor';
 
 const COR_FAIXA = { critico: 'var(--ouro)', sucesso: 'var(--cura)', falha: 'var(--dano)' } as const;
 // Pano da fita de cada faixa: ouro, verde-musgo e vermelho-cera.
@@ -29,6 +30,7 @@ export function Consequencia({
   aoGirar?: () => void;
 }) {
   const reduzido = useReducedMotion();
+  const tremer = useTremor();
   const [face, setFace] = useState(reduzido ? dado.d20 : 1);
   const [revelado, setRevelado] = useState(!!reduzido);
 
@@ -58,9 +60,11 @@ export function Consequencia({
   useEffect(() => {
     if (!revelado) return;
     aoRevelarRef.current?.();
+    // O dado bate na mesa: a falha pesa, o crítico sacode, o sucesso é um toque.
+    tremer(dado.faixa === 'falha' ? TREMOR.forte : dado.faixa === 'critico' ? TREMOR.medio : TREMOR.leve * 0.8);
     // Crítico merece festa: uma chuva curta de ouro saindo do dado.
     if (dado.faixa === 'critico' && !reduzido) {
-      confetti({ particleCount: 90, spread: 70, startVelocity: 38, origin: { x: 0.42, y: 0.62 }, colors: ['#E8B64A', '#F3E6C8', '#FFD27A'] });
+      chuvaDeOuro({ particleCount: 90, spread: 70, startVelocity: 38, origin: { x: 0.42, y: 0.62 } });
     }
   }, [revelado]);
 

@@ -2,6 +2,7 @@ import { artesArtigos } from '../../data/artes';
 import type { conteudo } from '../../data/conteudo';
 import { CartaBase } from './CartaBase';
 import { MolduraCarta } from './MolduraCarta';
+import { GLOSSARIO } from '../../data/glossario';
 
 type Artigo = (typeof conteudo)['artigos'][number];
 
@@ -26,6 +27,7 @@ export function CartaArtigo({
       tamanho={tamanho}
       onClick={onClick}
       layoutId={`artigo-${artigo.id}`}
+      palavrasChave={GLOSSARIO[artigo.id as 'A' | 'B']}
       frente={
         <MolduraCarta
           nome={artigo.tituloCurto}

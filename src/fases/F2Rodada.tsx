@@ -10,6 +10,9 @@ import { MapaJornada } from '../components/hud/MapaJornada';
 import { Tapecaria } from '../components/hud/Tapecaria';
 import { TrilhaPassos } from '../components/hud/TrilhaPassos';
 import { CartaDesafio } from '../components/rodada/CartaDesafio';
+import { AberturaCapitulo } from '../components/rodada/AberturaCapitulo';
+import { PassagemDoTempo } from '../components/rodada/PassagemDoTempo';
+import { ateAqui } from '../engine/historia';
 import { Votacao } from '../components/rodada/Votacao';
 import { DadoDestino } from '../components/rodada/DadoDestino';
 import { Consequencia } from '../components/rodada/Consequencia';
@@ -20,7 +23,7 @@ import { RevelacaoBricolagem, VIRADA_BRICOLAGEM_MS } from '../components/rodada/
 import { Botao } from '../components/ui/Botao';
 import { Guia } from '../components/guia/Guia';
 import { useGrimorio } from '../components/ui/NotificacoesGrimorio';
-import { travar } from '../engine/trava';
+import { TRAVA_PADRAO_MS, travar } from '../engine/trava';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -35,7 +38,8 @@ const FAIXA_POR_TECLA: Record<string, Faixa> = { Digit1: 'falha', Digit2: 'suces
 // Quanto cada passo leva para entrar na mesa (distribuir cartas, virar o
 // evento, forjar a Combinar): até lá, cliques e teclas ficam travados.
 const TRAVA_PASSO_MS: Record<Passo, number> = {
-  situacao: 900,
+  // A abertura do capítulo entra antes e o desafio cai na mesa em seguida.
+  situacao: 1500,
   votacao: 1800,
   dado: 1000,
   consequencia: 700,
@@ -72,6 +76,19 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   // Valores de antes do dado: os orbes só mudam quando o dado para de girar.
   const [indAntes, setIndAntes] = useState<Indicadores | null>(null);
   const [revelado, setRevelado] = useState(false);
+
+  // Passagem do tempo: quando a rodada entra num capítulo novo, os anos
+  // folheiam antes do primeiro passo dele. Detectada no render (e não num
+  // efeito) para o passo novo nem chegar a montar, tocar som ou falar antes.
+  const [etapaVista, setEtapaVista] = useState(estado.etapa);
+  const [passagem, setPassagem] = useState<number | null>(null);
+  if (estado.etapa !== etapaVista) {
+    setPassagem(estado.etapa === etapaVista + 1 ? estado.etapa : null);
+    setEtapaVista(estado.etapa);
+  }
+  const emPassagem = passagem !== null && passagem === estado.etapa && !estado.terminou;
+  // O passo que está de fato na mesa (nenhum durante a passagem).
+  const passoVisivel = emPassagem ? null : estado.passo;
 
   const etapa = etapas[estado.etapa];
   const escolhaAtual = estado.escolhas[estado.etapa];
@@ -123,7 +140,8 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
 
   const avancarRef = useRef(() => {});
   avancarRef.current = () => {
-    if (estado.terminou) avancarFase();
+    if (emPassagem) setPassagem(null);
+    else if (estado.terminou) avancarFase();
     else if (podeAvancar) avancar();
   };
 
@@ -155,6 +173,8 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   }, [estado.etapa, estado.passo, forcarFaixa, notificar, voltarFase]);
 
   useEffect(() => {
+    // Durante a passagem do tempo, nada: o passo toca e fala quando aparecer.
+    if (!passoVisivel) return;
     if (estado.passo === 'evento') som.tocar('evento');
     if (estado.passo === 'forja' && !desbloqueado) {
       som.tocar('cadeado');
@@ -174,17 +194,22 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     if (estado.passo === 'evento') {
       const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa);
       const sucesso = evento?.condicao(estado.escolhas, estado.ind);
-      // Espera a carta do destino virar antes de comentar.
+      // Destino bom cintila quando a carta termina de virar; o Taverneiro
+      // comenta depois.
+      const brilho = sucesso ? window.setTimeout(() => som.tocar('brilho', { volume: 0.7 }), 650) : undefined;
       const id = window.setTimeout(() => som.falar(sucesso ? 'evento-bom' : 'evento-ruim'), 1200);
-      return () => window.clearTimeout(id);
+      return () => {
+        window.clearTimeout(id);
+        window.clearTimeout(brilho);
+      };
     }
     return () => {
       window.clearTimeout(distribuir);
       window.clearTimeout(forja);
     };
-    // som é intencionalmente omitido: o objeto retornado por useSom muda de
-    // identidade a cada render e recolocaria esse efeito em loop.
-  }, [estado.passo]);
+    // Só quando o passo visível muda: som é estável, mas o efeito não deve
+    // repetir falas se outra coisa da rodada mudar.
+  }, [passoVisivel]);
 
   // Na descoberta da Bricolagem, orbes e tapeçaria seguram o estado de antes e
   // só mudam quando a carta termina de virar. As refs guardam o último passo
@@ -207,11 +232,13 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   const canvasNaTapecaria = segurandoBonus ? canvasForaDaBricolagem.current : estado.canvas;
 
   useEffect(() => {
-    if (estado.terminou) travar(TRAVA_FIM_MS);
+    // Na passagem, um instante sem aceitar →, para um toque duplo não pular os anos sem querer.
+    if (emPassagem) travar(TRAVA_PADRAO_MS);
+    else if (estado.terminou) travar(TRAVA_FIM_MS);
     else if (estado.passo === 'forja' && desbloqueado) travar(TRAVA_FORJA_DESBLOQUEADA_MS);
     else if (estado.passo === 'bricolagem' && estado.bricolagem && !segurandoBonus) travar(TRAVA_BRICOLAGEM_DESCOBERTA_MS);
     else travar(TRAVA_PASSO_MS[estado.passo]);
-  }, [estado.etapa, estado.passo, estado.terminou]);
+  }, [estado.etapa, estado.passo, estado.terminou, emPassagem]);
 
   // Fim da rodada: o Taverneiro chama para ver o resultado.
   useEffect(() => {
@@ -276,47 +303,64 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
         </aside>
 
         <div className="relative flex min-w-0 flex-1 flex-col items-center justify-center">
-          {estado.passo === 'situacao' && (
-            <div data-guia="desafio">
-              <CartaDesafio etapa={etapa} />
+          {emPassagem && (
+            <PassagemDoTempo key={`passagem-${estado.etapa}`} de={etapas[estado.etapa - 1]} para={etapa} aoTerminar={() => setPassagem(null)} />
+          )}
+
+          {passoVisivel === 'situacao' && (
+            <div className="flex flex-col items-center gap-5">
+              <AberturaCapitulo etapa={etapa} ateAqui={ateAqui(estado.etapa, estado.escolhas, estado.bricolagem, estado.ultimoEvento?.titulo)} />
+              <div data-guia="desafio">
+                <CartaDesafio etapa={etapa} atraso={0.7} />
+              </div>
             </div>
           )}
 
-          {estado.passo === 'votacao' && (
+          {passoVisivel === 'votacao' && (
             <Votacao etapa={etapa} combinarLiberado={desbloqueado} onEscolher={aoEscolher} aoSelecionar={() => {
                 som.tocar('tambor');
                 som.tocar('chama');
               }} />
           )}
 
-          {estado.passo === 'dado' && escolhaAtual && (
+          {passoVisivel === 'dado' && escolhaAtual && (
             <DadoDestino etapa={etapa} etapaIndice={estado.etapa} escolha={escolhaAtual} onRolar={aoRolarDado} />
           )}
 
-          {estado.passo === 'consequencia' && opcaoAtual && estado.ultimoDado && (
+          {passoVisivel === 'consequencia' && opcaoAtual && estado.ultimoDado && (
             <Consequencia dado={estado.ultimoDado} resultado={opcaoAtual.resultado} aoRevelar={aoRevelarDado} aoGirar={() => som.tocar('tic')} />
           )}
 
-          {estado.passo === 'bricolagem' && <RevelacaoBricolagem descoberta={estado.bricolagem} />}
+          {passoVisivel === 'bricolagem' && <RevelacaoBricolagem descoberta={estado.bricolagem} />}
 
-          {estado.passo === 'cronica' && escolhaAtual && <Cronica etapa={etapa} escolha={escolhaAtual} />}
+          {passoVisivel === 'cronica' && escolhaAtual && <Cronica etapa={etapa} escolha={escolhaAtual} />}
 
-          {estado.passo === 'evento' &&
+          {passoVisivel === 'evento' &&
             (() => {
               const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa)!;
               const sucesso = evento.condicao(estado.escolhas, estado.ind);
               const desfecho = sucesso ? evento.seSim : evento.seNao;
               return (
-                <div className="flex flex-col items-center gap-8">
+                <div className="flex items-center gap-14">
                   <CartaEvento depoisDaEtapa={evento.depoisDaEtapa} nome={evento.nome} desfecho={desfecho} sucesso={sucesso} />
-                  <p className="max-w-[1000px] text-center font-texto text-[30px] italic leading-snug text-pergaminho/85 [text-shadow:0_2px_4px_rgb(0_0_0/0.9)]">
-                    {evento.conceito}
-                  </p>
+                  {/* O porquê: o destino é consequência do que a turma fez, não sorte. */}
+                  <motion.div
+                    className="flex w-[560px] flex-col gap-6"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1, duration: 0.5 }}
+                  >
+                    <div className="placa-ferro px-8 py-6">
+                      <p className="font-titulo text-[22px] font-bold uppercase tracking-[0.14em] text-ouro">Por causa de</p>
+                      <p className="mt-2 font-texto text-[30px] leading-snug text-pergaminho">{evento.causa(estado.escolhas, estado.ind)}</p>
+                    </div>
+                    <p className="font-texto text-[26px] italic leading-snug text-pergaminho/85 [text-shadow:0_2px_4px_rgb(0_0_0/0.9)]">{evento.conceito}</p>
+                  </motion.div>
                 </div>
               );
             })()}
 
-          {estado.passo === 'forja' && (
+          {passoVisivel === 'forja' && (
             <Forja
               desbloqueado={desbloqueado}
               aoFundir={() => {
@@ -327,7 +371,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
             />
           )}
 
-          {podeAvancar && (
+          {podeAvancar && !emPassagem && (
             <div className="absolute bottom-0 right-0">
               <Botao onClick={() => avancarRef.current()}>Continuar</Botao>
             </div>
@@ -336,7 +380,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
       </div>
 
       {/* Tutorial do Taverneiro na primeira vez de cada passo (05-tutorial.md). */}
-      <Guia passo={estado.passo} primeiraVez={estado.etapa === 0} />
+      <Guia passo={passoVisivel ?? 'passagem'} primeiraVez={estado.etapa === 0} />
     </section>
   );
 }

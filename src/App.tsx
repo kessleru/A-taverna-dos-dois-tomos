@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Taverna } from './components/ui/Taverna';
 import { Palco } from './components/ui/Palco';
@@ -8,6 +8,11 @@ import { SomContexto } from './engine/SomContexto';
 import { pontuacao } from './engine/motor';
 import { AmpliacaoProvider } from './components/cartas/Ampliacao';
 import { TelaCarregamento } from './components/ui/TelaCarregamento';
+import { Tremor } from './components/ui/Tremor';
+import { PoeiraClique } from './components/ui/PoeiraClique';
+import { Ajuda } from './components/ui/Ajuda';
+import { Estufa } from './components/ui/Estufa';
+import { aquecerConfete } from './components/ui/confete';
 import { carregarTudo, type Tarefa } from './engine/carregamento';
 import { IMAGENS } from './data/assets';
 import { Hud } from './components/hud/Hud';
@@ -20,7 +25,8 @@ import { F2Rodada } from './fases/F2Rodada';
 import { F3Resultado } from './fases/F3Resultado';
 import { F4Artigos } from './fases/F4Artigos';
 import { F5Fusao } from './fases/F5Fusao';
-import { Vitrine } from './fases/Vitrine';
+// Rota de revisão (#vitrine): só baixa quem abrir.
+const Vitrine = lazy(() => import('./fases/Vitrine').then((m) => ({ default: m.Vitrine })));
 
 // Avisa no Grimório quando o som liga ou desliga (tecla M ou botão do HUD).
 function AvisoDeSom({ mudo }: { mudo: boolean }) {
@@ -39,10 +45,18 @@ function AvisoDeSom({ mudo }: { mudo: boolean }) {
 // Fontes usadas no jogo, nos pesos importados em global.css.
 const FONTES = ['700 64px Cinzel', '600 36px Cinzel', '500 36px Alegreya', '700 36px Alegreya', 'italic 500 36px Alegreya'];
 
+// As imagens decodificadas ficam guardadas aqui pelo jogo inteiro: sem uma
+// referência, o navegador pode descartar a versão decodificada e decodificar
+// de novo na hora em que a carta aparece (o engasgo da primeira vez).
+const imagensProntas: HTMLImageElement[] = [];
+
 function carregarImagem(url: string): Promise<void> {
   const imagem = new Image();
+  imagem.decoding = 'async';
   imagem.src = url;
-  return imagem.decode();
+  return imagem.decode().then(() => {
+    imagensProntas.push(imagem);
+  });
 }
 
 export default function App() {
@@ -51,8 +65,11 @@ export default function App() {
   const som = useSom();
   const faseProps = { avancar, voltar, primeiraFase, ultimaFase };
 
-  // O jogo só aparece depois de imagens, fontes e sons carregados.
-  const [carregado, setCarregado] = useState(false);
+  // O jogo só aparece depois de imagens, fontes e sons carregados e de tudo
+  // passar uma vez pela estufa (components/ui/Estufa.tsx). A tela de
+  // carregamento pode demorar: o que pesa acontece nela, não na partida.
+  const [etapaCarga, setEtapaCarga] = useState<'arquivos' | 'aquecendo' | 'pronto'>('arquivos');
+  const carregado = etapaCarga === 'pronto';
   const [progresso, setProgresso] = useState(0);
   const tarefasDeSom = som.tarefasDeCarga;
   useEffect(() => {
@@ -65,7 +82,7 @@ export default function App() {
     carregarTudo(tarefas, (feitos, total) => {
       if (ativo) setProgresso(total ? feitos / total : 1);
     }).then(() => {
-      if (ativo) setCarregado(true);
+      if (ativo) setEtapaCarga('aquecendo');
     });
     return () => {
       ativo = false;
@@ -104,18 +121,30 @@ export default function App() {
   }, [rodada]);
 
   if (window.location.hash === '#vitrine') {
-    return <Vitrine />;
+    return (
+      <Suspense fallback={null}>
+        <Vitrine />
+      </Suspense>
+    );
   }
 
   return (
     <Palco>
-      <AnimatePresence>{!carregado && <TelaCarregamento key="carregando" progresso={progresso} />}</AnimatePresence>
+      {etapaCarga === 'aquecendo' && (
+        <Estufa
+          aoAquecer={() => {
+            aquecerConfete();
+            setEtapaCarga('pronto');
+          }}
+        />
+      )}
+      <AnimatePresence>{!carregado && <TelaCarregamento key="carregando" progresso={progresso} aquecendo={etapaCarga === 'aquecendo'} />}</AnimatePresence>
       {carregado && (
         <SomContexto.Provider value={som}>
           <GrimorioProvider aoNotificar={() => som.tocar('ping')}>
             <AvisoDeSom mudo={som.mudo} />
             <AmpliacaoProvider>
-              <div className="relative h-full w-full">
+              <Tremor>
                 <Taverna />
                 {fase !== 'abertura' && <Hud fase={fase} mudo={som.mudo} alternarMudo={som.alternarMudo} />}
                 <TransicaoPagina chave={fase} fundo={<Taverna />} aoVirar={() => som.tocar('pagina')}>
@@ -128,8 +157,10 @@ export default function App() {
                     {fase === 'fusao' && <F5Fusao {...faseProps} som={som} />}
                   </main>
                 </TransicaoPagina>
-              </div>
+                <PoeiraClique />
+              </Tremor>
             </AmpliacaoProvider>
+            <Ajuda />
           </GrimorioProvider>
         </SomContexto.Provider>
       )}

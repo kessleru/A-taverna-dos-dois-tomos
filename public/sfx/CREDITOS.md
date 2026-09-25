@@ -31,6 +31,18 @@ combinar.
 | `estandarte.ogg` | RPG Audio | `cloth1.ogg` |
 | `livro-abrir.ogg` | RPG Audio | `bookOpen.ogg` |
 
+## Kenney Interface Sounds
+
+Do [Interface Sounds](https://kenney.nl/assets/interface-sounds) (CC0),
+baixados de [Calinou/kenney-interface-sounds](https://github.com/Calinou/kenney-interface-sounds)
+e convertidos de WAV para OGG mono.
+
+| Arquivo | Original | Uso |
+|---|---|---|
+| `vidro.ogg` | `glass_001.wav` | A ampulheta virando na passagem do tempo |
+| `relogio.ogg` | `tick_002.wav` | O relógio correndo baixinho durante a passagem do tempo |
+| `brilho.ogg` | `glass_004.wav` | A Carta do Destino favorável cintilando ao virar |
+
 ## Gerados pela equipe
 
 Feitos num gerador de efeitos sonoros com os prompts de
@@ -60,6 +72,13 @@ repetir a última. A música abaixa enquanto ele fala.
 ### Falas novas (setembro/2026)
 
 20 falas gravadas num áudio só pela equipe (2 min 34 s) e separadas por fala: os cortes foram escolhidos entre os silêncios de forma que cada trecho tenha a velocidade de fala esperada para o seu texto (10,5 a 14,5 letras por segundo em todas). Tutorial, crítico, falha, Crônica, forja, ranks, confronto, veredito, fusão e aprendizados; textos em o guia de assets da equipe. As 6 falas do vídeo de introdução ficaram fora do jogo.
+
+## Sintetizados na hora
+
+O "toc" de pedrinha ao clicar na mesa (como o do tabuleiro do Hearthstone) não
+tem arquivo: é gerado com Web Audio a cada clique (`src/engine/batida.ts`),
+com ruído filtrado, um baque grave e grãos de poeira caindo, cada vez num tom
+um pouco diferente.
 
 ## Ambiente
 
@@ -94,5 +113,5 @@ anterior, "Fantasy RPG Exploration v2" de rubyzephyr, está em
 
 Toca em loop a 0,12 de volume. O som começa ligado: a música entra no primeiro
 clique ou tecla (o navegador não deixa tocar antes) e a tecla `M` ou o botão do
-HUD desligam. Todos os efeitos são carregados ao abrir o jogo, para não
-atrasarem na primeira vez que tocam.
+HUD desligam. Tudo (efeitos, falas, música, lareira e murmúrio) é carregado
+na tela de carregamento, para nada baixar nem decodificar no meio da partida.

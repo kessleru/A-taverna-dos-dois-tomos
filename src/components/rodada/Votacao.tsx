@@ -83,16 +83,19 @@ export function Votacao({ etapa, combinarLiberado, onEscolher, aoSelecionar }: V
                 }}
                 transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 1.2 + indice * 0.15 }}
               >
-                <CartaDecisao
-                  id={escolha}
-                  nome={NOMES[escolha]}
-                  teoria={TEORIAS[escolha]}
-                  resumo={opcao.texto}
-                  onClick={() => selecionar(escolha)}
-                  rotacao={selecionada ? 0 : ROTACOES[indice] ?? 0}
-                  emDestaque={escolha === selecionada}
-                  tecla={indice + 1}
-                />
+                {/* Respira enquanto a turma decide; para quando uma carta é jogada. */}
+                <div className={selecionada ? undefined : 'carta-respira'} style={{ animationDelay: `${-indice * 1.1}s` }}>
+                  <CartaDecisao
+                    id={escolha}
+                    nome={NOMES[escolha]}
+                    teoria={TEORIAS[escolha]}
+                    resumo={opcao.texto}
+                    onClick={() => selecionar(escolha)}
+                    rotacao={selecionada ? 0 : ROTACOES[indice] ?? 0}
+                    emDestaque={escolha === selecionada}
+                    tecla={indice + 1}
+                  />
+                </div>
                 {escolha === selecionada && <Faiscas cor={COR[escolha]} />}
                 {/* A carta bate na mesa ao ser distribuída e levanta poeira. */}
                 <Baforada atraso={1.45 + indice * 0.15} semente={indice + 1} />

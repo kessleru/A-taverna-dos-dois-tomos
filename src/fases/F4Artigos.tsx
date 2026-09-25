@@ -9,6 +9,7 @@ import { NavFolhas } from '../components/ui/NavFolhas';
 import { Icone } from '../components/ui/Icone';
 import { mola } from '../styles/movimento';
 import { useSonsEmSequencia } from '../engine/useSonsEmSequencia';
+import { TREMOR, useTremorAoMontar } from '../components/ui/Tremor';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -33,7 +34,8 @@ interface F4ArtigosProps extends FaseProps {
 // F4 — Confronto dos Tomos (03-historia.md §7): os dois tomos frente a frente,
 // com um item da comparação por folha.
 export function F4Artigos({ som, avancar, voltar }: F4ArtigosProps) {
-  const aoVirar = useCallback(() => som.tocar('pagina'), [som]);
+  const { tocar } = som;
+  const aoVirar = useCallback(() => tocar('pagina'), [tocar]);
   const { folha, ir } = useFolhas({ total: PASSOS.length, chave: 'sa-f4-folha', avancar, voltar, aoVirar });
   const passo = PASSOS[folha];
   const juntos = passo === 'tema';
@@ -101,15 +103,18 @@ function Tomo({ id, juntos }: { id: 'A' | 'B'; juntos: boolean }) {
 
 function Veredito({ som }: { som: ReturnType<typeof useSom> }) {
   const reduzido = useReducedMotion();
+  useTremorAoMontar(TREMOR.leve, 350);
+  const { tocar, falar } = som;
   useEffect(() => {
-    const id = window.setTimeout(() => som.tocar('selo'), reduzido ? 0 : 350);
+    const id = window.setTimeout(() => tocar('selo'), reduzido ? 0 : 350);
     // Depois do "frente a frente" da entrada da fase.
-    const fala = window.setTimeout(() => som.falar('veredito'), 6400);
+    const fala = window.setTimeout(() => falar('veredito'), 6400);
     return () => {
       window.clearTimeout(id);
       window.clearTimeout(fala);
     };
-  }, [som, reduzido]);
+    // Só as funções (estáveis): ligar/desligar o som não repete o selo.
+  }, [tocar, falar, reduzido]);
 
   return (
     <>

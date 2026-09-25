@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import confetti from 'canvas-confetti';
 import { perfis, calcularPerfil, etapas, canvasReal, briefing, revelacaoBricolagem, type Bloco, type Logica } from '../data/rodada';
 import { pontuacao, type EstadoRodada } from '../engine/motor';
 import { ControlesFase } from '../components/ui/ControlesFase';
@@ -9,8 +8,10 @@ import { Tapecaria } from '../components/hud/Tapecaria';
 import { Impacto } from '../components/ui/Particulas';
 import { Poeira } from '../components/ui/Poeira';
 import { Icone } from '../components/ui/Icone';
+import { OURO_E_BRASA, chuvaDeOuro } from '../components/ui/confete';
 import { COR, SIGILO } from '../components/cartas/logicas';
 import { useSonsEmSequencia } from '../engine/useSonsEmSequencia';
+import { TREMOR, useTremorAoMontar } from '../components/ui/Tremor';
 import type { FaseProps } from '../types';
 
 interface F3ResultadoProps extends FaseProps {
@@ -60,10 +61,13 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
     ...(perfilId && PERFIS_COM_CONFETE.includes(perfilId) ? ([['publico-comemora', 1600]] as const) : []),
   ]);
 
+  // A medalha é forjada na bigorna.
+  useTremorAoMontar(TREMOR.medio * 0.8, 250);
+
   useEffect(() => {
     if (!perfilId || !PERFIS_COM_CONFETE.includes(perfilId)) return;
     const id = setTimeout(() => {
-      confetti({ particleCount: 140, spread: 100, origin: { y: 0.35 }, colors: ['#E8B64A', '#F3E6C8', '#FF7A2F'] });
+      chuvaDeOuro({ particleCount: 140, spread: 100, origin: { y: 0.35 }, colors: OURO_E_BRASA });
     }, 1600);
     return () => clearTimeout(id);
   }, [perfilId]);
