@@ -63,7 +63,8 @@ export function Tour({ passos, indice, aoAvancar, aoTerminar }: TourProps) {
           x={balao.x}
           y={balao.y}
           largura={LARGURA_BALAO}
-          ultimo={indice === passos.length - 1}
+          indice={indice}
+          total={passos.length}
           reduzido={reduzido}
         />
       )}

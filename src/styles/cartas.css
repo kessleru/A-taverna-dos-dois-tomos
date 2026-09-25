@@ -5,3 +5,35 @@
   initial-value: 0deg;
   inherits: false;
 }
+
+/* Brilho holográfico das lendárias (CartaBase), no espírito do
+   pokemon-cards-css de simeydotme: um arco-íris em color-dodge que só aparece
+   através da máscara de estrelas, num foco de luz que segue o cursor. As
+   máscaras são estáticas e as camadas andam por transform: nada é repintado. */
+.carta-holo {
+  mix-blend-mode: color-dodge;
+  -webkit-mask-size: 50% auto;
+  mask-size: 50% auto;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+.carta-holo-arco {
+  background: repeating-linear-gradient(
+    115deg,
+    hsl(2 100% 73%) 0%,
+    hsl(53 100% 69%) 4%,
+    hsl(93 100% 69%) 8%,
+    hsl(176 100% 76%) 12%,
+    hsl(228 100% 74%) 16%,
+    hsl(283 100% 73%) 20%,
+    hsl(2 100% 73%) 24%
+  );
+  will-change: transform;
+}
+
+.carta-holo-foco {
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, rgb(0 0 0 / 0.55) 10%, transparent 22%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 0%, rgb(0 0 0 / 0.55) 10%, transparent 22%);
+  will-change: transform;
+}

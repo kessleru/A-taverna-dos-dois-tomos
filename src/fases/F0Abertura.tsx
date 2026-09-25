@@ -151,6 +151,15 @@ function TelaTitulo({ aoEntrar }: { aoEntrar: () => void }) {
           </p>
         </motion.div>
 
+        <motion.p
+          className="absolute bottom-8 right-10 font-texto text-[24px] italic text-pergaminho/55"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={entrada(2.6)}
+        >
+          <span className="font-titulo not-italic text-ouro/70">?</span> mostra os atalhos
+        </motion.p>
+
         <motion.div className="mt-12" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={entrada(1.8)}>
           <motion.div
             className="rounded-md"

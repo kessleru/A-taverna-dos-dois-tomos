@@ -23,6 +23,7 @@ export function CartaLendaria({ nome = 'Aprendizados' }: { nome?: string }) {
       <CartaBase
         corPrincipal="var(--ouro)"
         tamanho="grande"
+        holografica
         frente={
           <MolduraCarta
             nome={nome}

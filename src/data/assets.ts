@@ -6,8 +6,8 @@ import { arteEventos, arteLendaria, artesArtigos, artesDecisoes, artesEtapas } f
 const base = `${import.meta.env.BASE_URL}assets/`;
 
 const FIXAS = [
-  'cenario/taverna-fundo.webp',
-  'cenario/tampo-mesa.webp',
+  'cenario/taverna-fundo-noite.webp',
+  'cenario/tampo-mesa-noite.webp',
   'cenario/pergaminho.webp',
   'cenario/quadro-tabuas.webp',
   'texturas/ferro-placas.webp',
@@ -20,6 +20,12 @@ const FIXAS = [
   'molduras/carta-prata.webp',
   'molduras/carta-ouro.webp',
   'ui/orbe.webp',
+  // Cursores (sem eles pré-carregados, a seta do sistema piscava no começo).
+  'ui/cursor-seta.svg',
+  'ui/cursor-seta-apertando.svg',
+  'ui/cursor-mao.svg',
+  'ui/cursor-mao-apertando.svg',
+  'texturas/estrelas-mascara.webp',
 ].map((arquivo) => base + arquivo);
 
 const DAS_CARTAS = [

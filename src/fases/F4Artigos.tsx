@@ -9,6 +9,7 @@ import { NavFolhas } from '../components/ui/NavFolhas';
 import { Icone } from '../components/ui/Icone';
 import { mola } from '../styles/movimento';
 import { useSonsEmSequencia } from '../engine/useSonsEmSequencia';
+import { TREMOR, useTremorAoMontar } from '../components/ui/Tremor';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -101,6 +102,7 @@ function Tomo({ id, juntos }: { id: 'A' | 'B'; juntos: boolean }) {
 
 function Veredito({ som }: { som: ReturnType<typeof useSom> }) {
   const reduzido = useReducedMotion();
+  useTremorAoMontar(TREMOR.leve, 350);
   useEffect(() => {
     const id = window.setTimeout(() => som.tocar('selo'), reduzido ? 0 : 350);
     // Depois do "frente a frente" da entrada da fase.

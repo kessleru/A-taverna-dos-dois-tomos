@@ -36,7 +36,7 @@ export const GUIA: Record<string, { espera: number; passos: PassoGuia[] }> = {
       },
       {
         alvo: 'cartas',
-        texto: 'Vocês votam levantando a mão: carta 1 ou carta 2. Não enxergou? Deixem o cursor em cima da carta que ela amplia.',
+        texto: 'Vocês votam levantando a mão: carta 1 ou carta 2. Não enxergou? Um clique com o botão direito na carta e ela amplia.',
         fala: 'tutorial-votacao',
       },
     ],

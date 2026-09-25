@@ -18,7 +18,9 @@ export function CenaArte({ arte, nome }: { arte: ArteCarta; nome: string }) {
       style={{ background: `radial-gradient(circle at 50% 35%, ${arte.cores[0]}, ${arte.cores[1]})` }}
     >
       {arte.imagem ? (
-        <img src={arte.imagem} alt={nome} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+        // Sem loading="lazy": todas as artes já vêm decodificadas da tela de
+        // carregamento, e o lazy fazia a carta aparecer um quadro sem imagem.
+        <img src={arte.imagem} alt={nome} className="absolute inset-0 h-full w-full object-cover" draggable={false} />
       ) : (
         <span className="absolute inset-0 flex items-center justify-center text-[3.5rem] drop-shadow-lg">
           {arte.icone}

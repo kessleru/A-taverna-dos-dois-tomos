@@ -1,8 +1,11 @@
 import { useMemo, type CSSProperties } from 'react';
 import { gerarBrasas } from '../../engine/brasas';
 
-const PINTURA = `${import.meta.env.BASE_URL}assets/cenario/taverna-fundo.webp`;
-const TAMPO = `${import.meta.env.BASE_URL}assets/cenario/tampo-mesa.webp`;
+// Versões "noite": o desfoque e o escurecimento já vêm aplicados no arquivo.
+// Com filter no CSS, a pintura (que se mexe sem parar) era refiltrada a cada
+// quadro, e em dobro durante a virada de página.
+const PINTURA = `${import.meta.env.BASE_URL}assets/cenario/taverna-fundo-noite.webp`;
+const TAMPO = `${import.meta.env.BASE_URL}assets/cenario/tampo-mesa-noite.webp`;
 
 // Camadas de trás para frente: pintura, luz de vela, tampo, brasas, vinheta.
 export function Taverna() {

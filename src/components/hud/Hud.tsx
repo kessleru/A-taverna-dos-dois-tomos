@@ -1,5 +1,6 @@
 import { conteudo, preenchido } from '../../data/conteudo';
 import type { Fase } from '../../types';
+import { definirAjuda } from '../../engine/ajuda';
 
 // Nome de cada fase como a turma a conhece (a chave interna não tem acento).
 const NOME_FASE: Record<Fase, string> = {
@@ -40,6 +41,15 @@ export function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; a
       </span>
       <div className="flex items-center gap-3">
         {preenchido(equipe) && <span className="font-texto">{equipe}</span>}
+        <button
+          onClick={() => definirAjuda(true)}
+          data-sem-trava
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-ouro/40 font-titulo text-[20px] font-bold text-ouro/80 transition-colors hover:border-ouro hover:text-ouro"
+          title="? ou H: atalhos"
+          aria-label="Ver os atalhos"
+        >
+          ?
+        </button>
         <button
           onClick={alternarMudo}
           data-sem-trava

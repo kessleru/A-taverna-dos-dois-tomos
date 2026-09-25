@@ -1,6 +1,7 @@
-// Ampliação de carta ao segurar o cursor sobre ela (docs/redesign/04-visibilidade.md §2.4).
+// Ampliação de carta com o botão direito (docs/redesign/04-visibilidade.md §2.4).
+// Antes ampliava ao segurar o cursor em cima, o que abria sem querer enquanto
+// o apresentador só passava o mouse pela mesa.
 export const ALTURA_AMPLIADA = 900; // px no palco de 1080p
-export const ESPERA_AMPLIAR_MS = 550; // tempo parado sobre a carta até ampliar
 
 // Zoom extra para a carta chegar à altura-alvo, descontando a escala que ela
 // já tem. Nunca encolhe (mínimo 1) e ignora medidas inválidas.

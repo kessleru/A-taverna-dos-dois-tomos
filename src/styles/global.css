@@ -10,6 +10,7 @@
 @import './grimorio.css';
 @import './quadro.css';
 @import './medieval.css';
+@import './cursor.css';
 
 @tailwind base;
 @tailwind components;

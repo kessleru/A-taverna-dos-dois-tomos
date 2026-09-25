@@ -61,6 +61,13 @@ repetir a última. A música abaixa enquanto ele fala.
 
 20 falas gravadas num áudio só pela equipe (2 min 34 s) e separadas por fala: os cortes foram escolhidos entre os silêncios de forma que cada trecho tenha a velocidade de fala esperada para o seu texto (10,5 a 14,5 letras por segundo em todas). Tutorial, crítico, falha, Crônica, forja, ranks, confronto, veredito, fusão e aprendizados; textos em o guia de assets da equipe. As 6 falas do vídeo de introdução ficaram fora do jogo.
 
+## Sintetizados na hora
+
+O "toc" de pedrinha ao clicar na mesa (como o do tabuleiro do Hearthstone) não
+tem arquivo: é gerado com Web Audio a cada clique (`src/engine/batida.ts`),
+com ruído filtrado, um baque grave e grãos de poeira caindo, cada vez num tom
+um pouco diferente.
+
 ## Ambiente
 
 `ambiente-taverna.mp3`: lareira crepitando, arquivo original
@@ -94,5 +101,7 @@ anterior, "Fantasy RPG Exploration v2" de rubyzephyr, está em
 
 Toca em loop a 0,12 de volume. O som começa ligado: a música entra no primeiro
 clique ou tecla (o navegador não deixa tocar antes) e a tecla `M` ou o botão do
-HUD desligam. Todos os efeitos são carregados ao abrir o jogo, para não
-atrasarem na primeira vez que tocam.
+HUD desligam. Efeitos e falas são carregados ao abrir o jogo, para não
+atrasarem na primeira vez que tocam; música, lareira e murmúrio só começam a
+baixar depois que o jogo abre (tocam em streaming e não seguram a tela de
+carregamento).

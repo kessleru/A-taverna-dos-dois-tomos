@@ -40,8 +40,9 @@ export function Baforada({ atraso = 0, semente = 3, largura = 1, className = '' 
           style={{
             width: n.tamanho,
             height: n.tamanho * 0.7,
-            background: 'radial-gradient(circle, rgb(226 200 156 / 0.75), rgb(170 132 88 / 0.35) 55%, transparent 72%)',
-            filter: 'blur(3px)',
+            // O degradê já some nas bordas; um blur por nuvem custava um passe de
+            // filtro a cada quadro.
+            background: 'radial-gradient(circle, rgb(226 200 156 / 0.7), rgb(170 132 88 / 0.3) 50%, transparent 70%)',
           }}
           initial={{ x: 0, y: 0, scale: 0.3, opacity: 0 }}
           animate={{ x: n.x, y: n.y, scale: 1.6, opacity: [0, 0.9, 0] }}

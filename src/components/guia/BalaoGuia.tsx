@@ -13,12 +13,15 @@ interface BalaoGuiaProps {
   x: number;
   y: number;
   largura: number;
-  ultimo: boolean;
+  // Posição do balão no tour (0 = primeiro) e quantos são.
+  indice: number;
+  total: number;
   reduzido: boolean;
 }
 
 // Pergaminho com o retrato do Taverneiro e o texto digitado rápido.
-export function BalaoGuia({ texto, fala, x, y, largura, ultimo, reduzido }: BalaoGuiaProps) {
+export function BalaoGuia({ texto, fala, x, y, largura, indice, total, reduzido }: BalaoGuiaProps) {
+  const ultimo = indice === total - 1;
   const [letras, setLetras] = useState(reduzido ? texto.length : 0);
   useSonsEmSequencia([['pagina', 0]]);
   const som = useSomDoJogo();
@@ -53,7 +56,19 @@ export function BalaoGuia({ texto, fala, x, y, largura, ultimo, reduzido }: Bala
             {texto.slice(0, letras)}
             <span className="invisible">{texto.slice(letras)}</span>
           </p>
-          <p className="self-end font-texto text-[22px] italic text-tinta/70">{ultimo ? 'clique para jogar →' : 'clique para continuar →'}</p>
+          <div className="flex items-center justify-between">
+            {/* Um selo por balão: cera no atual, cravos nos outros (como nas folhas). */}
+            {total > 1 ? (
+              <ol className="flex items-center gap-3" aria-label={`Dica ${indice + 1} de ${total}`}>
+                {Array.from({ length: total }, (_, i) => (
+                  <li key={i} className={i === indice ? 'selo-progresso !h-5 !w-5' : i < indice ? 'cravo-progresso !h-3 !w-3' : 'cravo-progresso !h-3 !w-3 opacity-50'} />
+                ))}
+              </ol>
+            ) : (
+              <span />
+            )}
+            <p className="font-texto text-[22px] italic text-tinta/70">{ultimo ? 'clique para jogar →' : 'clique para continuar →'}</p>
+          </div>
         </div>
       </div>
     </motion.div>

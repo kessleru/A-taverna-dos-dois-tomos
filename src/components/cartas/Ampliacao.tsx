@@ -1,11 +1,12 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ALTURA_AMPLIADA, fatorAmpliacao } from '../../engine/ampliacao';
 import { mola } from '../../styles/movimento';
 import { ESCALA_CARTA } from './escala';
 
 interface Ampliacao {
-  mostrar: (conteudo: ReactNode, alturaBase: number) => void;
+  // aoFechar avisa a carta que a ampliação dela saiu (clique, Esc ou outra carta).
+  mostrar: (conteudo: ReactNode, alturaBase: number, aoFechar?: () => void) => void;
   esconder: () => void;
 }
 
@@ -15,20 +16,46 @@ export function useAmpliacao(): Ampliacao {
   return useContext(Contexto);
 }
 
-// Cópia grande da carta no centro do palco, com o fundo escurecido. Não
-// recebe o mouse (pointer-events: none): a carta original continua sob o
-// cursor, então sair dela fecha a ampliação e o clique continua funcionando.
+// Cópia grande da carta no centro do palco, com o fundo escurecido. Abre com
+// o botão direito na carta (CartaBase) e fecha com qualquer clique ou Esc. A
+// camada recebe o clique que a fecha, então ele nunca escolhe a carta de baixo
+// sem querer. Sem backdrop-filter: desfocar o palco inteiro a cada quadro,
+// com as brasas se mexendo atrás, pesava no projetor.
 export function AmpliacaoProvider({ children }: { children: ReactNode }) {
-  const [carta, setCarta] = useState<{ conteudo: ReactNode; fator: number } | null>(null);
+  const [carta, setCarta] = useState<{ conteudo: ReactNode; fator: number; id: number } | null>(null);
+  const aoFechar = useRef<(() => void) | undefined>(undefined);
+  const contador = useRef(0);
+
+  const esconder = useCallback(() => {
+    aoFechar.current?.();
+    aoFechar.current = undefined;
+    setCarta(null);
+  }, []);
 
   const valor = useMemo<Ampliacao>(
     () => ({
-      mostrar: (conteudo, alturaBase) =>
-        setCarta({ conteudo, fator: fatorAmpliacao(alturaBase, ESCALA_CARTA, ALTURA_AMPLIADA) }),
-      esconder: () => setCarta(null),
+      mostrar: (conteudo, alturaBase, fechou) => {
+        aoFechar.current?.();
+        aoFechar.current = fechou;
+        setCarta({ conteudo, fator: fatorAmpliacao(alturaBase, ESCALA_CARTA, ALTURA_AMPLIADA), id: ++contador.current });
+      },
+      esconder,
     }),
-    [],
+    [esconder],
   );
+
+  // Esc fecha antes de qualquer outro atalho (a fase não recua junto).
+  useEffect(() => {
+    if (!carta) return;
+    function aoTeclar(evento: KeyboardEvent) {
+      if (evento.key !== 'Escape') return;
+      evento.preventDefault();
+      evento.stopImmediatePropagation();
+      esconder();
+    }
+    window.addEventListener('keydown', aoTeclar, true);
+    return () => window.removeEventListener('keydown', aoTeclar, true);
+  }, [carta, esconder]);
 
   return (
     <Contexto.Provider value={valor}>
@@ -37,21 +64,29 @@ export function AmpliacaoProvider({ children }: { children: ReactNode }) {
         {carta && (
           <motion.div
             key="ampliacao"
-            className="pointer-events-none absolute inset-0 z-[60] flex items-center justify-center bg-madeira-profunda/60 backdrop-blur-[2px]"
+            className="absolute inset-0 z-[60] flex cursor-pointer flex-col items-center justify-center gap-6"
+            style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 50%, rgb(20 13 8 / 0.55), rgb(8 5 3 / 0.88))' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, pointerEvents: 'none' }}
             transition={{ duration: 0.18 }}
+            onClick={esconder}
+            onContextMenu={(evento) => {
+              evento.preventDefault();
+              esconder();
+            }}
           >
             <motion.div
-              initial={{ scale: 0.85 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
+              key={carta.id}
+              initial={{ scale: 0.8, rotateY: -25, y: 40 }}
+              animate={{ scale: 1, rotateY: 0, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, transition: { duration: 0.15 } }}
               transition={mola.carta}
-              style={{ zoom: carta.fator }}
+              style={{ zoom: carta.fator, transformPerspective: 1400 }}
             >
               {carta.conteudo}
             </motion.div>
+            <p className="font-texto text-[24px] italic text-pergaminho/70 [text-shadow:0_2px_4px_rgb(0_0_0)]">clique para fechar</p>
           </motion.div>
         )}
       </AnimatePresence>

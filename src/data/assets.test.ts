@@ -22,6 +22,11 @@ describe('IMAGENS a pré-carregar', () => {
     }
   });
 
+  it('todo arquivo da lista existe em public/assets', () => {
+    const arquivos = new Set(Object.keys(import.meta.glob('/public/assets/**/*.{webp,svg}')).map((c) => c.replace('/public/', import.meta.env.BASE_URL)));
+    expect(IMAGENS.filter((url) => !arquivos.has(url))).toEqual([]);
+  });
+
   it('não repete arquivos e usa o caminho base do site', () => {
     expect(new Set(IMAGENS).size).toBe(IMAGENS.length);
     for (const url of IMAGENS) expect(url.startsWith(import.meta.env.BASE_URL)).toBe(true);

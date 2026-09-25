@@ -7,6 +7,7 @@ import { Icone } from '../ui/Icone';
 import { mola } from '../../styles/movimento';
 import { Impacto } from '../ui/Particulas';
 import { useSonsEmSequencia } from '../../engine/useSonsEmSequencia';
+import { TREMOR, useTremorAoMontar } from '../ui/Tremor';
 
 const NOMES: Record<Escolha, string> = { planejar: 'Planejar', adaptar: 'Adaptar', combinar: 'Combinar' };
 
@@ -33,6 +34,7 @@ export function Cronica({ etapa, escolha }: { etapa: Etapa; escolha: Escolha }) 
     ['livro-abrir', 0],
     ['selo', 1000],
   ]);
+  useTremorAoMontar(TREMOR.leve, 1000);
 
   return (
     <div className="relative flex w-full max-w-[1320px] flex-col gap-6" data-guia="narradores">

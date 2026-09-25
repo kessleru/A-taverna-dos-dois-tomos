@@ -70,6 +70,26 @@ deckbuilder UI sampler"; `texturas/estrelas.webp` do "holographic card VFX";
 
 **PREENCHER:** autor, site e licença de cada pacote (vieram sem arquivo de licença).
 
+## Derivados para desempenho (setembro/2026)
+
+Gerados a partir dos arquivos acima, para o navegador não refazer o trabalho
+a cada quadro nem baixar pixels que nunca aparecem:
+
+| Arquivo | Origem | Ajuste |
+|---|---|---|
+| `cenario/taverna-fundo-noite.webp` | `cenario/taverna-fundo.webp` | Desfoque de 3 px (no palco), brilho 0,55 e saturação 1,1 aplicados no arquivo; antes eram um `filter` CSS recalculado a cada quadro |
+| `cenario/tampo-mesa-noite.webp` | `cenario/tampo-mesa.webp` | Brilho 0,6 aplicado no arquivo |
+| `texturas/estrelas-mascara.webp` | `texturas/estrelas.webp` | Estrelas brancas em fundo transparente, 300×300: máscara do brilho holográfico das lendárias |
+| `cartas/planejar`, `adaptar`, `bricolagem`, `tomo-a`, `tomo-b` | os mesmos | Reduzidas de 1448 para 960 px de largura (aparecem com no máximo ~390 px) |
+| `personagens/*` | os mesmos | Reduzidos ao dobro do maior tamanho em que aparecem |
+
+## Cursores (`ui/cursor-*.svg`)
+
+Seta de ouro com gema de cera desenhada para o jogo. A manopla é o ícone
+[`pointing`](https://game-icons.net/1x1/lorc/pointing.html) de Lorc
+(game-icons.net, CC BY 3.0), girado e pintado em ouro. As versões
+`-apertando` aparecem enquanto o botão do mouse está pressionado.
+
 ## Ícones (`src/assets/icones/`)
 
 De [game-icons.net](https://game-icons.net), licença

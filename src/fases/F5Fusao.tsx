@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import confetti from 'canvas-confetti';
 import { conteudo, preenchido } from '../data/conteudo';
 import { useFolhas } from '../engine/useFolhas';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
@@ -10,7 +9,9 @@ import { Poeira } from '../components/ui/Poeira';
 import { Chuva } from '../components/ui/Particulas';
 import { NavFolhas } from '../components/ui/NavFolhas';
 import { Icone } from '../components/ui/Icone';
+import { OURO_E_BRASA, chuvaDeOuro } from '../components/ui/confete';
 import { mola } from '../styles/movimento';
+import { TREMOR, useTremor } from '../components/ui/Tremor';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -112,6 +113,9 @@ function Fusao({ som, aoTerminar }: { som: ReturnType<typeof useSom>; aoTerminar
   somRef.current = som;
   const aoTerminarRef = useRef(aoTerminar);
   aoTerminarRef.current = aoTerminar;
+  const tremer = useTremor();
+  const tremerRef = useRef(tremer);
+  tremerRef.current = tremer;
 
   useEffect(() => {
     somRef.current.tocar('embaralhar');
@@ -119,6 +123,7 @@ function Fusao({ som, aoTerminar }: { som: ReturnType<typeof useSom>; aoTerminar
     const ids = [
       window.setTimeout(() => {
         setFase('clarao');
+        tremerRef.current(TREMOR.forte);
         somRef.current.tocar('fanfarra');
         somRef.current.tocar('correntes-quebrando');
       }, 2300),
@@ -244,7 +249,7 @@ function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
     som.falar('despedida');
     som.tocar('fanfarra');
     som.tocar('publico-comemora');
-    if (!reduzido) confetti({ particleCount: 150, spread: 100, origin: { x: 0.65, y: 0.4 }, colors: ['#E8B64A', '#F3E6C8', '#FF7A2F'] });
+    if (!reduzido) chuvaDeOuro({ particleCount: 150, spread: 100, origin: { x: 0.65, y: 0.4 }, colors: OURO_E_BRASA });
   }, [som, reduzido]);
 
   return (

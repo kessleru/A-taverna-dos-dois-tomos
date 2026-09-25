@@ -5,6 +5,7 @@ import { CartaDecisao } from '../cartas/CartaDecisao';
 import { Icone } from '../ui/Icone';
 import { Impacto } from '../ui/Particulas';
 import { mola } from '../../styles/movimento';
+import { TREMOR, useTremor, useTremorAoMontar } from '../ui/Tremor';
 
 // Forja do Combinar (06-animacoes.md, "Revelações"): se a turma já adaptou e
 // planejou, Planejar e Adaptar se fundem num clarão e nasce a lendária
@@ -14,12 +15,18 @@ export function Forja({ desbloqueado, aoFundir }: { desbloqueado: boolean; aoFun
   const [fase, setFase] = useState<'juntando' | 'forjada'>(desbloqueado && !reduzido ? 'juntando' : 'forjada');
   const aoFundirRef = useRef(aoFundir);
   aoFundirRef.current = aoFundir;
+  const tremer = useTremor();
+  const tremerRef = useRef(tremer);
+  tremerRef.current = tremer;
+  // Trancada: as correntes chacoalham a mesa.
+  useTremorAoMontar(desbloqueado ? 0 : TREMOR.leve, 250);
 
   useEffect(() => {
     if (!desbloqueado || reduzido) return;
     const id = window.setTimeout(() => {
       setFase('forjada');
       aoFundirRef.current?.();
+      tremerRef.current(TREMOR.forte);
     }, 1300);
     return () => window.clearTimeout(id);
   }, [desbloqueado, reduzido]);

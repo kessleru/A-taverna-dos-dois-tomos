@@ -44,6 +44,7 @@ export function CartaDecisao({ id, nome, teoria, resumo, trancada = false, taman
         tamanho={tamanho}
         onClick={trancada ? undefined : onClick}
         layoutId={`decisao-${id}`}
+        holografica={arteOriginal.raridade === 'lendaria' && !trancada}
         frente={
           <div className="relative">
             <div className={trancada ? 'grayscale' : undefined}>
