@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { conteudo, preenchido } from '../../data/conteudo';
 import type { Fase } from '../../types';
 import { definirAjuda } from '../../engine/ajuda';
@@ -29,7 +30,8 @@ function IconeSom({ mudo }: { mudo: boolean }) {
   );
 }
 
-export function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; alternarMudo: () => void }) {
+// memo: as props só mudam com a fase e o mudo, não a cada ação da rodada.
+export const Hud = memo(function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; alternarMudo: () => void }) {
   const equipe = conteudo.equipe.nome;
   return (
     <header className="fixed inset-x-0 top-0 z-20 flex items-center justify-between px-6 py-3 text-[18px] text-pergaminho/70">
@@ -64,4 +66,4 @@ export function Hud({ fase, mudo, alternarMudo }: { fase: Fase; mudo: boolean; a
       </div>
     </header>
   );
-}
+});

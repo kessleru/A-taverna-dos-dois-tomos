@@ -70,7 +70,8 @@
 
 .taverna-tampo {
   position: absolute;
-  inset: auto 0 0 0;
+  /* Sobra dos lados para o parallax do mouse não mostrar a borda. */
+  inset: auto -12px 0 -12px;
   height: 300px;
   background-size: cover;
   background-position: center top;
@@ -266,5 +267,53 @@
   .holofote-halo {
     animation: none;
     opacity: 0.7;
+  }
+}
+
+/* Brilho pulsante (botão da entrada, orbe em alerta): a sombra é fixa e só
+   a opacidade anima, então o pulso roda no compositor sem repintar. */
+.brilho-pulsante {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  animation: brilho-pulsante 2.2s ease-in-out infinite;
+}
+
+.brilho-pulsante.brilho-rapido {
+  animation-duration: 1.2s;
+}
+
+@keyframes brilho-pulsante {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brilho-pulsante {
+    animation: none;
+  }
+}
+
+/* Onda do líquido dos orbes (OrboIndicador): desliza um período em loop. */
+.orbe-onda {
+  animation: orbe-onda 2.4s linear infinite;
+  will-change: transform;
+}
+
+@keyframes orbe-onda {
+  to {
+    transform: translateX(-25%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbe-onda {
+    animation: none;
   }
 }

@@ -33,7 +33,9 @@ export function MapaJornada({ etapaAtual, escolhas }: { etapaAtual: number; esco
         return (
           <div key={etapas[i].id} className="relative flex w-[112px] flex-col items-center gap-1">
             <motion.div
-              className="medalhao relative flex h-[62px] w-[62px] items-center justify-center bg-[radial-gradient(circle_at_40%_35%,#3a2616,#140d08_70%)]"
+              // will-change: a escala pulsa por JS; sem ele o Chrome refazia o
+              // drop-shadow do medalhão em cada tamanho, quadro a quadro.
+              className="medalhao relative flex h-[62px] w-[62px] items-center justify-center bg-[radial-gradient(circle_at_40%_35%,#3a2616,#140d08_70%)] will-change-transform"
               style={{ '--gema': cor, filter: feito || atual ? `drop-shadow(0 0 10px ${cor})` : 'saturate(0.4) brightness(0.8)' } as MotionStyle}
               animate={atual && !reduzido ? { scale: [1, 1.1, 1] } : { scale: 1 }}
               transition={atual ? { duration: 1.4, repeat: Infinity } : { duration: 0.2 }}

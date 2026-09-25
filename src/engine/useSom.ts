@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Howl, Howler } from 'howler';
 import { CHAVE_MUDO, lerMudo } from './preferenciaSom';
 import { FALAS, TODAS_AS_FALAS, escolherFala, type Momento } from './falas';
@@ -102,6 +102,13 @@ export function useSom() {
   const [mudo, setMudo] = useState(() => lerMudo(sessionStorage.getItem(CHAVE_MUDO)));
   // O navegador só libera áudio depois do primeiro clique ou tecla.
   const [liberado, setLiberado] = useState(false);
+  // As funções devolvidas leem mudo e liberado por ref: assim tocar, falar e
+  // companhia têm identidade fixa, e quem as usa em efeitos (Veredito,
+  // folhas, rodada) não roda de novo só porque o som foi ligado/desligado.
+  const mudoRef = useRef(mudo);
+  mudoRef.current = mudo;
+  const liberadoRef = useRef(liberado);
+  liberadoRef.current = liberado;
   const sons = useRef<Partial<Record<Efeito, Howl>>>({});
   // Música e lareira: tocam em loop por baixo de tudo.
   const fundo = useRef<Howl[]>([]);
@@ -192,12 +199,12 @@ export function useSom() {
   const tocar = useCallback(
     (efeito: Efeito, opcoes?: OpcoesEfeito) => {
       const som = sons.current[efeito];
-      if (mudo || !som) return;
+      if (mudoRef.current || !som) return;
       const id = som.play();
       if (VARIAM_TOM.has(efeito)) som.rate(1 - VARIACAO_TOM / 2 + Math.random() * VARIACAO_TOM, id);
       som.volume(VOLUME_EFEITOS * (opcoes?.volume ?? 1), id);
     },
-    [mudo],
+    [],
   );
 
   // Toque na mesa ao clicar no palco (src/engine/batida.ts). Força 1 é um
@@ -205,10 +212,10 @@ export function useSom() {
   const batida = useCallback(
     (forca = 1) => {
       const ctx = Howler.ctx;
-      if (mudo || !liberado || !ctx || ctx.state !== 'running') return;
+      if (mudoRef.current || !liberadoRef.current || !ctx || ctx.state !== 'running') return;
       tocarBatida(ctx, Howler.masterGain ?? ctx.destination, parametrosBatida(forca, Math.random));
     },
-    [mudo, liberado],
+    [],
   );
 
   // Cala o Taverneiro (fala some em `ms`) e devolve a música. O tutorial usa
@@ -225,8 +232,8 @@ export function useSom() {
       atual.som.stop();
     }
     const musica = fundo.current[0];
-    if (musica && !mudo) musica.fade(musica.volume(), VOLUME_MUSICA, 600);
-  }, [mudo]);
+    if (musica && !mudoRef.current) musica.fade(musica.volume(), VOLUME_MUSICA, 600);
+  }, []);
 
   // Uma fala do Taverneiro para o momento (sorteada no grupo, sem repetir a
   // última). Uma fala nova interrompe a anterior.
@@ -234,7 +241,7 @@ export function useSom() {
     (momento: Momento) => {
       // Antes do primeiro clique o navegador seguraria a fala e a soltaria
       // depois, por cima da próxima; melhor não falar.
-      if (mudo || !liberado) return;
+      if (mudoRef.current || !liberadoRef.current) return;
       const id = escolherFala(FALAS[momento], Math.random(), falaAtual.current?.id);
       const som = id ? falas.current[id] : undefined;
       // Arquivo que não carregou: não fala (e não abaixa a música à toa).
@@ -267,7 +274,7 @@ export function useSom() {
         som.play();
       }
     },
-    [mudo, liberado],
+    [],
   );
 
   // Uma tarefa por arquivo de som, para a tela de carregamento. Lê os Howls na
@@ -278,5 +285,12 @@ export function useSom() {
     [],
   );
 
-  return { mudo, alternarMudo: () => setMudo((m) => !m), tocar, falar, calar, batida, tarefasDeCarga, prepararFundo };
+  const alternarMudo = useCallback(() => setMudo((m) => !m), []);
+
+  // Mesmo objeto enquanto o mudo não muda (useMemo): antes era um objeto novo
+  // a cada render do App.
+  return useMemo(
+    () => ({ mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga, prepararFundo }),
+    [mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga, prepararFundo],
+  );
 }

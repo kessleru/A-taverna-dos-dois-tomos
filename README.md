@@ -48,7 +48,7 @@ Três orbes mostram a saúde da startup: **Caixa**, **Clientes** e **Moral**. N�
 
 O jogo é feito para o projetor e dura uns 21 minutos, com a turma inteira votando. Tem música de taverna, a lareira crepitando, o murmúrio do público e o Taverneiro falando em cada momento.
 
-Quem apresenta usa `→` para avançar, `1`/`2`/`3` para jogar a carta votada e o **botão direito** numa carta para ampliá-la para o fundo da sala. A tecla `?` mostra todos os atalhos. E vale clicar na mesa: ela levanta poeira, como o tabuleiro do Hearthstone (e reage mais a cada clique seguido).
+Quem apresenta usa `→` para avançar, `1`/`2`/`3` para jogar a carta votada e o **botão direito** numa carta para ampliá-la para o fundo da sala, com os termos dela explicados ao lado (Causation, Effectuation, Bricolagem...). A tecla `?` mostra todos os atalhos. E vale clicar na mesa: ela levanta poeira, como o tabuleiro do Hearthstone (e reage mais a cada clique seguido).
 
 ## Os artigos
 

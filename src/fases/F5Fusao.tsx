@@ -29,7 +29,8 @@ interface F5FusaoProps extends FaseProps {
 // em ouro. No fim, o Taverneiro se despede e os créditos sobem.
 // Ao chegar na primeira folha, os dois tomos se fundem na lendária antes.
 export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
-  const aoVirar = useCallback(() => som.tocar('pagina'), [som]);
+  const { tocar } = som;
+  const aoVirar = useCallback(() => tocar('pagina'), [tocar]);
   const { folha, ir } = useFolhas({ total: TOTAL, chave: 'sa-f5-folha', avancar, voltar, aoVirar });
   const creditos = folha === TOTAL - 1;
   const reduzido = useReducedMotion();

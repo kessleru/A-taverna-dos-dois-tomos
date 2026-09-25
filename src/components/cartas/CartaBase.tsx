@@ -3,6 +3,7 @@ import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } fro
 import { useSomDoJogo } from '../../engine/SomContexto';
 import { useAmpliacao } from './Ampliacao';
 import { SLOTS_MOLDURA } from './moldura';
+import type { PalavraChave } from '../../data/glossario';
 import { VersoCarta } from './VersoCarta';
 
 // Altura das molduras antes da ESCALA_CARTA (largura 260 ou 170, proporção 5:7).
@@ -29,9 +30,11 @@ interface CartaBaseProps {
   layoutId?: string;
   // Lendárias ganham o brilho holográfico de estrelas por cima da arte.
   holografica?: boolean;
+  // Explicações que aparecem ao lado da carta ampliada.
+  palavrasChave?: PalavraChave[];
 }
 
-export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'grande', onClick, layoutId, holografica = false }: CartaBaseProps) {
+export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'grande', onClick, layoutId, holografica = false, palavrasChave }: CartaBaseProps) {
   const { mostrar, esconder } = useAmpliacao();
   const som = useSomDoJogo();
   const reduzido = !!useReducedMotion();
@@ -108,9 +111,14 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
     if (!virada) return;
     ampliada.current = true;
     som?.tocar('virar-carta', { volume: 0.6 });
-    mostrar(frente, ALTURA_BASE[tamanho], () => {
-      ampliada.current = false;
-    });
+    mostrar(
+      frente,
+      ALTURA_BASE[tamanho],
+      () => {
+        ampliada.current = false;
+      },
+      palavrasChave,
+    );
   }
 
   return (
@@ -126,7 +134,9 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
       whileHover={{ scale: 1.05, y: -6 }}
       transition={{ type: 'spring', stiffness: 260, damping: 20 }}
     >
-      <motion.div style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}>
+      {/* will-change nas camadas que o mouse move: são transforms postos por JS,
+          que o navegador não promove sozinho (repintaria a carta a cada passo). */}
+      <motion.div className="will-change-transform" style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}>
         <motion.div className="relative" style={{ rotateY: giro, transformStyle: 'preserve-3d' }}>
           <motion.div className="relative" style={{ visibility: visibilidadeFrente }}>
             {/* Aura na cor da carta com o cursor em cima, como a carta jogável do
@@ -161,7 +171,7 @@ export function CartaBase({ frente, corPrincipal, virada = true, tamanho = 'gran
             {/* Reflexo de vela que acompanha o cursor pelo verniz da carta. */}
             <motion.div className="pointer-events-none absolute inset-[4%] overflow-hidden rounded-[12px] mix-blend-soft-light" style={{ opacity: luz }} aria-hidden>
               <motion.div
-                className="absolute -inset-1/2"
+                className="absolute -inset-1/2 will-change-transform"
                 style={{
                   x: reflexoX,
                   y: reflexoY,

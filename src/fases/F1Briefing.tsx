@@ -19,7 +19,8 @@ interface F1BriefingProps extends FaseProps {
 }
 
 export function F1Briefing({ som, avancar, voltar }: F1BriefingProps) {
-  const aoVirar = useCallback(() => som.tocar('pagina'), [som]);
+  const { tocar } = som;
+  const aoVirar = useCallback(() => tocar('pagina'), [tocar]);
   const { folha, ir } = useFolhas({ total: TOTAL_FOLHAS, chave: 'sa-f1-folha', avancar, voltar, aoVirar });
 
   return (

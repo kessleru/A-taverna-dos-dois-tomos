@@ -1,14 +1,16 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { emAlerta, nivelLiquido } from '../../engine/indicador';
 import { Icone } from '../ui/Icone';
 import { Bolhas } from '../ui/Particulas';
+import { mola } from '../../styles/movimento';
 
 const ORBE = `${import.meta.env.BASE_URL}assets/ui/orbe.webp`;
 // Vidro do orbe pintado: círculo de raio 35,7% centrado na imagem.
 const RAIO_VIDRO = 35.7;
 const FUNDO_VIDRO = 50 + RAIO_VIDRO;
 const ALTURA_VIDRO = RAIO_VIDRO * 2;
+const TOPO_VIDRO = 50 - RAIO_VIDRO;
 
 interface OrboIndicadorProps {
   rotulo: string;
@@ -25,7 +27,6 @@ interface Flutuante {
 // Globo de vidro do HUD (01-tema-e-hud.md §7): o líquido na cor do indicador
 // sobe e desce com o valor e ondula; ganhos e perdas saem flutuando do globo.
 export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps) {
-  const clip = useId();
   const reduzido = useReducedMotion();
   const alerta = emAlerta(valor);
   const topoLiquido = FUNDO_VIDRO - nivelLiquido(valor) * ALTURA_VIDRO;
@@ -46,40 +47,62 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
 
   return (
     <div className="relative flex w-[136px] flex-col items-center" aria-label={`${rotulo}: ${valor}`}>
-      <motion.div
-        className="relative h-32 w-32 rounded-full"
-        animate={
-          alerta && !reduzido
-            ? { boxShadow: ['0 0 0px 0px rgb(224 55 74 / 0)', '0 0 28px 6px rgb(224 55 74 / 0.8)', '0 0 0px 0px rgb(224 55 74 / 0)'] }
-            : { boxShadow: '0 0 0px 0px rgb(224 55 74 / 0)' }
-        }
-        transition={alerta ? { duration: 1.2, repeat: Infinity } : { duration: 0.3 }}
-      >
+      <div className="relative h-32 w-32 rounded-full">
+        {/* Alerta: brilho vermelho que pulsa só na opacidade, no compositor. */}
+        {alerta && <span className="brilho-pulsante brilho-rapido rounded-full shadow-[0_0_28px_6px_rgb(224_55_74/0.8)]" aria-hidden />}
         <img src={ORBE} alt="" draggable={false} className="absolute inset-0 h-full w-full" />
-        <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
-          <defs>
-            <clipPath id={clip}>
-              <circle cx="50" cy="50" r={RAIO_VIDRO} />
-            </clipPath>
-          </defs>
-          <g clipPath={`url(#${clip})`}>
-            <rect width="100" height="100" style={{ fill: '#140d08' }} opacity="0.9" />
-            <motion.g initial={false} animate={{ y: topoLiquido }} transition={{ type: 'spring', stiffness: 90, damping: 16 }}>
-              {/* Onda: um trecho de 200 de largura desliza 100 para a esquerda em loop. */}
-              <motion.path
-                d="M-50 0 Q -25 -4 0 0 T 50 0 T 100 0 T 150 0 V 100 H -50 Z"
-                style={{ fill: alerta ? 'var(--dano)' : cor }}
-                opacity="0.92"
-                animate={reduzido ? undefined : { x: [0, -50] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: 'linear' }}
-              />
-            </motion.g>
-            {/* Reflexo do vidro. */}
+        {/* Vidro recortado no círculo pintado: fundo escuro, líquido e reflexo.
+            Tudo em camadas HTML: a onda anda por CSS e o nível sobe por
+            transform, no compositor. Antes o SVG inteiro era repintado a cada
+            quadro, nos três orbes, durante a rodada toda. */}
+        <div
+          className="absolute overflow-hidden rounded-full"
+          style={{ left: `${TOPO_VIDRO}%`, top: `${TOPO_VIDRO}%`, width: `${ALTURA_VIDRO}%`, height: `${ALTURA_VIDRO}%` }}
+          aria-hidden
+        >
+          <div className="absolute inset-0 bg-[#140d08] opacity-90" />
+          <motion.div
+            className="absolute inset-0"
+            initial={false}
+            animate={{ y: `${((topoLiquido - TOPO_VIDRO) / ALTURA_VIDRO) * 100}%` }}
+            transition={{ type: 'spring', stiffness: 90, damping: 16 }}
+          >
+            {/* Onda: um trecho de 200 de largura desliza 50 (um período) para a esquerda em loop. */}
+            <svg
+              className={`absolute ${reduzido ? '' : 'orbe-onda'}`}
+              viewBox="-50 -4 200 104"
+              preserveAspectRatio="none"
+              style={{
+                left: `${((-50 - TOPO_VIDRO) / ALTURA_VIDRO) * 100}%`,
+                top: `${(-4 / ALTURA_VIDRO) * 100}%`,
+                width: `${(200 / ALTURA_VIDRO) * 100}%`,
+                height: `${(104 / ALTURA_VIDRO) * 100}%`,
+              }}
+            >
+              <path d="M-50 0 Q -25 -4 0 0 T 50 0 T 100 0 T 150 0 V 100 H -50 Z" style={{ fill: alerta ? 'var(--dano)' : cor }} opacity="0.92" />
+            </svg>
+          </motion.div>
+          {/* Reflexo do vidro. */}
+          <svg className="absolute inset-0 h-full w-full" viewBox={`${TOPO_VIDRO} ${TOPO_VIDRO} ${ALTURA_VIDRO} ${ALTURA_VIDRO}`}>
             <ellipse cx="40" cy="30" rx="17" ry="8" fill="#fff" opacity="0.28" transform="rotate(-25 40 30)" />
-          </g>
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center font-titulo text-[44px] font-bold tabular-nums text-pergaminho [text-shadow:0_2px_4px_rgb(0_0_0/0.95),0_0_2px_rgb(0_0_0)]">
-          {valor}
+          </svg>
+        </div>
+        {/* O número dá um salto na cor do ganho ou da perda e assenta. A ref
+            ainda tem o valor anterior durante o render (o efeito atualiza depois). */}
+        <span className="absolute inset-0 flex items-center justify-center">
+          <motion.span
+            key={valor}
+            className="font-titulo text-[44px] font-bold tabular-nums text-pergaminho [text-shadow:0_2px_4px_rgb(0_0_0/0.95),0_0_2px_rgb(0_0_0)]"
+            initial={
+              valorAnterior.current !== valor && !reduzido
+                ? { scale: 1.45, color: valor > valorAnterior.current ? '#5ed17a' : '#e0374a' }
+                : false
+            }
+            animate={{ scale: 1, color: '#f3e6c8' }}
+            transition={{ scale: mola.impacto, color: { duration: 0.9, ease: 'easeOut' } }}
+          >
+            {valor}
+          </motion.span>
         </span>
 
         <AnimatePresence>
@@ -108,7 +131,7 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
             </motion.span>,
           ])}
         </AnimatePresence>
-      </motion.div>
+      </div>
 
       <div className="mt-1 flex items-center gap-2 font-titulo text-[22px] font-bold text-pergaminho [text-shadow:0_2px_3px_rgb(0_0_0/0.9)]">
         <span style={{ color: cor }}>

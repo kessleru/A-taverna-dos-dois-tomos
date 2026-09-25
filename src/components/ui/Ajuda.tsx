@@ -72,7 +72,7 @@ export function Ajuda() {
                   <h3 className="mb-3 font-titulo text-[28px] font-bold text-cera">No mouse</h3>
                   <ul className="space-y-3">
                     <Linha teclas={<Tecla>clique</Tecla>}>escolhe a carta, rola o dado, abre os tomos</Linha>
-                    <Linha teclas={<Tecla>botão direito</Tecla>}>amplia a carta para todos lerem</Linha>
+                    <Linha teclas={<Tecla>botão direito</Tecla>}>amplia a carta e explica os termos dela</Linha>
                     <Linha teclas={<Tecla>na mesa</Tecla>}>levanta poeira (cliquem várias vezes...)</Linha>
                   </ul>
                   <h3 className="mb-3 mt-7 font-titulo text-[28px] font-bold text-cera">Para o ensaio</h3>

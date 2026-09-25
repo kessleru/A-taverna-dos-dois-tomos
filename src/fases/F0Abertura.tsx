@@ -161,15 +161,14 @@ function TelaTitulo({ aoEntrar }: { aoEntrar: () => void }) {
         </motion.p>
 
         <motion.div className="mt-12" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={entrada(1.8)}>
-          <motion.div
-            className="rounded-md"
-            animate={reduzido ? undefined : { boxShadow: ['0 0 0px rgb(232 182 74 / 0)', '0 0 36px rgb(232 182 74 / 0.75)', '0 0 0px rgb(232 182 74 / 0)'] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          >
+          <div className="relative isolate rounded-md">
+            {/* Brilho que pulsa atrás do botão: sombra fixa, só a opacidade anima
+                (animar o box-shadow repintava o botão a cada quadro). */}
+            <span className="brilho-pulsante -z-10 rounded-md shadow-[0_0_36px_rgb(232_182_74/0.75)]" aria-hidden />
             <Botao onClick={aoEntrar} className="!px-16 !text-[42px]">
               Entrar na taverna
             </Botao>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </motion.div>

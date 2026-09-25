@@ -3,10 +3,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ALTURA_AMPLIADA, fatorAmpliacao } from '../../engine/ampliacao';
 import { mola } from '../../styles/movimento';
 import { ESCALA_CARTA } from './escala';
+import type { PalavraChave } from '../../data/glossario';
 
 interface Ampliacao {
   // aoFechar avisa a carta que a ampliação dela saiu (clique, Esc ou outra carta).
-  mostrar: (conteudo: ReactNode, alturaBase: number, aoFechar?: () => void) => void;
+  mostrar: (conteudo: ReactNode, alturaBase: number, aoFechar?: () => void, palavras?: PalavraChave[]) => void;
   esconder: () => void;
 }
 
@@ -22,7 +23,7 @@ export function useAmpliacao(): Ampliacao {
 // sem querer. Sem backdrop-filter: desfocar o palco inteiro a cada quadro,
 // com as brasas se mexendo atrás, pesava no projetor.
 export function AmpliacaoProvider({ children }: { children: ReactNode }) {
-  const [carta, setCarta] = useState<{ conteudo: ReactNode; fator: number; id: number } | null>(null);
+  const [carta, setCarta] = useState<{ conteudo: ReactNode; fator: number; id: number; palavras: PalavraChave[] } | null>(null);
   const aoFechar = useRef<(() => void) | undefined>(undefined);
   const contador = useRef(0);
 
@@ -34,10 +35,10 @@ export function AmpliacaoProvider({ children }: { children: ReactNode }) {
 
   const valor = useMemo<Ampliacao>(
     () => ({
-      mostrar: (conteudo, alturaBase, fechou) => {
+      mostrar: (conteudo, alturaBase, fechou, palavras = []) => {
         aoFechar.current?.();
         aoFechar.current = fechou;
-        setCarta({ conteudo, fator: fatorAmpliacao(alturaBase, ESCALA_CARTA, ALTURA_AMPLIADA), id: ++contador.current });
+        setCarta({ conteudo, fator: fatorAmpliacao(alturaBase, ESCALA_CARTA, ALTURA_AMPLIADA), id: ++contador.current, palavras });
       },
       esconder,
     }),
@@ -76,16 +77,37 @@ export function AmpliacaoProvider({ children }: { children: ReactNode }) {
               esconder();
             }}
           >
-            <motion.div
-              key={carta.id}
-              initial={{ scale: 0.8, rotateY: -25, y: 40 }}
-              animate={{ scale: 1, rotateY: 0, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, transition: { duration: 0.15 } }}
-              transition={mola.carta}
-              style={{ zoom: carta.fator, transformPerspective: 1400 }}
-            >
-              {carta.conteudo}
-            </motion.div>
+            <div className="flex items-center gap-12">
+              <motion.div
+                key={carta.id}
+                initial={{ scale: 0.8, rotateY: -25, y: 40 }}
+                animate={{ scale: 1, rotateY: 0, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, transition: { duration: 0.15 } }}
+                transition={mola.carta}
+                style={{ zoom: carta.fator, transformPerspective: 1400 }}
+              >
+                {carta.conteudo}
+              </motion.div>
+              {/* Palavras-chave ao lado da carta, como no Hearthstone: uma
+                  plaquinha por termo, entrando uma depois da outra. */}
+              {carta.palavras.length > 0 && (
+                <ul key={`palavras-${carta.id}`} className="flex w-[480px] flex-col gap-5">
+                  {carta.palavras.map((palavra, i) => (
+                    <motion.li
+                      key={palavra.termo}
+                      className="placa-ferro px-7 py-5"
+                      initial={{ opacity: 0, x: 40 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                      transition={{ ...mola.carta, delay: 0.12 + i * 0.08 }}
+                    >
+                      <p className="font-titulo text-[28px] font-bold leading-tight text-ouro">{palavra.termo}</p>
+                      <p className="mt-1 font-texto text-[25px] leading-snug text-pergaminho">{palavra.texto}</p>
+                    </motion.li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <p className="font-texto text-[24px] italic text-pergaminho/70 [text-shadow:0_2px_4px_rgb(0_0_0)]">clique para fechar</p>
           </motion.div>
         )}

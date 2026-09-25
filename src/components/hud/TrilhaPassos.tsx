@@ -68,7 +68,7 @@ export function TrilhaPassos({ passo, etapa, opcoes }: { passo: Passo; etapa: nu
                 </span>
               )}
               <motion.span
-                className="relative flex h-[30px] w-[30px] items-center justify-center border-2"
+                className="relative flex h-[30px] w-[30px] items-center justify-center border-2 will-change-transform"
                 style={{
                   rotate: 45,
                   borderColor: feito || agora ? 'var(--ouro)' : 'rgb(243 230 200 / 0.3)',

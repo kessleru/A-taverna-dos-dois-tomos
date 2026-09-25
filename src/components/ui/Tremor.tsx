@@ -34,6 +34,7 @@ export function Tremor({ children }: { children: ReactNode }) {
     if (alvo) {
       if (trauma.current <= 0) {
         alvo.style.transform = '';
+        alvo.style.willChange = '';
       } else {
         const { x, y, giro, escala } = deslocamentoTremor(trauma.current, agora / 1000);
         alvo.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) rotate(${giro.toFixed(3)}deg) scale(${escala.toFixed(4)})`;
@@ -47,6 +48,9 @@ export function Tremor({ children }: { children: ReactNode }) {
       if (reduzido) return;
       trauma.current = somarTrauma(trauma.current, impacto);
       if (quadro.current === null) {
+        // Vira camada só enquanto treme: permanente, seria uma camada do
+        // tamanho do palco ocupando memória de vídeo o jogo inteiro.
+        if (elemento.current) elemento.current.style.willChange = 'transform';
         anterior.current = performance.now();
         quadro.current = requestAnimationFrame(passo);
       }

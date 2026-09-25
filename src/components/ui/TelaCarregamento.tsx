@@ -4,7 +4,7 @@ import { Icone } from './Icone';
 
 // Enquanto a taverna prepara as mesas, o Taverneiro dá umas dicas.
 export const DICAS = [
-  'Não enxergou uma carta? Botão direito nela e ela amplia.',
+  'Não enxergou uma carta? Botão direito nela: ela amplia e explica os termos.',
   'A tecla ? mostra todos os atalhos, a qualquer momento.',
   'M liga e desliga o som. F deixa em tela cheia.',
   'A turma vota levantando a mão; quem apresenta clica na carta ou tecla 1, 2 ou 3.',
