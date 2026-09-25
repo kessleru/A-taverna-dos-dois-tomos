@@ -6,6 +6,7 @@ import { Grimorio } from '../components/ui/Grimorio';
 import { Poeira } from '../components/ui/Poeira';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { mola } from '../styles/movimento';
+import { travar } from '../engine/trava';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -64,10 +65,18 @@ export function F0Abertura({ avancar, som }: F0AberturaProps) {
   );
 }
 
+// Atraso de entrada do botão "Entrar na taverna" (1,8 s).
+const ENTRADA_TITULO_MS = 1800;
+
 function TelaTitulo({ aoEntrar }: { aoEntrar: () => void }) {
   const reduzido = useReducedMotion();
   const [artigoA, artigoB] = conteudo.artigos;
   const entrada = (atraso: number) => ({ delay: reduzido ? 0 : atraso });
+
+  // O botão só aparece depois do brasão e da faixa: até lá, nada de pular.
+  useEffect(() => {
+    if (!reduzido) travar(ENTRADA_TITULO_MS);
+  }, [reduzido]);
 
   return (
     <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>

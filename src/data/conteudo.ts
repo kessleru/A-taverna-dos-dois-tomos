@@ -15,6 +15,11 @@ export const rotulosAtributos: Record<Atributo, string> = {
   arsenal: 'Arsenal de lógicas',
 };
 
+// Marcador de campo ainda não preenchido: não aparece na tela.
+export function preenchido(texto: string): boolean {
+  return texto.trim() !== '' && !texto.includes('PREENCHER');
+}
+
 export interface Indicadores { caixa: number; clientes: number; moral: number }
 
 export const conteudo = {

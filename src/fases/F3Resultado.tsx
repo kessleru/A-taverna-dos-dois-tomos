@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { perfis, calcularPerfil, etapas, canvasReal, briefing, type Bloco, type Logica } from '../data/rodada';
+import { perfis, calcularPerfil, etapas, canvasReal, briefing, revelacaoBricolagem, type Bloco, type Logica } from '../data/rodada';
 import { pontuacao, type EstadoRodada } from '../engine/motor';
 import { ControlesFase } from '../components/ui/ControlesFase';
 import { ContadorAnimado } from '../components/ui/ContadorAnimado';
 import { Tapecaria } from '../components/hud/Tapecaria';
+import { Impacto } from '../components/ui/Particulas';
 import { Poeira } from '../components/ui/Poeira';
 import { Icone } from '../components/ui/Icone';
 import { COR, SIGILO } from '../components/cartas/logicas';
@@ -41,7 +42,7 @@ function canvasRealAcumulado(): Partial<Record<Bloco, Logica[]>> {
 // a Tapeçaria da turma ao lado da real.
 export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
   const reduzido = useReducedMotion();
-  const { escolhas, ind, canvas } = estadoRodada;
+  const { escolhas, ind, canvas, bricolagem } = estadoRodada;
   const { total, estrelas, rank } = pontuacao(ind);
   const completa = escolhas.length === etapas.length;
   const perfilId = completa ? calcularPerfil(escolhas) : undefined;
@@ -83,6 +84,8 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
           animate={{ scale: 1, filter: 'brightness(1) sepia(0) saturate(1) hue-rotate(0deg)' }}
           transition={{ scale: { type: 'spring', stiffness: 160, damping: 14 }, filter: { duration: 1.6, ease: 'easeOut' } }}
         >
+          {/* Fagulhas de bigorna quando a medalha é forjada. */}
+          <Impacto cor="var(--brasa)" onda={300} raio={240} quantidade={16} atraso={0.25} />
           <span className="font-titulo text-[20px] font-bold uppercase tracking-[0.2em] text-tinta/80">Rank</span>
           <span className="px-6 text-center font-titulo text-[34px] font-bold leading-tight text-tinta">{rank}</span>
           <span className="mt-1 flex gap-1 text-tinta">
@@ -126,9 +129,10 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
 
         <div className="grid grid-cols-4 gap-4">
           {etapas.map((etapa, i) => {
-            const turma = escolhas[i];
+            // Quem descobriu a Bricolagem na fundação mostra a carta dela ali.
+            const turma: Logica | undefined = bricolagem && i === revelacaoBricolagem.etapa ? 'bricolagem' : escolhas[i];
             const real = LOGICA_REAL[i];
-            const igual = turma === etapa.ideal;
+            const igual = escolhas[i] === etapa.ideal;
             return (
               <div key={etapa.id} className="relative flex flex-col items-center gap-3 rounded-md bg-madeira-profunda/70 px-3 py-4">
                 <p className="font-titulo text-[20px] font-bold text-pergaminho/85">{etapa.fase.replace(/^\d+\s*·\s*/, '')}</p>

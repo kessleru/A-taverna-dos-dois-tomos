@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { arteEventos } from '../../data/artes';
 import { CenaArte } from './CenaArte';
 import { Icone } from '../ui/Icone';
+import { Chuva } from '../ui/Particulas';
 
 interface CartaEventoProps {
   depoisDaEtapa: number;
@@ -31,8 +32,9 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
       animate={{ rotateY: 0, scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 120, damping: 16 }}
     >
-      <div className="h-full w-[400px] shrink-0 overflow-hidden rounded-l-[4px] border-2 border-ouro-escuro">
+      <div className="relative h-full w-[400px] shrink-0 overflow-hidden rounded-l-[4px]">
         {arte && <CenaArte arte={arte} nome={nome} />}
+        <span className="moldura-ilustracao pointer-events-none absolute inset-0" aria-hidden />
       </div>
       <div className="pergaminho flex flex-1 flex-col justify-center gap-3 !px-12 [clip-path:none]">
         <p className="font-titulo text-[24px] font-bold uppercase tracking-[0.08em] text-ouro-escuro">Carta do Destino · {nome}</p>
@@ -49,7 +51,7 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
               return (
                 <span
                   key={chave}
-                  className="flex items-center gap-2 rounded-md border-2 border-ouro-escuro/70 bg-madeira-profunda/90 px-4 py-1.5 font-titulo text-[28px] font-bold text-pergaminho shadow-carta"
+                  className="placa-ferro-pequena flex items-center gap-2 px-4 py-1.5 font-titulo text-[28px] font-bold text-pergaminho shadow-carta"
                 >
                   <span style={{ color: cor }}>
                     <Icone nome={icone} className="h-8 w-8" />
@@ -63,6 +65,8 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
             })}
         </div>
       </div>
+      {/* Depois de virar: pó de ouro sobe no desfecho bom, cinzas caem no ruim. */}
+      <Chuva tipo={sucesso ? 'ouro' : 'cinzas'} quantidade={sucesso ? 22 : 18} janela={1.4} atraso={0.7} semente={depoisDaEtapa + 40} />
     </motion.div>
   );
 }

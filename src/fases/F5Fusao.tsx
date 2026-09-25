@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { conteudo } from '../data/conteudo';
+import { conteudo, preenchido } from '../data/conteudo';
 import { useFolhas } from '../engine/useFolhas';
 import { CartaLendaria } from '../components/cartas/CartaLendaria';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { Faiscas } from '../components/ui/Faiscas';
 import { Poeira } from '../components/ui/Poeira';
+import { Chuva } from '../components/ui/Particulas';
 import { NavFolhas } from '../components/ui/NavFolhas';
 import { Icone } from '../components/ui/Icone';
 import { mola } from '../styles/movimento';
@@ -203,7 +204,8 @@ function Linha({ numero, texto, nova }: { numero: number; texto: string; nova: b
   const reduzido = useReducedMotion();
   const animar = nova && !reduzido;
   return (
-    <li className="flex items-start gap-4 font-texto text-[32px] leading-snug">
+    <li className="relative flex items-start gap-4 font-texto text-[32px] leading-snug">
+      {animar && <Chuva tipo="ouro" quantidade={10} janela={1.3} semente={numero * 7} />}
       <span className="w-10 shrink-0 font-titulo font-bold text-cera">{numero}.</span>
       <motion.span
         initial={animar ? { clipPath: 'inset(0 100% 0 0)', color: '#c8901c', textShadow: '0 0 14px rgb(232 182 74 / 0.9)' } : false}
@@ -233,6 +235,7 @@ function Linha({ numero, texto, nova }: { numero: number; texto: string; nova: b
 
 function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
   const reduzido = useReducedMotion();
+  const membros = conteudo.equipe.membros.filter(preenchido);
   const falou = useRef(false);
 
   useEffect(() => {
@@ -265,7 +268,7 @@ function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
             animate={{ y: '0%' }}
             transition={{ duration: 6, ease: 'easeOut' }}
           >
-            <Bloco titulo="Equipe">{conteudo.equipe.membros.join(' · ')}</Bloco>
+            {membros.length > 0 && <Bloco titulo="Equipe">{membros.join(' · ')}</Bloco>}
             <Bloco titulo="Referências">
               {conteudo.artigos.map((artigo) => (
                 <p key={artigo.id} className="mb-3 text-[22px]">

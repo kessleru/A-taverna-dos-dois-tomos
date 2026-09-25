@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { conteudo, rotulosAtributos, type Atributo } from '../data/conteudo';
 import { briefing, comparacao } from '../data/rodada';
@@ -33,7 +33,7 @@ interface F4ArtigosProps extends FaseProps {
 // F4 — Confronto dos Tomos (03-historia.md §7): os dois tomos frente a frente,
 // com um item da comparação por folha.
 export function F4Artigos({ som, avancar, voltar }: F4ArtigosProps) {
-  const aoVirar = useCallback(() => som.tocar('carta-deslizar'), [som]);
+  const aoVirar = useCallback(() => som.tocar('pagina'), [som]);
   const { folha, ir } = useFolhas({ total: PASSOS.length, chave: 'sa-f4-folha', avancar, voltar, aoVirar });
   const passo = PASSOS[folha];
   const juntos = passo === 'tema';
@@ -60,7 +60,7 @@ export function F4Artigos({ som, avancar, voltar }: F4ArtigosProps) {
               exit={{ opacity: 0, y: -16, transition: { duration: 0.2 } }}
             >
               {passo !== 'tema' && (
-                <h2 className="font-titulo text-[40px] font-bold text-pergaminho [text-shadow:0_3px_6px_rgb(0_0_0/0.9)]">{TITULOS[passo]}</h2>
+                <h2 className="filigrana font-titulo text-[40px] font-bold text-pergaminho [text-shadow:0_3px_6px_rgb(0_0_0/0.9)]">{TITULOS[passo]}</h2>
               )}
               {passo === 'veredito' && <Veredito som={som} />}
               {passo === 'semelhancas' && <Semelhancas />}
@@ -124,8 +124,8 @@ function Veredito({ som }: { som: ReturnType<typeof useSom> }) {
           <Icone nome="wax-seal" className="h-[220px] w-[220px]" />
         </span>
         {/* Fita de cera atravessando o selo com o veredito. */}
-        <span className="absolute rounded-sm border-2 border-[#5c1119] bg-gradient-to-b from-[#b3262f] to-cera px-7 py-2 font-titulo text-[30px] font-bold uppercase tracking-[0.12em] text-[#f6d9c0] shadow-carta [text-shadow:0_2px_0_#5c1119]">
-          Complementares
+        <span className="fita-sombra absolute">
+          <span className="fita block font-titulo text-[30px] font-bold uppercase tracking-[0.12em]">Complementares</span>
         </span>
       </motion.div>
       <div className="pergaminho-sombra max-w-[980px]">
@@ -172,7 +172,8 @@ function Fio({ lado, atraso }: { lado: 'esquerda' | 'direita'; atraso: number })
 
 // Cada lado da diferença sai do seu tomo.
 function Diferencas() {
-  useSonsEmSequencia(comparacao.diferencas.map((_, i) => ['carta-deslizar', 150 + i * 300]));
+  // Um deslizar só para as quatro linhas; um por linha soava como puxar carta sem parar.
+  useSonsEmSequencia([['carta-deslizar', 150]]);
   return (
     <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-x-5 gap-y-4">
       {comparacao.diferencas.map((linha, i) => (
@@ -183,12 +184,13 @@ function Diferencas() {
 }
 
 function LinhaDiferenca({ tema, a, b, atraso }: { tema: string; a: string; b: string; atraso: number }) {
-  const placa = 'rounded-md border-2 bg-madeira-profunda/90 px-5 py-3 font-texto text-[26px] leading-snug text-pergaminho shadow-carta';
+  // Placas de ferro com o filete na cor de cada tomo.
+  const placa = 'placa-ferro px-6 py-3 font-texto text-[26px] leading-snug text-pergaminho';
   return (
     <>
       <motion.p
         className={`${placa} text-right`}
-        style={{ borderColor: COR_TOMO.A }}
+        style={{ '--acento': COR_TOMO.A } as CSSProperties}
         initial={{ opacity: 0, x: -80 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: atraso, ...mola.carta }}
@@ -205,7 +207,7 @@ function LinhaDiferenca({ tema, a, b, atraso }: { tema: string; a: string; b: st
       </motion.p>
       <motion.p
         className={placa}
-        style={{ borderColor: COR_TOMO.B }}
+        style={{ '--acento': COR_TOMO.B } as CSSProperties}
         initial={{ opacity: 0, x: 80 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: atraso, ...mola.carta }}
@@ -248,7 +250,7 @@ function Atributos() {
 function Barra({ valor, id, atraso }: { valor: number; id: 'A' | 'B'; atraso: number }) {
   return (
     <motion.span
-      className={`h-7 border-2 border-black/40 shadow-carta ${id === 'A' ? 'rounded-l-full' : 'rounded-r-full'}`}
+      className={`barra-forjada h-7 ${id === 'A' ? '[clip-path:polygon(14px_0,100%_0,100%_100%,14px_100%,0_50%)]' : '[clip-path:polygon(0_0,calc(100%-14px)_0,100%_50%,calc(100%-14px)_100%,0_100%)]'}`}
       style={{
         width: valor * PX_POR_PONTO,
         background: `linear-gradient(180deg, color-mix(in srgb, ${COR_TOMO[id]} 70%, white), ${COR_TOMO[id]} 50%, color-mix(in srgb, ${COR_TOMO[id]} 60%, black))`,
@@ -264,8 +266,8 @@ function Barra({ valor, id, atraso }: { valor: number; id: 'A' | 'B'; atraso: nu
 function Valor({ valor, id }: { valor: number; id: 'A' | 'B' }) {
   return (
     <span
-      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[3px] bg-madeira-profunda font-titulo text-[24px] font-bold text-pergaminho"
-      style={{ borderColor: COR_TOMO[id] }}
+      className="medalhao m-1 flex h-12 w-12 shrink-0 items-center justify-center bg-madeira-profunda font-titulo text-[24px] font-bold text-pergaminho"
+      style={{ '--gema': COR_TOMO[id] } as CSSProperties}
     >
       {valor}
     </span>
@@ -282,8 +284,8 @@ function Proposicao() {
         <img
           src={retratosNarradores.B}
           alt=""
-          className="h-[170px] w-[170px] shrink-0 rounded-full border-4 object-cover shadow-carta"
-          style={{ borderColor: COR_TOMO.B }}
+          className="medalhao m-2 h-[170px] w-[170px] shrink-0 object-cover"
+          style={{ '--gema': COR_TOMO.B } as CSSProperties}
         />
         <blockquote className="font-texto text-[46px] font-bold italic leading-tight text-ouro [text-shadow:0_3px_6px_rgb(0_0_0/0.9)]">
           “{citacao}”

@@ -9,6 +9,7 @@
 @import './taverna.css';
 @import './grimorio.css';
 @import './quadro.css';
+@import './medieval.css';
 
 @tailwind base;
 @tailwind components;

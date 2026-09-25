@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Icone } from '../components/ui/Icone';
 import { etapas, eventos, combinarDesbloqueado, type Escolha } from '../data/rodada';
 import type { Indicadores } from '../data/conteudo';
 import type { useRodada } from '../engine/useRodada';
-import type { Faixa } from '../engine/motor';
+import type { Faixa, Passo } from '../engine/motor';
 import { Orbes } from '../components/hud/Orbes';
 import { MapaJornada } from '../components/hud/MapaJornada';
 import { Tapecaria } from '../components/hud/Tapecaria';
+import { TrilhaPassos } from '../components/hud/TrilhaPassos';
 import { CartaDesafio } from '../components/rodada/CartaDesafio';
 import { Votacao } from '../components/rodada/Votacao';
 import { DadoDestino } from '../components/rodada/DadoDestino';
@@ -13,9 +16,11 @@ import { Consequencia } from '../components/rodada/Consequencia';
 import { Cronica } from '../components/rodada/Cronica';
 import { Forja } from '../components/rodada/Forja';
 import { CartaEvento } from '../components/cartas/CartaEvento';
+import { RevelacaoBricolagem, VIRADA_BRICOLAGEM_MS } from '../components/rodada/RevelacaoBricolagem';
 import { Botao } from '../components/ui/Botao';
 import { Guia } from '../components/guia/Guia';
 import { useGrimorio } from '../components/ui/NotificacoesGrimorio';
+import { travar } from '../engine/trava';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -27,6 +32,25 @@ interface F2RodadaProps extends FaseProps {
 const TECLAS_AVANCAR = ['ArrowRight', ' ', 'PageDown'];
 // Shift+1/2/3 forçam a faixa do próximo dado (ensaio e emergências, 02 §4).
 const FAIXA_POR_TECLA: Record<string, Faixa> = { Digit1: 'falha', Digit2: 'sucesso', Digit3: 'critico' };
+// Quanto cada passo leva para entrar na mesa (distribuir cartas, virar o
+// evento, forjar a Combinar): até lá, cliques e teclas ficam travados.
+const TRAVA_PASSO_MS: Record<Passo, number> = {
+  situacao: 900,
+  votacao: 1800,
+  dado: 1000,
+  consequencia: 700,
+  bricolagem: 1200,
+  cronica: 1300,
+  evento: 1200,
+  forja: 1800,
+};
+const TRAVA_FORJA_DESBLOQUEADA_MS = 2600;
+// A Adaptar vira Bricolagem e o pergaminho entra depois.
+const TRAVA_BRICOLAGEM_DESCOBERTA_MS = 2400;
+// Depois que o dado para: números e orbes assentando.
+const TRAVA_REVELACAO_MS = 900;
+const TRAVA_FIM_MS = 1200;
+
 const NOMES_INDICADOR: Record<keyof Indicadores, string> = { caixa: 'Caixa', clientes: 'Clientes', moral: 'Moral' };
 
 function descreverMudanca(antes: Indicadores, depois: Indicadores): string {
@@ -67,6 +91,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   }
 
   function aoRevelarDado() {
+    travar(TRAVA_REVELACAO_MS);
     setRevelado(true);
     const faixa = estado.ultimoDado?.faixa;
     if (faixa === 'critico') {
@@ -90,6 +115,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   const podeAvancar =
     estado.terminou ||
     estado.passo === 'situacao' ||
+    estado.passo === 'bricolagem' ||
     estado.passo === 'cronica' ||
     estado.passo === 'evento' ||
     estado.passo === 'forja' ||
@@ -111,6 +137,10 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
         notificar(`Próximo dado: ${faixa === 'critico' ? 'crítico' : faixa}.`);
         return;
       }
+      // No passo do dado a seta rola o dado: quem trata é o DadoDestino. Ele
+      // registra o ouvinte de novo a cada render, depois deste, então aqui a
+      // tecla precisa passar sem ser consumida.
+      if (TECLAS_AVANCAR.includes(evento.key) && estado.passo === 'dado') return;
       if (TECLAS_AVANCAR.includes(evento.key)) {
         // Na rodada a seta avança os passos, não a fase.
         evento.preventDefault();
@@ -156,6 +186,33 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     // identidade a cada render e recolocaria esse efeito em loop.
   }, [estado.passo]);
 
+  // Na descoberta da Bricolagem, orbes e tapeçaria seguram o estado de antes e
+  // só mudam quando a carta termina de virar. As refs guardam o último passo
+  // antes dela (o bônus e a nova cor entram junto com o passo).
+  const indForaDaBricolagem = useRef(estado.ind);
+  const canvasForaDaBricolagem = useRef(estado.canvas);
+  if (estado.passo !== 'bricolagem') {
+    indForaDaBricolagem.current = estado.ind;
+    canvasForaDaBricolagem.current = estado.canvas;
+  }
+  const [bonusBricolagemVisivel, setBonusBricolagemVisivel] = useState(false);
+  useEffect(() => {
+    setBonusBricolagemVisivel(false);
+    if (estado.passo !== 'bricolagem' || !estado.bricolagem) return;
+    const id = window.setTimeout(() => setBonusBricolagemVisivel(true), VIRADA_BRICOLAGEM_MS + 500);
+    return () => window.clearTimeout(id);
+  }, [estado.passo, estado.bricolagem]);
+  const segurandoBonus = estado.passo === 'bricolagem' && estado.bricolagem && !bonusBricolagemVisivel;
+  const indNosOrbes = indAntes ?? (segurandoBonus ? indForaDaBricolagem.current : estado.ind);
+  const canvasNaTapecaria = segurandoBonus ? canvasForaDaBricolagem.current : estado.canvas;
+
+  useEffect(() => {
+    if (estado.terminou) travar(TRAVA_FIM_MS);
+    else if (estado.passo === 'forja' && desbloqueado) travar(TRAVA_FORJA_DESBLOQUEADA_MS);
+    else if (estado.passo === 'bricolagem' && estado.bricolagem && !segurandoBonus) travar(TRAVA_BRICOLAGEM_DESCOBERTA_MS);
+    else travar(TRAVA_PASSO_MS[estado.passo]);
+  }, [estado.etapa, estado.passo, estado.terminou]);
+
   // Fim da rodada: o Taverneiro chama para ver o resultado.
   useEffect(() => {
     if (estado.terminou) som.falar('resultado');
@@ -164,15 +221,38 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
 
   if (estado.terminou) {
     return (
-      <section className="flex h-full flex-col items-center justify-center gap-10 text-center">
-        <h2 className="titulo-ouro font-titulo text-[96px] font-bold">A crônica terminou</h2>
-        <p className="font-texto text-[36px] italic text-pergaminho/85">Vamos ver o que a guilda construiu.</p>
+      <section className="flex h-full flex-col items-center justify-center gap-8 text-center">
+        {/* O tomo da crônica se fecha com o selo da guilda. */}
+        <motion.div
+          className="relative text-ouro drop-shadow-[0_12px_20px_rgb(0_0_0/0.8)]"
+          initial={{ scale: 0.6, opacity: 0, rotate: -8 }}
+          animate={{ scale: 1, opacity: 1, rotate: 0 }}
+          transition={{ type: 'spring', stiffness: 160, damping: 14 }}
+        >
+          <Icone nome="scroll-quill" className="h-[170px] w-[170px]" />
+          <motion.span
+            className="selo-cera absolute -bottom-3 -right-6"
+            initial={{ scale: 3, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.6 }}
+          >
+            <Icone nome="wax-seal" className="h-20 w-20" />
+          </motion.span>
+        </motion.div>
+        <h2 className="titulo-ouro font-titulo text-[96px] font-bold leading-none">A crônica terminou</h2>
+        <div className="filigrana text-[26px] text-ouro" aria-hidden>
+          ✦
+        </div>
+        <p className="font-texto text-[36px] italic text-pergaminho/85">Quatro decisões escritas. Vamos ver o que a guilda construiu.</p>
         <Botao onClick={avancarFase}>Ver o resultado</Botao>
       </section>
     );
   }
 
-  const blocosAcesos = estado.passo === 'consequencia' && revelado && opcaoAtual ? opcaoAtual.blocos : [];
+  const blocosAcesos =
+    (estado.passo === 'consequencia' && revelado) || (estado.passo === 'bricolagem' && estado.bricolagem)
+      ? (opcaoAtual?.blocos ?? [])
+      : [];
 
   return (
     <section className="flex h-full flex-col px-16 pb-6 pt-4">
@@ -180,15 +260,18 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
         <div data-guia="jornada">
           <MapaJornada etapaAtual={estado.etapa} escolhas={estado.escolhas} />
         </div>
+        <div className="pt-3">
+          <TrilhaPassos passo={estado.passo} etapa={estado.etapa} opcoes={etapa?.combinar && desbloqueado ? 3 : 2} />
+        </div>
         <div data-guia="orbes">
-          <Orbes ind={indAntes ?? estado.ind} />
+          <Orbes ind={indNosOrbes} />
         </div>
       </header>
 
       <div className="mt-2 flex min-h-0 flex-1 gap-10">
         <aside className="flex w-[440px] shrink-0 flex-col justify-end pb-4">
           <div data-guia="tapecaria">
-            <Tapecaria canvas={estado.canvas} destaque={blocosAcesos} />
+            <Tapecaria canvas={canvasNaTapecaria} destaque={blocosAcesos} />
           </div>
         </aside>
 
@@ -213,6 +296,8 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
           {estado.passo === 'consequencia' && opcaoAtual && estado.ultimoDado && (
             <Consequencia dado={estado.ultimoDado} resultado={opcaoAtual.resultado} aoRevelar={aoRevelarDado} aoGirar={() => som.tocar('tic')} />
           )}
+
+          {estado.passo === 'bricolagem' && <RevelacaoBricolagem descoberta={estado.bricolagem} />}
 
           {estado.passo === 'cronica' && escolhaAtual && <Cronica etapa={etapa} escolha={escolhaAtual} />}
 

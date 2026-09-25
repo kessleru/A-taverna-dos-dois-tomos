@@ -9,7 +9,7 @@ export interface Brasa {
 }
 
 // mulberry32: gerador pequeno e determinístico, suficiente para decoração.
-function aleatorio(semente: number): () => number {
+export function aleatorio(semente: number): () => number {
   let a = semente >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;

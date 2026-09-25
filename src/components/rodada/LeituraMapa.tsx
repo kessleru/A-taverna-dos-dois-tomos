@@ -23,7 +23,9 @@ function Setas({ valor }: { valor: number }) {
 // Leitura do Mapa (02-jogabilidade.md §3): as três etiquetas da matriz do
 // Artigo A viram uma a uma; cada uma mostra quem o contexto ajuda.
 export function LeituraMapa({ etapa, opcoes }: { etapa: Etapa; opcoes: Escolha[] }) {
-  // Um som só: as etiquetas são pergaminhos, e as cartas já têm o embaralhar.
+  // Um só farfalhar de pergaminho para as três etiquetas: com um som de carta
+  // por etiqueta, mais o embaralhar das cartas logo depois, a mesa "puxava
+  // carta" quatro vezes seguidas.
   useSonsEmSequencia([['pagina', 200]]);
   return (
     <div className="flex gap-5" data-guia="leitura">
@@ -47,7 +49,7 @@ export function LeituraMapa({ etapa, opcoes }: { etapa: Etapa; opcoes: Escolha[]
                 {opcoes.map((escolha) => (
                   <span
                     key={escolha}
-                    className="flex items-center gap-1.5 rounded-md border border-ouro-escuro/70 bg-madeira-profunda/90 px-2.5 py-1 shadow-carta"
+                    className="placa-ferro-pequena flex items-center gap-1.5 px-3 py-1"
                   >
                     <span style={{ color: COR[escolha] }}>
                       <Icone nome={SIGILO[escolha]} className="h-8 w-8" />

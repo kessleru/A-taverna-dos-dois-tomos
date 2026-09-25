@@ -1,7 +1,7 @@
 // src/engine/motor.ts
 // Funções puras do motor da rodada. Sem React — testadas com Vitest.
 // Ordem por etapa (02-jogabilidade.md §2): situacao → votacao → dado →
-// consequencia → cronica → evento (etapas 1–3) → [forja antes da etapa 4] →
+// consequencia → [bricolagem na fundação] → cronica → evento (etapas 1–3) → [forja antes da etapa 4] →
 // próxima etapa. O dado vem antes da consequência porque decide quanto a
 // carta rende.
 
@@ -14,9 +14,11 @@ import {
   dadoDoDestino,
   regras,
   combinarDesbloqueado,
+  revelacaoBricolagem,
+  type Logica,
 } from '../data/rodada';
 
-export type Passo = 'situacao' | 'votacao' | 'dado' | 'consequencia' | 'cronica' | 'evento' | 'forja';
+export type Passo = 'situacao' | 'votacao' | 'dado' | 'consequencia' | 'bricolagem' | 'cronica' | 'evento' | 'forja';
 export type Faixa = 'critico' | 'sucesso' | 'falha';
 
 export interface ResultadoDado {
@@ -26,8 +28,9 @@ export interface ResultadoDado {
   faixa: Faixa;
 }
 
-// Blocos do Canvas que cada carta jogada tocou, na lógica da carta.
-export type Canvas = Partial<Record<Bloco, Escolha[]>>;
+// Blocos do Canvas que cada carta jogada tocou, na lógica da carta (a
+// Bricolagem repinta os blocos do Adaptar da fundação quando é descoberta).
+export type Canvas = Partial<Record<Bloco, Logica[]>>;
 
 export interface EstadoRodada {
   etapa: number; // 0–3
@@ -39,6 +42,8 @@ export interface EstadoRodada {
   // Faixa escolhida pelo apresentador para o próximo dado (Shift+1..3).
   faixaForcada?: Faixa;
   ultimoEvento?: { titulo: string; texto: string; efeito: Partial<Indicadores> };
+  // A turma jogou Adaptar na fundação e descobriu a carta Bricolagem.
+  bricolagem: boolean;
   terminou: boolean;
 }
 
@@ -51,6 +56,7 @@ export function estadoInicial(): EstadoRodada {
     ind: { ...regras.inicial },
     escolhas: [],
     canvas: {},
+    bricolagem: false,
     terminou: false,
   };
 }
@@ -165,11 +171,30 @@ export function resolverEvento(estado: EstadoRodada): EstadoRodada {
   return avancarEtapa(novoEstado);
 }
 
+// Revelação da Bricolagem na fundação. Jogando Adaptar, a carta é descoberta:
+// devolve o caixa e troca o Adaptar pela Bricolagem nos blocos dessa jogada.
+function revelarBricolagem(estado: EstadoRodada): EstadoRodada {
+  if (estado.escolhas[estado.etapa] !== revelacaoBricolagem.gatilho) return { ...estado, passo: 'bricolagem' };
+  const canvas: Canvas = { ...estado.canvas };
+  for (const bloco of opcaoDe(estado.etapa, revelacaoBricolagem.gatilho).blocos) {
+    canvas[bloco] = (canvas[bloco] ?? []).map((l) => (l === revelacaoBricolagem.gatilho ? 'bricolagem' : l));
+  }
+  return {
+    ...estado,
+    passo: 'bricolagem',
+    bricolagem: true,
+    canvas,
+    ind: aplicarEfeito(estado.ind, revelacaoBricolagem.bonus),
+  };
+}
+
 export function proximoPasso(estado: EstadoRodada): EstadoRodada {
   switch (estado.passo) {
     case 'situacao':
       return { ...estado, passo: 'votacao' };
     case 'consequencia':
+      return estado.etapa === revelacaoBricolagem.etapa ? revelarBricolagem(estado) : { ...estado, passo: 'cronica' };
+    case 'bricolagem':
       return { ...estado, passo: 'cronica' };
     case 'cronica': {
       const temEvento = eventos.some((e) => e.depoisDaEtapa === estado.etapa);

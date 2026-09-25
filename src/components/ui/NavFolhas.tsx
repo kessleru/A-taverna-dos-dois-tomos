@@ -17,9 +17,12 @@ export function NavFolhas({ folha, total, ir, rotulo, rotuloAvancar = 'Continuar
       <Botao variante="fantasma" onClick={() => ir(-1)}>
         Voltar
       </Botao>
-      <ol className="flex gap-4" aria-label={`Folha ${folha + 1} de ${total}`}>
+      {/* Selo de cera na folha atual; cravos de ferro nas outras. */}
+      <ol className="flex items-center gap-5" aria-label={`Folha ${folha + 1} de ${total}`}>
         {Array.from({ length: total }, (_, i) => (
-          <li key={i} className={`h-5 w-5 rounded-full border-2 ${i === folha ? 'border-cera bg-cera' : 'border-pergaminho/40'}`} />
+          <li key={i} className="flex h-7 w-7 items-center justify-center">
+            <span className={i === folha ? 'selo-progresso' : i < folha ? 'cravo-progresso opacity-100' : 'cravo-progresso opacity-50'} />
+          </li>
         ))}
       </ol>
       {/* Espaçador mantém as bolinhas no centro quando não há Continuar. */}

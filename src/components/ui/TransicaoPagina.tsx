@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { temposTransicao } from '../../styles/movimento';
+import { travar } from '../../engine/trava';
 
 interface TransicaoPaginaProps {
   chave: string;
@@ -55,6 +56,8 @@ export function TransicaoPagina({ chave, children, fundo, aoVirar }: TransicaoPa
   useEffect(() => {
     if (!saindo) return;
     aoVirarRef.current?.();
+    // Sem cliques até a folha assentar.
+    travar(duracao * 1000);
     const id = window.setTimeout(() => {
       conteudos.current.delete(saindo.chave);
       setSaindo(null);
