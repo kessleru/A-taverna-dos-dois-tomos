@@ -11,6 +11,7 @@ import { Tapecaria } from '../components/hud/Tapecaria';
 import { TrilhaPassos } from '../components/hud/TrilhaPassos';
 import { CartaDesafio } from '../components/rodada/CartaDesafio';
 import { AberturaCapitulo } from '../components/rodada/AberturaCapitulo';
+import { PassagemDoTempo } from '../components/rodada/PassagemDoTempo';
 import { ateAqui } from '../engine/historia';
 import { Votacao } from '../components/rodada/Votacao';
 import { DadoDestino } from '../components/rodada/DadoDestino';
@@ -22,7 +23,7 @@ import { RevelacaoBricolagem, VIRADA_BRICOLAGEM_MS } from '../components/rodada/
 import { Botao } from '../components/ui/Botao';
 import { Guia } from '../components/guia/Guia';
 import { useGrimorio } from '../components/ui/NotificacoesGrimorio';
-import { travar } from '../engine/trava';
+import { TRAVA_PADRAO_MS, travar } from '../engine/trava';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -76,6 +77,19 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   const [indAntes, setIndAntes] = useState<Indicadores | null>(null);
   const [revelado, setRevelado] = useState(false);
 
+  // Passagem do tempo: quando a rodada entra num capítulo novo, os anos
+  // folheiam antes do primeiro passo dele. Detectada no render (e não num
+  // efeito) para o passo novo nem chegar a montar, tocar som ou falar antes.
+  const [etapaVista, setEtapaVista] = useState(estado.etapa);
+  const [passagem, setPassagem] = useState<number | null>(null);
+  if (estado.etapa !== etapaVista) {
+    setPassagem(estado.etapa === etapaVista + 1 ? estado.etapa : null);
+    setEtapaVista(estado.etapa);
+  }
+  const emPassagem = passagem !== null && passagem === estado.etapa && !estado.terminou;
+  // O passo que está de fato na mesa (nenhum durante a passagem).
+  const passoVisivel = emPassagem ? null : estado.passo;
+
   const etapa = etapas[estado.etapa];
   const escolhaAtual = estado.escolhas[estado.etapa];
   const opcaoAtual = escolhaAtual ? (escolhaAtual === 'combinar' ? etapa?.combinar : etapa?.[escolhaAtual]) : undefined;
@@ -126,7 +140,8 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
 
   const avancarRef = useRef(() => {});
   avancarRef.current = () => {
-    if (estado.terminou) avancarFase();
+    if (emPassagem) setPassagem(null);
+    else if (estado.terminou) avancarFase();
     else if (podeAvancar) avancar();
   };
 
@@ -158,6 +173,8 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   }, [estado.etapa, estado.passo, forcarFaixa, notificar, voltarFase]);
 
   useEffect(() => {
+    // Durante a passagem do tempo, nada: o passo toca e fala quando aparecer.
+    if (!passoVisivel) return;
     if (estado.passo === 'evento') som.tocar('evento');
     if (estado.passo === 'forja' && !desbloqueado) {
       som.tocar('cadeado');
@@ -185,9 +202,9 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
       window.clearTimeout(distribuir);
       window.clearTimeout(forja);
     };
-    // som é intencionalmente omitido: o objeto retornado por useSom muda de
-    // identidade a cada render e recolocaria esse efeito em loop.
-  }, [estado.passo]);
+    // Só quando o passo visível muda: som é estável, mas o efeito não deve
+    // repetir falas se outra coisa da rodada mudar.
+  }, [passoVisivel]);
 
   // Na descoberta da Bricolagem, orbes e tapeçaria seguram o estado de antes e
   // só mudam quando a carta termina de virar. As refs guardam o último passo
@@ -210,11 +227,13 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
   const canvasNaTapecaria = segurandoBonus ? canvasForaDaBricolagem.current : estado.canvas;
 
   useEffect(() => {
-    if (estado.terminou) travar(TRAVA_FIM_MS);
+    // Na passagem, um instante sem aceitar →, para um toque duplo não pular os anos sem querer.
+    if (emPassagem) travar(TRAVA_PADRAO_MS);
+    else if (estado.terminou) travar(TRAVA_FIM_MS);
     else if (estado.passo === 'forja' && desbloqueado) travar(TRAVA_FORJA_DESBLOQUEADA_MS);
     else if (estado.passo === 'bricolagem' && estado.bricolagem && !segurandoBonus) travar(TRAVA_BRICOLAGEM_DESCOBERTA_MS);
     else travar(TRAVA_PASSO_MS[estado.passo]);
-  }, [estado.etapa, estado.passo, estado.terminou]);
+  }, [estado.etapa, estado.passo, estado.terminou, emPassagem]);
 
   // Fim da rodada: o Taverneiro chama para ver o resultado.
   useEffect(() => {
@@ -279,7 +298,11 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
         </aside>
 
         <div className="relative flex min-w-0 flex-1 flex-col items-center justify-center">
-          {estado.passo === 'situacao' && (
+          {emPassagem && (
+            <PassagemDoTempo key={`passagem-${estado.etapa}`} de={etapas[estado.etapa - 1]} para={etapa} aoTerminar={() => setPassagem(null)} />
+          )}
+
+          {passoVisivel === 'situacao' && (
             <div className="flex flex-col items-center gap-5">
               <AberturaCapitulo etapa={etapa} ateAqui={ateAqui(estado.etapa, estado.escolhas, estado.bricolagem, estado.ultimoEvento?.titulo)} />
               <div data-guia="desafio">
@@ -288,26 +311,26 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
             </div>
           )}
 
-          {estado.passo === 'votacao' && (
+          {passoVisivel === 'votacao' && (
             <Votacao etapa={etapa} combinarLiberado={desbloqueado} onEscolher={aoEscolher} aoSelecionar={() => {
                 som.tocar('tambor');
                 som.tocar('chama');
               }} />
           )}
 
-          {estado.passo === 'dado' && escolhaAtual && (
+          {passoVisivel === 'dado' && escolhaAtual && (
             <DadoDestino etapa={etapa} etapaIndice={estado.etapa} escolha={escolhaAtual} onRolar={aoRolarDado} />
           )}
 
-          {estado.passo === 'consequencia' && opcaoAtual && estado.ultimoDado && (
+          {passoVisivel === 'consequencia' && opcaoAtual && estado.ultimoDado && (
             <Consequencia dado={estado.ultimoDado} resultado={opcaoAtual.resultado} aoRevelar={aoRevelarDado} aoGirar={() => som.tocar('tic')} />
           )}
 
-          {estado.passo === 'bricolagem' && <RevelacaoBricolagem descoberta={estado.bricolagem} />}
+          {passoVisivel === 'bricolagem' && <RevelacaoBricolagem descoberta={estado.bricolagem} />}
 
-          {estado.passo === 'cronica' && escolhaAtual && <Cronica etapa={etapa} escolha={escolhaAtual} />}
+          {passoVisivel === 'cronica' && escolhaAtual && <Cronica etapa={etapa} escolha={escolhaAtual} />}
 
-          {estado.passo === 'evento' &&
+          {passoVisivel === 'evento' &&
             (() => {
               const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa)!;
               const sucesso = evento.condicao(estado.escolhas, estado.ind);
@@ -332,7 +355,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
               );
             })()}
 
-          {estado.passo === 'forja' && (
+          {passoVisivel === 'forja' && (
             <Forja
               desbloqueado={desbloqueado}
               aoFundir={() => {
@@ -343,7 +366,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
             />
           )}
 
-          {podeAvancar && (
+          {podeAvancar && !emPassagem && (
             <div className="absolute bottom-0 right-0">
               <Botao onClick={() => avancarRef.current()}>Continuar</Botao>
             </div>
@@ -352,7 +375,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
       </div>
 
       {/* Tutorial do Taverneiro na primeira vez de cada passo (05-tutorial.md). */}
-      <Guia passo={estado.passo} primeiraVez={estado.etapa === 0} />
+      <Guia passo={passoVisivel ?? 'passagem'} primeiraVez={estado.etapa === 0} />
     </section>
   );
 }

@@ -23,3 +23,10 @@ export function ateAqui(etapa: number, escolhas: Escolha[], bricolagem: boolean,
   const logica: Logica = bricolagem && anterior === revelacaoBricolagem.etapa ? 'bricolagem' : escolha;
   return { fase: nomeDaFase(etapas[anterior].fase), logica, destino: ultimoDestino };
 }
+
+// Anos que a passagem do tempo folheia entre dois capítulos, do ano em que o
+// anterior começou até o ano do novo (2017 → 2018 → 2019).
+export function anosEntre(de: number, ate: number): number[] {
+  if (!(ate > de)) return [ate];
+  return Array.from({ length: ate - de + 1 }, (_, i) => de + i);
+}

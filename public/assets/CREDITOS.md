@@ -112,6 +112,7 @@ preto de fundo do download foi removido e o preenchimento trocado por
 | `padlock.svg`, `crossed-chains.svg`, `breaking-chain.svg` | Lorc, Lorc, Skoll | Combinar trancada e forja |
 | `candle-light.svg`, `lantern.svg` | Lorc | Ambiente |
 | `wax-seal.svg` | Lorc | Selo da Crônica e veredito |
+| `hourglass.svg` | Lorc | Passagem do tempo entre capítulos |
 
 ## Fontes
 

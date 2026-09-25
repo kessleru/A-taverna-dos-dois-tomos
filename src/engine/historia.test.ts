@@ -36,3 +36,24 @@ describe('fio da história', () => {
     }
   });
 });
+
+describe('passagem do tempo', () => {
+  it('folheia os anos de um capítulo ao outro', async () => {
+    const { anosEntre } = await import('./historia');
+    expect(anosEntre(2017, 2019)).toEqual([2017, 2018, 2019]);
+    expect(anosEntre(2019, 2020)).toEqual([2019, 2020]);
+    expect(anosEntre(2020, 2020)).toEqual([2020]);
+  });
+
+  it('os capítulos andam para a frente no tempo, e só o primeiro não tem passagem', () => {
+    etapas.forEach((etapa, i) => {
+      if (i === 0) expect(etapa.capitulo.passagem).toBeUndefined();
+      else {
+        expect(etapa.capitulo.ano).toBeGreaterThan(etapas[i - 1].capitulo.ano);
+        expect(etapa.capitulo.passagem).toBeTruthy();
+        // A passagem não repete a abertura do capítulo.
+        expect(etapa.capitulo.abertura).not.toContain(etapa.capitulo.passagem!);
+      }
+    });
+  });
+});

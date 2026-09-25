@@ -124,7 +124,14 @@ interface NivelLeitura { texto: string; setas: Partial<Record<Escolha, number>> 
 export interface Capitulo {
   numero: string;
   periodo: string;
+  // Ano em que o capítulo começa: a passagem do tempo folheia os anos até ele.
+  ano: number;
+  // Rótulo curto dos anos, embaixo do marco no mapa da jornada.
+  anos: string;
   abertura: string;
+  // Frase da passagem do tempo que leva a este capítulo (o que acontece entre
+  // um capítulo e outro). O primeiro não tem: a história começa nele.
+  passagem?: string;
 }
 
 export interface Etapa {
@@ -152,6 +159,8 @@ export const etapas: Etapa[] = [
     capitulo: {
       numero: 'I',
       periodo: '2016',
+      ano: 2016,
+      anos: '2016',
       abertura: 'Pacientes com câncer interrompem a quimio e a radioterapia por causa de lesões graves na pele. Vocês têm uma ideia de produto para ajudar.',
     },
     titulo: 'A ideia foi recusada',
@@ -177,7 +186,10 @@ export const etapas: Etapa[] = [
     fase: '2 · Primeiros anos',
     capitulo: {
       numero: 'II',
-      periodo: '2016 a 2018',
+      periodo: '2017 e 2018',
+      ano: 2017,
+      anos: '2017–18',
+      passagem: 'Meses de laboratório, testes e ajustes na fórmula.',
       abertura: 'A empresa nasceu e o primeiro produto ficou pronto. Mas ainda não pode ser vendido.',
     },
     titulo: 'Remédio ou cosmético?',
@@ -204,6 +216,9 @@ export const etapas: Etapa[] = [
     capitulo: {
       numero: 'III',
       periodo: '2019',
+      ano: 2019,
+      anos: '2019',
+      passagem: 'Registro, primeiras vendas, primeiros pacientes: os anos passam depressa.',
       abertura: 'O produto enfim está registrado e vendendo. A startup quer crescer, e crescer custa dinheiro.',
     },
     titulo: 'Os investidores chegaram',
@@ -229,6 +244,9 @@ export const etapas: Etapa[] = [
     capitulo: {
       numero: 'IV',
       periodo: '2020 em diante',
+      ano: 2020,
+      anos: '2020+',
+      passagem: 'Vem a pandemia, e o mundo inteiro muda de ritmo.',
       abertura: 'A empresa já é conhecida entre os oncologistas. Então uma das investidoras aponta um caminho bem maior.',
     },
     titulo: 'Um mercado novo apareceu',

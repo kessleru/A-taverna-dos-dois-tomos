@@ -63,6 +63,14 @@ export function MapaJornada({ etapaAtual, escolhas }: { etapaAtual: number; esco
             >
               {nome}
             </span>
+            {/* O ano de cada marco: o tempo passando à vista a rodada inteira. */}
+            <span
+              className={`font-titulo text-[15px] font-bold tracking-[0.08em] [text-shadow:0_1px_2px_rgb(0_0_0/0.9)] ${
+                atual ? 'text-ouro' : feito ? 'text-ouro/70' : 'text-pergaminho/45'
+              }`}
+            >
+              {etapas[i].capitulo.anos}
+            </span>
           </div>
         );
       })}
