@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSonsEmSequencia } from '../../engine/useSonsEmSequencia';
+import { useSomDoJogo } from '../../engine/SomContexto';
+import type { Momento } from '../../engine/falas';
 
 const TAVERNEIRO = `${import.meta.env.BASE_URL}assets/personagens/taverneiro.webp`;
 const MS_POR_LETRA = 18;
 
 interface BalaoGuiaProps {
   texto: string;
+  fala?: Momento;
   x: number;
   y: number;
   largura: number;
@@ -15,9 +18,17 @@ interface BalaoGuiaProps {
 }
 
 // Pergaminho com o retrato do Taverneiro e o texto digitado rápido.
-export function BalaoGuia({ texto, x, y, largura, ultimo, reduzido }: BalaoGuiaProps) {
+export function BalaoGuia({ texto, fala, x, y, largura, ultimo, reduzido }: BalaoGuiaProps) {
   const [letras, setLetras] = useState(reduzido ? texto.length : 0);
   useSonsEmSequencia([['pagina', 0]]);
+  const som = useSomDoJogo();
+  const somRef = useRef(som);
+  somRef.current = som;
+
+  // A voz do Taverneiro lê o balão (cada balão é montado de novo, com chave).
+  useEffect(() => {
+    if (fala) somRef.current?.falar(fala);
+  }, [fala]);
 
   useEffect(() => {
     if (reduzido) return;

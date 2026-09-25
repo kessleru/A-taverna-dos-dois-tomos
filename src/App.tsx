@@ -5,6 +5,7 @@ import { Palco } from './components/ui/Palco';
 import { GrimorioProvider, useGrimorio } from './components/ui/NotificacoesGrimorio';
 import { TransicaoPagina } from './components/ui/TransicaoPagina';
 import { SomContexto } from './engine/SomContexto';
+import { pontuacao } from './engine/motor';
 import { AmpliacaoProvider } from './components/cartas/Ampliacao';
 import { TelaCarregamento } from './components/ui/TelaCarregamento';
 import { carregarTudo, type Tarefa } from './engine/carregamento';
@@ -74,6 +75,8 @@ export default function App() {
   // Falas de entrada de fase que não dependem do que acontece dentro dela.
   const falarRef = useRef(som.falar);
   falarRef.current = som.falar;
+  const rodadaRef = useRef(rodada);
+  rodadaRef.current = rodada;
   const faseAnterior = useRef(fase);
   useEffect(() => {
     const anterior = faseAnterior.current;
@@ -84,7 +87,12 @@ export default function App() {
       const id = window.setTimeout(() => falarRef.current('historia'), 2600);
       return () => window.clearTimeout(id);
     }
-    if (fase === 'resultado') falarRef.current('resultado');
+    if (fase === 'resultado') {
+      const { estrelas } = pontuacao(rodadaRef.current.estado.ind);
+      const momento = estrelas === 3 ? 'rank-grao-mestre' : estrelas === 2 ? 'rank-mestre' : 'rank-aprendiz';
+      const id = window.setTimeout(() => falarRef.current(momento), 1800);
+      return () => window.clearTimeout(id);
+    }
   }, [fase]);
 
   useEffect(() => {

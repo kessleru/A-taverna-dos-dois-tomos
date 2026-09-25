@@ -36,6 +36,17 @@ usadas no código; entram com o redesign.
 
 **PREENCHER:** ferramenta usada para gerar cada uma.
 
+## Entrega da equipe (setembro/2026)
+
+Geradas pela equipe com os prompts de `docs/redesign/12-divulgacao-e-prompts.md`; originais em `entrega/`, convertidos para WebP:
+
+- `cartas/planejar.webp` e `cartas/adaptar.webp`: artes novas só com objetos (planta azul; bússola na trilha), para não confundir as cartas de estratégia com os narradores.
+- `personagens/cartografo.webp` e `personagens/cronista.webp`: retratos dos narradores nos balões da Crônica e do Confronto.
+- `personagens/taverneiro-porta.webp`: o Taverneiro acenando na porta, na despedida dos créditos.
+- Capas de divulgação em `docs/capa/`.
+
+**PREENCHER:** ferramenta usada para gerar.
+
 ## Verso, texturas e favicon
 
 Gerados pela equipe com os prompts de `docs/redesign/08-assets.md` (seção 6

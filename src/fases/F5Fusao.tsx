@@ -13,7 +13,8 @@ import { mola } from '../styles/movimento';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
-const TAVERNEIRO = `${import.meta.env.BASE_URL}assets/personagens/taverneiro.webp`;
+// O Taverneiro acenando na porta da taverna, na neve: a despedida.
+const TAVERNEIRO = `${import.meta.env.BASE_URL}assets/personagens/taverneiro-porta.webp`;
 // Uma folha por aprendizado e a última com os créditos.
 const TOTAL = conteudo.aprendizados.length + 1;
 
@@ -32,6 +33,17 @@ export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
   const reduzido = useReducedMotion();
   const [fundindo, setFundindo] = useState(() => folha === 0 && !reduzido);
   const [veioDaFusao, setVeioDaFusao] = useState(false);
+  const somRef = useRef(som);
+  somRef.current = som;
+  const falouAprendizados = useRef(false);
+
+  // Ao aparecer o primeiro aprendizado (depois da fusão, se houver).
+  useEffect(() => {
+    if (fundindo || folha !== 0 || falouAprendizados.current) return;
+    falouAprendizados.current = true;
+    const id = window.setTimeout(() => somRef.current.falar('aprendizados'), 600);
+    return () => window.clearTimeout(id);
+  }, [fundindo, folha]);
 
   return (
     <section className="flex h-full flex-col gap-4 px-20 pb-5 pt-6">
@@ -45,21 +57,27 @@ export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
             }}
           />
         )}
-        <motion.div
-          className={`relative shrink-0 ${fundindo ? 'invisible' : ''}`}
-          initial={veioDaFusao || fundindo ? false : { scale: 0.6, opacity: 0, rotate: -8 }}
-          animate={{ scale: 1, opacity: 1, rotate: 0 }}
-          transition={mola.impacto}
-        >
-          {/* Halo dourado atrás da lendária. */}
+        {/* A lendária da coluna só existe depois da fusão: antes, quem aparece é a
+            do centro, que desliza até aqui. Um espaço vazio guarda o lugar dela. */}
+        {fundindo ? (
+          <div className="h-[655px] w-[468px] shrink-0" aria-hidden />
+        ) : (
           <motion.div
-            className="pointer-events-none absolute -inset-24 rounded-full bg-[radial-gradient(circle,rgb(232_182_74/0.45),transparent_65%)]"
-            animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <Poeira quantidade={18} semente={5} className="-inset-24" />
-          <CartaLendaria />
-        </motion.div>
+            className="relative shrink-0"
+            initial={veioDaFusao ? false : { scale: 0.6, opacity: 0, rotate: -8 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            transition={mola.impacto}
+          >
+            {/* Halo dourado atrás da lendária. */}
+            <motion.div
+              className="pointer-events-none absolute -inset-24 rounded-full bg-[radial-gradient(circle,rgb(232_182_74/0.45),transparent_65%)]"
+              animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <Poeira quantidade={18} semente={5} className="-inset-24" />
+            <CartaLendaria />
+          </motion.div>
+        )}
 
         {!fundindo && (
           <motion.div className="flex h-full min-w-0 flex-1 flex-col justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -96,6 +114,7 @@ function Fusao({ som, aoTerminar }: { som: ReturnType<typeof useSom>; aoTerminar
 
   useEffect(() => {
     somRef.current.tocar('embaralhar');
+    somRef.current.falar('fusao');
     const ids = [
       window.setTimeout(() => {
         setFase('clarao');
@@ -189,7 +208,11 @@ function Linha({ numero, texto, nova }: { numero: number; texto: string; nova: b
       <motion.span
         initial={animar ? { clipPath: 'inset(0 100% 0 0)', color: '#c8901c', textShadow: '0 0 14px rgb(232 182 74 / 0.9)' } : false}
         animate={{ clipPath: 'inset(0 0% 0 0)', color: 'var(--tinta)', textShadow: '0 0 0px rgb(232 182 74 / 0)' }}
-        transition={{ clipPath: { duration: 1.4, ease: 'easeInOut' }, color: { delay: 1.2, duration: 1.2 }, textShadow: { delay: 1.2, duration: 1.2 } }}
+        transition={{
+          clipPath: { duration: 1.4, ease: 'easeInOut' },
+          color: { delay: 1.2, duration: 1.2 },
+          textShadow: { delay: 1.2, duration: 1.2 },
+        }}
       >
         {texto}
       </motion.span>
@@ -224,7 +247,11 @@ function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
   return (
     <div className="flex h-full flex-col gap-6">
       <div className="flex items-center gap-6">
-        <img src={TAVERNEIRO} alt="" className="h-[140px] w-[140px] shrink-0 rounded-full border-4 border-ouro object-cover object-top shadow-carta" />
+        <img
+          src={TAVERNEIRO}
+          alt=""
+          className="h-[270px] w-[180px] shrink-0 rounded-md border-4 border-ouro object-cover shadow-carta"
+        />
         <p className="font-texto text-[40px] font-bold italic leading-tight text-ouro [text-shadow:0_3px_6px_rgb(0_0_0/0.9)]">
           “A lenda continua. Obrigado por puxarem uma cadeira.”
         </p>

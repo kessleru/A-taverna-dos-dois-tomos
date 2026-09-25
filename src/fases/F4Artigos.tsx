@@ -1,8 +1,8 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { conteudo, rotulosAtributos, type Atributo } from '../data/conteudo';
 import { briefing, comparacao } from '../data/rodada';
-import { artesArtigos } from '../data/artes';
+import { retratosNarradores } from '../data/artes';
 import { useFolhas } from '../engine/useFolhas';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { NavFolhas } from '../components/ui/NavFolhas';
@@ -37,6 +37,12 @@ export function F4Artigos({ som, avancar, voltar }: F4ArtigosProps) {
   const { folha, ir } = useFolhas({ total: PASSOS.length, chave: 'sa-f4-folha', avancar, voltar, aoVirar });
   const passo = PASSOS[folha];
   const juntos = passo === 'tema';
+  const somRef = useRef(som);
+  somRef.current = som;
+
+  useEffect(() => {
+    somRef.current.falar('confronto');
+  }, []);
 
   return (
     <section className="flex h-full flex-col gap-4 px-16 pb-5 pt-6">
@@ -97,7 +103,12 @@ function Veredito({ som }: { som: ReturnType<typeof useSom> }) {
   const reduzido = useReducedMotion();
   useEffect(() => {
     const id = window.setTimeout(() => som.tocar('selo'), reduzido ? 0 : 350);
-    return () => window.clearTimeout(id);
+    // Depois do "frente a frente" da entrada da fase.
+    const fala = window.setTimeout(() => som.falar('veredito'), 6400);
+    return () => {
+      window.clearTimeout(id);
+      window.clearTimeout(fala);
+    };
   }, [som, reduzido]);
 
   return (
@@ -269,7 +280,7 @@ function Proposicao() {
     <div className="flex max-w-[1000px] flex-col items-center gap-7">
       <div className="flex items-center gap-8">
         <img
-          src={artesArtigos.B.imagem}
+          src={retratosNarradores.B}
           alt=""
           className="h-[170px] w-[170px] shrink-0 rounded-full border-4 object-cover shadow-carta"
           style={{ borderColor: COR_TOMO.B }}

@@ -65,10 +65,12 @@ export function Votacao({ etapa, combinarLiberado, onEscolher, aoSelecionar }: V
                 className="relative"
                 layout
                 initial={{ opacity: 0, y: 60, rotate: -10 }}
-                animate={{ opacity: 1, y: 0, rotate: 0, clipPath: 'inset(-50% -50% -50% -50%)' }}
+                animate={{ opacity: 1, y: 0, rotate: 0 }}
                 // A carta descartada queima de baixo para cima.
                 exit={{
-                  clipPath: 'inset(-50% -50% 100% -50%)',
+                  // Começo explícito: a carta só ganha recorte na saída (um clip-path
+                  // permanente cortava a carta escolhida ao ampliar).
+                  clipPath: ['inset(-50% -50% -50% -50%)', 'inset(-50% -50% 100% -50%)'],
                   filter: 'sepia(1) saturate(4) hue-rotate(-20deg) brightness(0.8)',
                   transition: { duration: 0.9, ease: 'easeIn' },
                 }}

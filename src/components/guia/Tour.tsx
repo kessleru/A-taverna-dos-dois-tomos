@@ -59,6 +59,7 @@ export function Tour({ passos, indice, aoAvancar, aoTerminar }: TourProps) {
         <BalaoGuia
           key={indice}
           texto={passo.texto}
+          fala={passo.fala}
           x={balao.x}
           y={balao.y}
           largura={LARGURA_BALAO}

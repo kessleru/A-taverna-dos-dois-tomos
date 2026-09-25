@@ -23,7 +23,8 @@ function Setas({ valor }: { valor: number }) {
 // Leitura do Mapa (02-jogabilidade.md §3): as três etiquetas da matriz do
 // Artigo A viram uma a uma; cada uma mostra quem o contexto ajuda.
 export function LeituraMapa({ etapa, opcoes }: { etapa: Etapa; opcoes: Escolha[] }) {
-  useSonsEmSequencia(NIVEIS.map((_, i) => ['virar-carta', 200 + i * 350]));
+  // Um som só: as etiquetas são pergaminhos, e as cartas já têm o embaralhar.
+  useSonsEmSequencia([['pagina', 200]]);
   return (
     <div className="flex gap-5" data-guia="leitura">
       {NIVEIS.map((nivel, i) => {

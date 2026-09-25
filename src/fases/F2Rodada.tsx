@@ -72,11 +72,14 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     if (faixa === 'critico') {
       som.tocar('fanfarra');
       som.tocar('publico-comemora');
+      som.falar('critico');
     } else if (faixa === 'falha') {
       som.tocar('perda');
       som.tocar('publico-lamenta');
+      som.falar('falha');
     } else {
       som.tocar('ganho');
+      if (escolhaAtual === etapa?.ideal) som.falar('acerto');
     }
     if (indAntes && estado.ind.caixa > indAntes.caixa) som.tocar('moedas');
     if (indAntes) notificar(descreverMudanca(indAntes, estado.ind));
@@ -134,7 +137,10 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     // As cartas são distribuídas na mesa logo depois da Leitura do Mapa.
     const distribuir = estado.passo === 'votacao' ? window.setTimeout(() => som.tocar('embaralhar'), 1100) : undefined;
     if (estado.passo === 'dado') som.falar('dado');
-    if (estado.passo === 'consequencia' && estado.escolhas[estado.etapa] === etapa?.ideal) som.falar('acerto');
+    if (estado.passo === 'cronica') som.falar('cronica');
+    // Depois das correntes: libertada comenta a fusão, presa lamenta.
+    const forja =
+      estado.passo === 'forja' ? window.setTimeout(() => som.falar(desbloqueado ? 'forja-livre' : 'forja-presa'), desbloqueado ? 1600 : 900) : undefined;
     if (estado.passo === 'evento') {
       const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa);
       const sucesso = evento?.condicao(estado.escolhas, estado.ind);
@@ -142,10 +148,19 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
       const id = window.setTimeout(() => som.falar(sucesso ? 'evento-bom' : 'evento-ruim'), 1200);
       return () => window.clearTimeout(id);
     }
-    return () => window.clearTimeout(distribuir);
+    return () => {
+      window.clearTimeout(distribuir);
+      window.clearTimeout(forja);
+    };
     // som é intencionalmente omitido: o objeto retornado por useSom muda de
     // identidade a cada render e recolocaria esse efeito em loop.
   }, [estado.passo]);
+
+  // Fim da rodada: o Taverneiro chama para ver o resultado.
+  useEffect(() => {
+    if (estado.terminou) som.falar('resultado');
+    // som omitido pelo mesmo motivo do efeito acima.
+  }, [estado.terminou]);
 
   if (estado.terminou) {
     return (

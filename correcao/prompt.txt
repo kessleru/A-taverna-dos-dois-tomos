@@ -1,4 +1,0 @@
-o som de puxar carta acontece mais de duas vezes,
-  e ao clicar na carta da um zoom que corta a
-  carta, a carta tem que invadir nao pode ter esse
-  corte no zoom. @correcao/image.p

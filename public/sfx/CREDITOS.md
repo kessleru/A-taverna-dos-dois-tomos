@@ -58,6 +58,10 @@ repetir a última. A música abaixa enquanto ele fala.
 
 **PREENCHER:** quem gravou ou qual ferramenta de voz foi usada.
 
+### Falas novas (setembro/2026)
+
+20 falas gravadas num áudio só pela equipe (`entrega/audio/audio.mp3`, 2 min 34 s) e separadas por fala: os cortes foram escolhidos entre os silêncios de forma que cada trecho tenha a velocidade de fala esperada para o seu texto (10,5 a 14,5 letras por segundo em todas). Tutorial, crítico, falha, Crônica, forja, ranks, confronto, veredito, fusão e aprendizados; textos em `docs/redesign/12-divulgacao-e-prompts.md` §5. As 6 falas do vídeo de introdução ficaram em `higgsfield/audio/falas-video/`.
+
 ## Ambiente
 
 `ambiente-taverna.mp3`: lareira crepitando, arquivo original

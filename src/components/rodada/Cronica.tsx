@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import type { Escolha, Etapa } from '../../data/rodada';
 import { briefing } from '../../data/rodada';
-import { artesArtigos } from '../../data/artes';
+import { retratosNarradores } from '../../data/artes';
 import { Icone } from '../ui/Icone';
 import { mola } from '../../styles/movimento';
 import { useSonsEmSequencia } from '../../engine/useSonsEmSequencia';
@@ -12,7 +12,7 @@ function Retrato({ id }: { id: 'A' | 'B' }) {
   const cor = id === 'A' ? 'var(--tomo-a)' : 'var(--tomo-b)';
   return (
     <img
-      src={artesArtigos[id].imagem}
+      src={retratosNarradores[id]}
       alt=""
       className="h-[132px] w-[132px] shrink-0 rounded-full border-4 object-cover shadow-carta"
       style={{ borderColor: cor }}
