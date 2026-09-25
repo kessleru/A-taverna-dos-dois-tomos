@@ -3,6 +3,7 @@ import { eventos } from '../../data/rodada';
 import type { Passo } from '../../engine/motor';
 import { mola } from '../../styles/movimento';
 import { usePrimeiraVez } from '../../engine/vistos';
+import { GUIA } from '../../data/tutorial';
 
 interface No {
   id: string;
@@ -36,7 +37,7 @@ function dica(passo: Passo, opcoes: number): string {
     case 'cronica':
       return 'Agora os tomos contam o que aconteceu de verdade.';
     case 'evento':
-      return 'Uma Carta do Destino: o acaso também escreve a história.';
+      return 'Não é uma decisão: é o mundo respondendo a vocês.';
     case 'forja':
       return 'Quem viveu as duas lógicas pode forjar a Combinar.';
   }
@@ -48,9 +49,10 @@ export function TrilhaPassos({ passo, etapa, opcoes }: { passo: Passo; etapa: nu
   const temDestino = eventos.some((e) => e.depoisDaEtapa === etapa);
   const nos = [...(passo === 'forja' ? [FORJA] : []), ...CICLO, ...(temDestino ? [DESTINO] : [])];
   const atual = nos.findIndex((no) => no.passos.includes(passo));
-  // A dica de cada passo só na primeira vez que ele aparece: da segunda etapa
-  // em diante a turma já sabe o que fazer.
-  const mostrarDica = usePrimeiraVez(`trilha:${passo}`);
+  // A dica de cada passo só na primeira vez que ele aparece (da segunda etapa
+  // em diante a turma já sabe o que fazer) e só nos passos que o tutorial do
+  // Taverneiro não explica: os dois juntos diziam a mesma coisa na mesma hora.
+  const mostrarDica = usePrimeiraVez(passo in GUIA ? null : `trilha:${passo}`);
 
   return (
     <div className="flex flex-col items-center gap-3" aria-label="Passos da etapa">

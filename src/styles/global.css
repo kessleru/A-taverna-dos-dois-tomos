@@ -27,6 +27,12 @@ body,
   margin: 0;
 }
 
+/* Imagens do jogo não se arrastam nem abrem o balão de salvar (Safari). */
+img {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
 body {
   background: #000;
   color: var(--pergaminho);

@@ -294,3 +294,31 @@
 .cantoneira-pequena.ne { top: 1px; right: 1px; transform: rotate(90deg); }
 .cantoneira-pequena.se { bottom: 1px; right: 1px; transform: rotate(180deg); }
 .cantoneira-pequena.so { bottom: 1px; left: 1px; transform: rotate(270deg); }
+
+/* Carta do Destino (CartaEvento): vertical e noturna, com moldura de ouro e
+   um céu de estrelas ao fundo, para nunca ser confundida com a mesa de
+   madeira do desafio. Fundo e borda estáticos; nada aqui é animado. */
+.carta-destino {
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgb(155 123 255 / 0.28), transparent 60%),
+    linear-gradient(180deg, #1c1638, #0e0b1f 70%);
+  box-shadow:
+    inset 0 0 0 2px #1a0f07,
+    inset 0 0 0 5px var(--ouro-escuro),
+    inset 0 0 0 6px rgb(255 227 154 / 0.55),
+    inset 0 0 0 9px #1a0f07,
+    inset 0 0 40px rgb(0 0 0 / 0.6),
+    0 0 40px -6px rgb(155 123 255 / 0.55),
+    0 24px 48px -12px rgb(0 0 0 / 0.75);
+}
+
+/* Céu de estrelas bem apagado atrás do conteúdo da Carta do Destino. */
+.carta-destino-ceu {
+  position: absolute;
+  inset: 9px;
+  border-radius: 12px;
+  background: url('/assets/texturas/estrelas-mascara.webp') 0 0 / 110px;
+  opacity: 0.12;
+  pointer-events: none;
+}

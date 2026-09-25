@@ -10,6 +10,8 @@ import { MapaJornada } from '../components/hud/MapaJornada';
 import { Tapecaria } from '../components/hud/Tapecaria';
 import { TrilhaPassos } from '../components/hud/TrilhaPassos';
 import { CartaDesafio } from '../components/rodada/CartaDesafio';
+import { AberturaCapitulo } from '../components/rodada/AberturaCapitulo';
+import { ateAqui } from '../engine/historia';
 import { Votacao } from '../components/rodada/Votacao';
 import { DadoDestino } from '../components/rodada/DadoDestino';
 import { Consequencia } from '../components/rodada/Consequencia';
@@ -35,7 +37,8 @@ const FAIXA_POR_TECLA: Record<string, Faixa> = { Digit1: 'falha', Digit2: 'suces
 // Quanto cada passo leva para entrar na mesa (distribuir cartas, virar o
 // evento, forjar a Combinar): até lá, cliques e teclas ficam travados.
 const TRAVA_PASSO_MS: Record<Passo, number> = {
-  situacao: 900,
+  // A abertura do capítulo entra antes e o desafio cai na mesa em seguida.
+  situacao: 1500,
   votacao: 1800,
   dado: 1000,
   consequencia: 700,
@@ -277,8 +280,11 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
 
         <div className="relative flex min-w-0 flex-1 flex-col items-center justify-center">
           {estado.passo === 'situacao' && (
-            <div data-guia="desafio">
-              <CartaDesafio etapa={etapa} />
+            <div className="flex flex-col items-center gap-5">
+              <AberturaCapitulo etapa={etapa} ateAqui={ateAqui(estado.etapa, estado.escolhas, estado.bricolagem, estado.ultimoEvento?.titulo)} />
+              <div data-guia="desafio">
+                <CartaDesafio etapa={etapa} atraso={0.7} />
+              </div>
             </div>
           )}
 
@@ -307,11 +313,21 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
               const sucesso = evento.condicao(estado.escolhas, estado.ind);
               const desfecho = sucesso ? evento.seSim : evento.seNao;
               return (
-                <div className="flex flex-col items-center gap-8">
+                <div className="flex items-center gap-14">
                   <CartaEvento depoisDaEtapa={evento.depoisDaEtapa} nome={evento.nome} desfecho={desfecho} sucesso={sucesso} />
-                  <p className="max-w-[1000px] text-center font-texto text-[30px] italic leading-snug text-pergaminho/85 [text-shadow:0_2px_4px_rgb(0_0_0/0.9)]">
-                    {evento.conceito}
-                  </p>
+                  {/* O porquê: o destino é consequência do que a turma fez, não sorte. */}
+                  <motion.div
+                    className="flex w-[560px] flex-col gap-6"
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1, duration: 0.5 }}
+                  >
+                    <div className="placa-ferro px-8 py-6">
+                      <p className="font-titulo text-[22px] font-bold uppercase tracking-[0.14em] text-ouro">Por causa de</p>
+                      <p className="mt-2 font-texto text-[30px] leading-snug text-pergaminho">{evento.causa(estado.escolhas, estado.ind)}</p>
+                    </div>
+                    <p className="font-texto text-[26px] italic leading-snug text-pergaminho/85 [text-shadow:0_2px_4px_rgb(0_0_0/0.9)]">{evento.conceito}</p>
+                  </motion.div>
                 </div>
               );
             })()}
