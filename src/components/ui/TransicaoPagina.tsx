@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { temposTransicao } from '../../styles/movimento';
 import { travar } from '../../engine/trava';
 
@@ -18,7 +18,7 @@ interface Saida {
 }
 
 // Descola devagar, gira rápido no meio e assenta de perfil.
-const CURVA_FOLHA = [0.55, 0.05, 0.55, 1] as const;
+const CURVA_FOLHA_CSS = 'cubic-bezier(0.55, 0.05, 0.55, 1)';
 
 // Página de tomo virando entre as fases (01-tema-e-hud.md §9): a fase que sai é
 // a própria folha. Ela gira para dentro do tomo em volta da lombada (borda
@@ -69,29 +69,22 @@ export function TransicaoPagina({ chave, children, fundo, aoVirar }: TransicaoPa
   // continua sendo o mesmo elemento e não é montada de novo.
   function pagina(chavePagina: string, conteudo: ReactNode, virando: boolean) {
     return (
-      <motion.div
+      // A folha vira por animação CSS (compositor), não por JavaScript: a fase
+      // nova monta durante o giro, e um pico na thread principal travava a folha
+      // no meio do caminho.
+      <div
         key={chavePagina}
-        className={`absolute inset-0 ${virando ? 'pointer-events-none' : ''}`}
-        style={{ zIndex: virando ? 30 : 10, transformOrigin: 'left center' }}
-        initial={false}
-        animate={virando ? (reduzido ? { opacity: 0 } : { rotateY: 90 }) : { rotateY: 0, opacity: 1 }}
-        transition={virando ? { duration: duracao, ease: CURVA_FOLHA } : { duration: 0 }}
+        className={`absolute inset-0 ${virando ? `pointer-events-none ${reduzido ? 'folha-sumindo' : 'folha-virando'}` : ''}`}
+        style={{ zIndex: virando ? 30 : 10, transformOrigin: 'left center', '--duracao': `${duracao}s`, '--curva': CURVA_FOLHA_CSS } as CSSProperties}
       >
         {/* Frente: a fase; enquanto vira, sobre o fundo da taverna. */}
         <div className="absolute inset-0 overflow-hidden">
           {virando && fundo}
           {conteudo}
           {/* A folha escurece ao se afastar da luz das velas. */}
-          {virando && !reduzido && (
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-l from-black/70 to-black/20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: duracao / 2, ease: 'easeIn' }}
-            />
-          )}
+          {virando && !reduzido && <div className="folha-escurece absolute inset-0 bg-gradient-to-l from-black/70 to-black/20" />}
         </div>
-      </motion.div>
+      </div>
     );
   }
 
@@ -104,13 +97,7 @@ export function TransicaoPagina({ chave, children, fundo, aoVirar }: TransicaoPa
       {paginas}
       {saindo && !reduzido && (
         // Sombra da folha sobre a fase de baixo, que clareia conforme ela passa.
-        <motion.div
-          key={`sombra-${saindo.id}`}
-          className="folha-sombra"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{ duration: duracao * 0.9, ease: 'easeIn' }}
-        />
+        <div key={`sombra-${saindo.id}`} className="folha-sombra folha-sombra-clareia" style={{ '--duracao': `${duracao}s` } as CSSProperties} />
       )}
     </div>
   );

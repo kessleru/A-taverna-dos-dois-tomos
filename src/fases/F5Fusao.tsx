@@ -283,8 +283,8 @@ function Creditos({ som }: { som: ReturnType<typeof useSom> }) {
               ))}
             </Bloco>
             <Bloco titulo="Arte e som">
-              Ícones de game-icons.net (CC BY 3.0). Ilustrações, molduras, texturas, música e efeitos: créditos completos em
-              public/assets/CREDITOS.md.
+              Ícones de game-icons.net (CC BY 3.0). Partículas e sons de interface de Kenney (CC0). Ilustrações, molduras,
+              texturas, música e efeitos: créditos completos em public/assets/CREDITOS.md.
             </Bloco>
           </motion.div>
         </div>

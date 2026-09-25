@@ -57,4 +57,4 @@ Quem apresenta usa `→` para avançar, `1`/`2`/`3` para jogar a carta votada e 
 
 ---
 
-Créditos de arte e som: [`public/assets/CREDITOS.md`](public/assets/CREDITOS.md) e [`public/sfx/CREDITOS.md`](public/sfx/CREDITOS.md). Para a equipe: [como rodar e apresentar](DESENVOLVIMENTO.md).
+Créditos de arte e som: [`public/assets/CREDITOS.md`](public/assets/CREDITOS.md) e [`public/sfx/CREDITOS.md`](public/sfx/CREDITOS.md).
