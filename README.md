@@ -1,5 +1,3 @@
-# A Taverna dos Dois Tomos
-
 ![A Taverna dos Dois Tomos: os dois tomos na mesa da taverna](.github/readme/capa.webp)
 
 *a crônica de uma startup real, jogada em cartas*
