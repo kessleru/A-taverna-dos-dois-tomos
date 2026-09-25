@@ -300,20 +300,91 @@
   }
 }
 
-/* Onda do líquido dos orbes (OrboIndicador): desliza um período em loop. */
+/* Líquido dos orbes (OrboIndicador). Cada onda desliza exatamente um
+   período (--periodo, em % da própria largura), em ritmo linear: o último
+   quadro é igual ao primeiro e o loop não tem emenda. */
 .orbe-onda {
   animation: orbe-onda 2.4s linear infinite;
   will-change: transform;
 }
 
 @keyframes orbe-onda {
+  from {
+    transform: translateX(0);
+  }
   to {
-    transform: translateX(-25%);
+    transform: translateX(var(--periodo, -25%));
+  }
+}
+
+/* O líquido inteiro sobe um pouco e inclina, em vaivém (alternate): ida e
+   volta com a mesma curva, sem salto na virada. */
+.orbe-balanco {
+  animation: orbe-balanco 4.6s ease-in-out infinite alternate;
+  transform-origin: 50% 60%;
+  will-change: transform;
+}
+
+@keyframes orbe-balanco {
+  from {
+    transform: translateY(1.5%) rotate(-2.5deg);
+  }
+  to {
+    transform: translateY(-1.5%) rotate(2.5deg);
+  }
+}
+
+/* Bolha: o trilho (da altura do líquido) sobe do fundo até a superfície; a
+   bolha dentro dele ginga para os lados. Nasce e some transparente. */
+.orbe-bolha-trilho {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  animation: orbe-bolha-sobe 3s linear infinite;
+  will-change: transform, opacity;
+}
+
+.orbe-bolha {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.85), rgb(255 255 255 / 0.25) 60%, transparent 72%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25);
+  animation: orbe-bolha-ginga 1s ease-in-out infinite alternate;
+}
+
+@keyframes orbe-bolha-sobe {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-96%);
+    opacity: 0;
+  }
+}
+
+@keyframes orbe-bolha-ginga {
+  from {
+    transform: translateX(-3px);
+  }
+  to {
+    transform: translateX(3px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .orbe-onda {
+  .orbe-onda,
+  .orbe-balanco,
+  .orbe-bolha-trilho,
+  .orbe-bolha {
     animation: none;
   }
 }

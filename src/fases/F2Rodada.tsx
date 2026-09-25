@@ -189,23 +189,30 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     if (estado.passo === 'dado') som.falar('dado');
     if (estado.passo === 'cronica') som.falar('cronica');
     // Depois das correntes: libertada comenta a fusão, presa lamenta.
+    // Falas que entram sozinhas, com atraso, esperam a vez: não cortam o
+    // Taverneiro no meio de outra fala (só o clique da turma corta).
+    let cancelarFala = () => {};
     const forja =
-      estado.passo === 'forja' ? window.setTimeout(() => som.falar(desbloqueado ? 'forja-livre' : 'forja-presa'), desbloqueado ? 1600 : 900) : undefined;
+      estado.passo === 'forja'
+        ? window.setTimeout(() => (cancelarFala = som.falar(desbloqueado ? 'forja-livre' : 'forja-presa', { esperarVez: true })), desbloqueado ? 1600 : 900)
+        : undefined;
     if (estado.passo === 'evento') {
       const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa);
       const sucesso = evento?.condicao(estado.escolhas, estado.ind);
       // Destino bom cintila quando a carta termina de virar; o Taverneiro
       // comenta depois.
       const brilho = sucesso ? window.setTimeout(() => som.tocar('brilho', { volume: 0.7 }), VIRA_EM * 1000 + 650) : undefined;
-      const id = window.setTimeout(() => som.falar(sucesso ? 'evento-bom' : 'evento-ruim'), 1200);
+      const id = window.setTimeout(() => (cancelarFala = som.falar(sucesso ? 'evento-bom' : 'evento-ruim', { esperarVez: true })), VIRA_EM * 1000 + 1200);
       return () => {
         window.clearTimeout(id);
         window.clearTimeout(brilho);
+        cancelarFala();
       };
     }
     return () => {
       window.clearTimeout(distribuir);
       window.clearTimeout(forja);
+      cancelarFala();
     };
     // Só quando o passo visível muda: som é estável, mas o efeito não deve
     // repetir falas se outra coisa da rodada mudar.
@@ -348,7 +355,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
                     className="flex w-[560px] flex-col gap-6"
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1, duration: 0.5 }}
+                    transition={{ delay: VIRA_EM + 0.8, duration: 0.5 }}
                   >
                     <div className="placa-ferro px-8 py-6">
                       <p className="font-titulo text-[22px] font-bold uppercase tracking-[0.14em] text-ouro">Por causa de</p>

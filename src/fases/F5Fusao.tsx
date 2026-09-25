@@ -44,8 +44,12 @@ export function F5Fusao({ som, avancar, voltar, ultimaFase }: F5FusaoProps) {
   useEffect(() => {
     if (fundindo || folha !== 0 || falouAprendizados.current) return;
     falouAprendizados.current = true;
-    const id = window.setTimeout(() => somRef.current.falar('aprendizados'), 600);
-    return () => window.clearTimeout(id);
+    let cancelarFala = () => {};
+    const id = window.setTimeout(() => (cancelarFala = somRef.current.falar('aprendizados', { esperarVez: true })), 600);
+    return () => {
+      window.clearTimeout(id);
+      cancelarFala();
+    };
   }, [fundindo, folha]);
 
   return (

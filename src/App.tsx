@@ -101,14 +101,22 @@ export default function App() {
     if (anterior === fase) return;
     // Só ao chegar vindo da abertura; voltar da rodada não repete a fala.
     if (fase === 'briefing' && anterior === 'abertura') {
-      const id = window.setTimeout(() => falarRef.current('historia'), 2600);
-      return () => window.clearTimeout(id);
+      let cancelarFala = () => {};
+      const id = window.setTimeout(() => (cancelarFala = falarRef.current('historia', { esperarVez: true })), 2600);
+      return () => {
+        window.clearTimeout(id);
+        cancelarFala();
+      };
     }
     if (fase === 'resultado') {
       const { estrelas } = pontuacao(rodadaRef.current.estado.ind);
       const momento = estrelas === 3 ? 'rank-grao-mestre' : estrelas === 2 ? 'rank-mestre' : 'rank-aprendiz';
-      const id = window.setTimeout(() => falarRef.current(momento), 1800);
-      return () => window.clearTimeout(id);
+      let cancelarFala = () => {};
+      const id = window.setTimeout(() => (cancelarFala = falarRef.current(momento, { esperarVez: true })), 1800);
+      return () => {
+        window.clearTimeout(id);
+        cancelarFala();
+      };
     }
   }, [fase]);
 
