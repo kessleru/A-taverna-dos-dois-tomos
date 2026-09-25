@@ -11,7 +11,6 @@ import { Murmurio } from './murmurio';
 export const EFEITOS = [
   'clique',
   'virar-carta',
-  'escolha',
   'ganho',
   'perda',
   'dado',
@@ -43,8 +42,6 @@ export const EFEITOS = [
 
 export type Efeito = (typeof EFEITOS)[number];
 
-// Prefixa com o base path do build, como em artes.ts: em GitHub Pages o site
-// fica sob /empreendedorismo/ e um caminho absoluto /sfx/ daria 404.
 // Promessa que resolve quando o Howl termina de baixar (ou falha), para a tela
 // de carregamento esperar por ele.
 function carregado(som: Howl): Promise<void> {
@@ -55,6 +52,7 @@ function carregado(som: Howl): Promise<void> {
   });
 }
 
+// Caminho do som respeitando o base do build, como em artes.ts.
 function caminhoSom(arquivo: string): string {
   return `${import.meta.env.BASE_URL}sfx/${arquivo}`;
 }

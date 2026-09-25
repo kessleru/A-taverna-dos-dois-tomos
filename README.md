@@ -1,4 +1,6 @@
-![A Taverna dos Dois Tomos: os dois tomos na mesa da taverna](docs/capa/capa-titulo-ia.webp)
+# A Taverna dos Dois Tomos
+
+![A Taverna dos Dois Tomos: os dois tomos na mesa da taverna](.github/readme/capa.webp)
 
 *a crônica de uma startup real, jogada em cartas*
 
@@ -20,17 +22,17 @@ Quem recebe a guilda é **o Taverneiro**, que explica as regras e comenta cada j
 
 | | |
 |---|---|
-| ![Tela de título](docs/fotos/02-titulo.webp) | ![A missão no quadro da taverna](docs/fotos/03-briefing-missao.webp) |
+| ![Tela de título](.github/readme/titulo.webp) | ![A missão no quadro da taverna](.github/readme/missao.webp) |
 | **A taverna abre as portas.** O Grimório escreve a abertura e a turma entra. | **A missão.** No quadro de madeira: vocês agora são fundadoras. Os dois tomos e as cartas de decisão se apresentam. |
-| ![Carta de Desafio](docs/fotos/07-desafio.webp) | ![Votação com a Leitura do Mapa](docs/fotos/08-votacao.webp) |
+| ![Carta de Desafio](.github/readme/desafio.webp) | ![Votação com a Leitura do Mapa](.github/readme/votacao.webp) |
 | **Um desafio real.** Cada etapa começa com algo que aconteceu de verdade. Na primeira: a empresa recusou a ideia. | **A votação.** O Cartógrafo lê o momento, e as setas mostram a quem o contexto favorece. A turma levanta a mão: carta 1 ou carta 2. |
-| ![Dado do Destino tirando crítico](docs/fotos/11-critico.webp) | ![Crônica com os dois narradores](docs/fotos/12-cronica.webp) |
+| ![Dado do Destino tirando crítico](.github/readme/critico.webp) | ![Crônica com os dois narradores](.github/readme/cronica.webp) |
 | **O Dado do Destino.** Um d20 decide quanto a escolha rende, com bônus de quem leu bem o mapa. Tirou 20? Crítico! | **A Crônica.** A Cronista conta o que as fundadoras fizeram, com as palavras delas, e o selo de cera diz se a turma fez igual. |
-| ![Carta do Destino](docs/fotos/13-evento.webp) | ![Forja do Combinar](docs/fotos/14-forja.webp) |
+| ![Carta do Destino](.github/readme/evento.webp) | ![Forja do Combinar](.github/readme/forja.webp) |
 | **Cartas do Destino.** Parcerias, investidores, incubadora: o mundo responde às escolhas da guilda. | **A forja.** Quem já planejou e já se adaptou liberta a carta lendária **Combinar**. |
-| ![Resultado da guilda](docs/fotos/15-resultado.webp) | ![Confronto dos Tomos](docs/fotos/16-confronto-veredito.webp) |
+| ![Resultado da guilda](.github/readme/resultado.webp) | ![Confronto dos Tomos](.github/readme/confronto.webp) |
 | **O resultado.** O rank da guilda, de Aprendiz a Grão-Mestre, e o modelo de negócio da turma ao lado do da startup real. | **O Confronto dos Tomos.** Os dois artigos frente a frente: rivais ou complementares? |
-| ![Fusão dos tomos](docs/fotos/18-fusao.webp) | ![Aprendizados](docs/fotos/19-aprendizados.webp) |
+| ![Fusão dos tomos](.github/readme/fusao.webp) | ![Aprendizados](.github/readme/aprendizados.webp) |
 | **A fusão.** Os tomos giram, se fundem num clarão e nasce a carta lendária **Aprendizados**. | **O que fica.** Cinco aprendizados escritos a pena, e o Taverneiro se despede. |
 
 ## As cartas
@@ -55,4 +57,4 @@ O jogo é feito para o projetor e dura uns 21 minutos, com a turma inteira votan
 
 ---
 
-Créditos de arte e som: [`public/assets/CREDITOS.md`](public/assets/CREDITOS.md) e [`public/sfx/CREDITOS.md`](public/sfx/CREDITOS.md). Para a equipe: [notas técnicas](docs/tecnico.md).
+Créditos de arte e som: [`public/assets/CREDITOS.md`](public/assets/CREDITOS.md) e [`public/sfx/CREDITOS.md`](public/sfx/CREDITOS.md). Para a equipe: [como rodar e apresentar](DESENVOLVIMENTO.md).

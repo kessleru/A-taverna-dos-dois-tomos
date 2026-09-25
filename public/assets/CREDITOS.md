@@ -13,17 +13,17 @@ dos arquivos batem com os ids usados em `src/data/artes.ts`, que também traz o
 
 | Arquivo | Carta |
 |---|---|
-| `artigo-A` / `artigo-B` | Conselheiros (CartaArtigo); no redesign, retratos do Cartógrafo e da Cronista |
+| `tomo-a` / `tomo-b` | Cartas dos tomos (CartaArtigo): o Cartógrafo e a Cronista |
 | `planejar` / `adaptar` / `combinar` / `bricolagem` | Decisões (CartaDecisao) |
-| `fundacao` / `lancamento` / `investidores` / `novo-mercado` | Cenas das etapas (CenaSituacao) |
-| `crazy-quilt` / `porta-fechada` / `lemonade` / `plano-furou` / `incubadora` / `nao-foi` | Desfechos de evento (CartaEvento) |
+| `fundacao` / `lancamento` / `investidores` / `novo-mercado` | Cenas das etapas (Carta de Desafio) |
+| `colcha-de-retalhos` / `porta-fechada` / `fabricante-parceiro` / `maquinas-caras` / `incubadora` / `nao-foi` | Desfechos das Cartas do Destino (CartaEvento) |
 | `aprendizados` | Carta Lendária (F5) |
 
 **PREENCHER:** origem/licença de cada imagem acima.
 
 ## Imagens geradas para o redesign
 
-Geradas com os prompts de `docs/redesign/08-assets.md` (seção 2). Ainda não
+Geradas com os prompts de o guia de assets da equipe. Ainda não
 usadas no código; entram com o redesign.
 
 | Arquivo | Uso previsto |
@@ -38,18 +38,18 @@ usadas no código; entram com o redesign.
 
 ## Entrega da equipe (setembro/2026)
 
-Geradas pela equipe com os prompts de `docs/redesign/12-divulgacao-e-prompts.md`; originais em `entrega/`, convertidos para WebP:
+Geradas pela equipe com os prompts de o guia de assets da equipe; convertidas para WebP:
 
 - `cartas/planejar.webp` e `cartas/adaptar.webp`: artes novas só com objetos (planta azul; bússola na trilha), para não confundir as cartas de estratégia com os narradores.
 - `personagens/cartografo.webp` e `personagens/cronista.webp`: retratos dos narradores nos balões da Crônica e do Confronto.
 - `personagens/taverneiro-porta.webp`: o Taverneiro acenando na porta, na despedida dos créditos.
-- Capas de divulgação em `docs/capa/`.
+- Capa do README em `.github/readme/capa.webp`.
 
 **PREENCHER:** ferramenta usada para gerar.
 
 ## Verso, texturas e favicon
 
-Gerados pela equipe com os prompts de `docs/redesign/08-assets.md` (seção 6
+Gerados pela equipe com os prompts de o guia de assets da equipe
 e o prompt do verso). Os originais ficam em `assets-originais/`.
 
 | Arquivo | Uso | Ajuste feito |
@@ -61,13 +61,12 @@ e o prompt do verso). Os originais ficam em `assets-originais/`.
 
 **PREENCHER:** ferramenta usada nas texturas e no favicon.
 
-## Molduras, UI e texturas holográficas
+## Molduras, UI e texturas
 
 Pacotes trazidos pela equipe (`assets-originais/texturas-e-cartas/`), só
 convertidos para WebP: `molduras/` e `ui/` do "free fantasy card frames
-deckbuilder UI sampler"; `texturas/holo*` e `texturas/estrelas.webp` do
-"holographic card VFX"; `texturas/ferro-placas.webp` do pacote "Metal"
-(material 4). Detalhes em `docs/redesign/08-assets.md` §7.
+deckbuilder UI sampler"; `texturas/estrelas.webp` do "holographic card VFX";
+`texturas/ferro-placas.webp` do pacote "Metal" (material 4).
 
 **PREENCHER:** autor, site e licença de cada pacote (vieram sem arquivo de licença).
 
@@ -99,4 +98,4 @@ preto de fundo do download foi removido e o preenchimento trocado por
 Bungee, Rubik e IBM Plex Mono — [Google Fonts](https://fonts.google.com),
 licença Open Font License, via pacotes `@fontsource/*` (npm). O redesign troca
 por Cinzel, Alegreya e JetBrains Mono (mesma licença), ver
-`docs/redesign/07-tipografia.md`.
+o guia de assets da equipe.

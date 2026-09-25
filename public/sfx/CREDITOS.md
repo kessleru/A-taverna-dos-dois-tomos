@@ -17,7 +17,6 @@ combinar.
 | `carta-bater.ogg` | Casino Audio | `card-place-1.ogg` |
 | `embaralhar.ogg` | Casino Audio | `card-shuffle.ogg` |
 | `dado.ogg` | Casino Audio | `die-throw-1.ogg` |
-| `escolha.ogg` | [RPG Audio](https://kenney.nl/assets/rpg-audio) | `bookPlace1.ogg` |
 | `pagina.ogg` | RPG Audio | `bookFlip2.ogg` |
 | `ganho.ogg` | RPG Audio | `handleCoins.ogg` |
 | `moedas.ogg` | RPG Audio | `handleCoins2.ogg` |
@@ -35,7 +34,7 @@ combinar.
 ## Gerados pela equipe
 
 Feitos num gerador de efeitos sonoros com os prompts de
-`docs/redesign/08-assets.md` §6; originais em
+o guia de assets da equipe; originais em
 `assets-originais/sons/efeitos-gerados/`, convertidos para OGG mono.
 
 | Arquivo | Uso |
@@ -60,7 +59,7 @@ repetir a última. A música abaixa enquanto ele fala.
 
 ### Falas novas (setembro/2026)
 
-20 falas gravadas num áudio só pela equipe (`entrega/audio/audio.mp3`, 2 min 34 s) e separadas por fala: os cortes foram escolhidos entre os silêncios de forma que cada trecho tenha a velocidade de fala esperada para o seu texto (10,5 a 14,5 letras por segundo em todas). Tutorial, crítico, falha, Crônica, forja, ranks, confronto, veredito, fusão e aprendizados; textos em `docs/redesign/12-divulgacao-e-prompts.md` §5. As 6 falas do vídeo de introdução ficaram em `higgsfield/audio/falas-video/`.
+20 falas gravadas num áudio só pela equipe (2 min 34 s) e separadas por fala: os cortes foram escolhidos entre os silêncios de forma que cada trecho tenha a velocidade de fala esperada para o seu texto (10,5 a 14,5 letras por segundo em todas). Tutorial, crítico, falha, Crônica, forja, ranks, confronto, veredito, fusão e aprendizados; textos em o guia de assets da equipe. As 6 falas do vídeo de introdução ficaram fora do jogo.
 
 ## Ambiente
 

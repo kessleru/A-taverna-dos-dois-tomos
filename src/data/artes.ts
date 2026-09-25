@@ -1,20 +1,9 @@
-// src/data/artes.ts
-// Arte de cada carta. O plano original (docs/plano-original.md) descreve
-// este arquivo como "já pronto", mas ele não veio no pacote do projeto — foi
-// recriado aqui na Iteração 3 seguindo a seção 7 do plano. Diferença deliberada: como já existe uma
-// imagem pintada em public/assets/ para CADA carta do jogo (mesmos nomes
-// usados aqui), CenaArte.tsx sempre encontra `imagem` e não precisa do
-// motor de cena SVG em camadas (ícones do game-icons.net, 6 fundos
-// temáticos, partículas) descrito no plano — não haveria internet para
-// baixar aquele acervo de ícones de qualquer forma. Os campos `cores`,
-// `particulas` e `icone` continuam aqui e alimentam um fallback simples
-// (gradiente + emoji) caso alguma imagem falhe ao carregar.
+// Arte de cada carta: imagem pintada em public/assets/ e, caso ela não carregue,
+// um fallback simples de gradiente com emoji (cores, partículas e ícone).
 
 import type { Escolha } from './rodada';
 
-// Prefixa com o base path do build (import.meta.env.BASE_URL), necessário
-// porque o site é publicado em GitHub Pages sob /empreendedorismo/, não na
-// raiz do domínio — sem isso as imagens quebrariam em produção.
+// Caminho do asset respeitando o base do build (import.meta.env.BASE_URL).
 function caminhoAsset(relativo: string): string {
   return `${import.meta.env.BASE_URL}assets/${relativo}`;
 }
@@ -50,7 +39,7 @@ export const artesArtigos: Record<'A' | 'B', ArteCarta> = {
     cores: ['#FFB27A', '#F86624'],
     particulas: 'poeira',
     raridade: 'rara',
-    imagem: caminhoAsset('cartas/artigo-A.webp'),
+    imagem: caminhoAsset('cartas/tomo-a.webp'),
     prompt: `${estiloPrompt}. Um mapa antigo brilhante pairando sobre uma mesa de madeira, rosa dos ventos dourada, luz âmbar.`,
   },
   B: {
@@ -58,7 +47,7 @@ export const artesArtigos: Record<'A' | 'B', ArteCarta> = {
     cores: ['#7BEDE0', '#2EC4B6'],
     particulas: 'bolhas',
     raridade: 'rara',
-    imagem: caminhoAsset('cartas/artigo-B.webp'),
+    imagem: caminhoAsset('cartas/tomo-b.webp'),
     prompt: `${estiloPrompt}. Um laboratório de biotecnologia acolhedor, frascos com luz turquesa, plantas em recipientes.`,
   },
 };
@@ -148,7 +137,7 @@ export const arteEventos: Record<string, ArteCarta> = {
     cores: ['#A6F0C6', '#5CC98A'],
     particulas: 'folhas',
     raridade: 'comum',
-    imagem: caminhoAsset('cartas/crazy-quilt.webp'),
+    imagem: caminhoAsset('cartas/colcha-de-retalhos.webp'),
     prompt: `${estiloPrompt}. Uma colcha de retalhos costurada com fios de luz verde conectando pontos.`,
   },
   '0-nao': {

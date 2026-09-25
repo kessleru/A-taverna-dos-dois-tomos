@@ -1,9 +1,15 @@
+# Dependências e build
 node_modules/
 dist/
 .vite/
+*.tsbuildinfo
+
+# Sistema
 *.log
 .DS_Store
+
+# Material de trabalho local (originais, rascunhos, planejamento)
 assets-originais/
-docs/
 entrega/
+docs/
 .superpowers/
