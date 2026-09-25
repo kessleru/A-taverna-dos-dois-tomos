@@ -6,7 +6,7 @@ import { retratosNarradores } from '../data/artes';
 import { useFolhas } from '../engine/useFolhas';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { NavFolhas } from '../components/ui/NavFolhas';
-import { Icone } from '../components/ui/Icone';
+import { ArtePintada } from '../components/ui/ArtePintada';
 import { mola } from '../styles/movimento';
 import { useSonsEmSequencia } from '../engine/useSonsEmSequencia';
 import { TREMOR, useTremorAoMontar } from '../components/ui/Tremor';
@@ -125,8 +125,8 @@ function Veredito({ som }: { som: ReturnType<typeof useSom> }) {
         animate={{ scale: 1, opacity: 1, rotate: -6 }}
         transition={{ ...mola.impacto, delay: 0.1 }}
       >
-        <span className="selo-cera">
-          <Icone nome="wax-seal" className="h-[220px] w-[220px]" />
+        <span className="selo-pintado">
+          <ArtePintada nome="selo" className="h-[220px] w-[220px]" />
         </span>
         {/* Fita de cera atravessando o selo com o veredito. */}
         <span className="fita-sombra absolute">

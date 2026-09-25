@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Icone } from '../components/ui/Icone';
+import { ArtePintada } from '../components/ui/ArtePintada';
 import { etapas, eventos, combinarDesbloqueado, type Escolha } from '../data/rodada';
 import type { Indicadores } from '../data/conteudo';
 import type { useRodada } from '../engine/useRodada';
@@ -18,7 +18,7 @@ import { DadoDestino } from '../components/rodada/DadoDestino';
 import { Consequencia } from '../components/rodada/Consequencia';
 import { Cronica } from '../components/rodada/Cronica';
 import { Forja } from '../components/rodada/Forja';
-import { CartaEvento } from '../components/cartas/CartaEvento';
+import { CartaEvento, VIRA_EM } from '../components/cartas/CartaEvento';
 import { RevelacaoBricolagem, VIRADA_BRICOLAGEM_MS } from '../components/rodada/RevelacaoBricolagem';
 import { Botao } from '../components/ui/Botao';
 import { Guia } from '../components/guia/Guia';
@@ -196,7 +196,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
       const sucesso = evento?.condicao(estado.escolhas, estado.ind);
       // Destino bom cintila quando a carta termina de virar; o Taverneiro
       // comenta depois.
-      const brilho = sucesso ? window.setTimeout(() => som.tocar('brilho', { volume: 0.7 }), 650) : undefined;
+      const brilho = sucesso ? window.setTimeout(() => som.tocar('brilho', { volume: 0.7 }), VIRA_EM * 1000 + 650) : undefined;
       const id = window.setTimeout(() => som.falar(sucesso ? 'evento-bom' : 'evento-ruim'), 1200);
       return () => {
         window.clearTimeout(id);
@@ -256,14 +256,14 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 160, damping: 14 }}
         >
-          <Icone nome="scroll-quill" className="h-[170px] w-[170px]" />
+          <ArtePintada nome="pergaminho" className="h-[170px] w-[190px]" />
           <motion.span
-            className="selo-cera absolute -bottom-3 -right-6"
+            className="selo-pintado absolute -bottom-3 -right-6"
             initial={{ scale: 3, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.6 }}
           >
-            <Icone nome="wax-seal" className="h-20 w-20" />
+            <ArtePintada nome="selo" className="h-20 w-20" />
           </motion.span>
         </motion.div>
         <h2 className="titulo-ouro font-titulo text-[96px] font-bold leading-none">A crônica terminou</h2>

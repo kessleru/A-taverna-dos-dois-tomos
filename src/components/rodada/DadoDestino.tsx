@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { dadoDoDestino, type Escolha, type Etapa } from '../../data/rodada';
 import { bonusDoContexto } from '../../engine/motor';
-import { Icone } from '../ui/Icone';
+import { ArtePintada } from '../ui/ArtePintada';
 import { ReguaDado, minimoNoDado } from './ReguaDado';
 import { usePrimeiraVez } from '../../engine/vistos';
 
@@ -41,13 +41,13 @@ export function DadoDestino({ etapa, etapaIndice, escolha, onRolar }: { etapa: E
       <motion.button
         type="button"
         onClick={onRolar}
-        className="relative text-ouro drop-shadow-[0_10px_20px_rgb(0_0_0/0.8)]"
+        className="relative drop-shadow-[0_10px_20px_rgb(0_0_0/0.8)] [will-change:transform]"
         aria-label="Rolar o Dado do Destino"
         animate={reduzido ? undefined : { rotate: [-4, 4, -4], y: [0, -8, 0] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
         whileHover={{ scale: 1.08 }}
       >
-        <Icone nome="dice-twenty-faces-one" className="h-[300px] w-[300px]" />
+        <ArtePintada nome="dado" className="h-[300px] w-[300px]" />
       </motion.button>
 
       <div className="pergaminho-sombra w-[620px]">

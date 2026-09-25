@@ -4,7 +4,7 @@ import type { Etapa } from '../../data/rodada';
 import { anosEntre } from '../../engine/historia';
 import { useSomDoJogo } from '../../engine/SomContexto';
 import { mola } from '../../styles/movimento';
-import { Icone } from '../ui/Icone';
+import { ArtePintada } from '../ui/ArtePintada';
 import { Cintilas } from '../ui/Particulas';
 
 // Tempos da passagem: a ampulheta vira, os anos folheiam um a um e o último
@@ -114,12 +114,12 @@ export function PassagemDoTempo({ de, para, aoTerminar }: { de: Etapa; para: Eta
           </motion.div>
         )}
         <motion.span
-          className="relative text-ouro [filter:drop-shadow(0_0_18px_rgb(232_182_74/0.55))_drop-shadow(0_8px_10px_rgb(0_0_0/0.8))]"
+          className="relative [filter:drop-shadow(0_0_18px_rgb(232_182_74/0.45))_drop-shadow(0_8px_10px_rgb(0_0_0/0.8))] [will-change:transform]"
           initial={false}
           animate={reduzido ? undefined : { rotate: [0, 180] }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.6, 0, 0.3, 1] }}
         >
-          <Icone nome="hourglass" className="h-[150px] w-[150px]" />
+          <ArtePintada nome="ampulheta" className="h-[150px] w-[150px]" />
         </motion.span>
       </div>
       {/* O ano, folheado como um calendário: o velho sobe, o novo chega de baixo. */}

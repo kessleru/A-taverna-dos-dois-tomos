@@ -2,6 +2,7 @@
 // todas as cartas (vinda de artes.ts, para não esquecer nenhuma) e as peças
 // fixas do cenário. Sons e fontes entram pelo useSom e pelo App.
 import { arteEventos, arteLendaria, artesArtigos, artesDecisoes, artesEtapas } from './artes';
+import { ARTES_PINTADAS } from '../components/ui/ArtePintada';
 
 const base = `${import.meta.env.BASE_URL}assets/`;
 
@@ -12,6 +13,9 @@ const FIXAS = [
   'cenario/quadro-tabuas.webp',
   'texturas/ferro-placas.webp',
   'cartas/verso.webp',
+  'cartas/verso-destino.webp',
+  // Peças pintadas (ArtePintada): ampulheta, dado, selo, vela e pergaminho.
+  ...Object.values(ARTES_PINTADAS).map((nome) => `ui/${nome}.webp`),
   'personagens/taverneiro.webp',
   'personagens/cartografo.webp',
   'personagens/cronista.webp',

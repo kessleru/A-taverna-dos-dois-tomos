@@ -6,7 +6,7 @@ import { retratosNarradores } from '../../data/artes';
 import { CartaDecisao } from '../cartas/CartaDecisao';
 import { CartaArtigo } from '../cartas/CartaArtigo';
 import { CartaLendaria } from '../cartas/CartaLendaria';
-import { CartaEvento } from '../cartas/CartaEvento';
+import { CartaEvento, VERSO_DESTINO } from '../cartas/CartaEvento';
 import { VersoCarta } from '../cartas/VersoCarta';
 import { CartaDesafio } from '../rodada/CartaDesafio';
 import { LeituraMapa } from '../rodada/LeituraMapa';
@@ -14,6 +14,7 @@ import { Orbes } from '../hud/Orbes';
 import { Tapecaria } from '../hud/Tapecaria';
 import { QuadroMadeira } from './QuadroMadeira';
 import { Pergaminho } from './Pergaminho';
+import { ArtePintada } from './ArtePintada';
 
 const TAVERNEIRO = `${import.meta.env.BASE_URL}assets/personagens/taverneiro.webp`;
 const TAVERNEIRO_PORTA = `${import.meta.env.BASE_URL}assets/personagens/taverneiro-porta.webp`;
@@ -102,6 +103,24 @@ export function Estufa({ aoAquecer }: { aoAquecer: () => void }) {
             [132, 170].map((lado) => <img key={`${id}-${lado}`} src={retratosNarradores[id]} alt="" className="object-cover" style={{ width: lado, height: lado }} />),
           )}
           <img src={TAVERNEIRO_PORTA} alt="" className="h-[270px] w-[180px] object-cover" />
+          {/* Peças pintadas nos tamanhos em que aparecem, e o verso da Carta do Destino. */}
+          {(
+            [
+              ['ampulheta', 150],
+              ['dado', 300],
+              ['dado', 260],
+              ['selo', 80],
+              ['selo', 96],
+              ['selo', 128],
+              ['selo', 220],
+              ['pergaminho', 170],
+            ] as const
+          ).map(([nome, lado]) => (
+            <span key={`${nome}-${lado}`} style={{ width: lado, height: lado }}>
+              <ArtePintada nome={nome} className="h-full w-full" />
+            </span>
+          ))}
+          <img src={VERSO_DESTINO} alt="" className="h-[720px] w-[520px] rounded-[18px]" />
         </div>
       </div>
     </MotionConfig>

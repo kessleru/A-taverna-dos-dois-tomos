@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { dadoDoDestino } from '../../data/rodada';
 import type { ResultadoDado } from '../../engine/motor';
-import { Icone } from '../ui/Icone';
+import { ArtePintada } from '../ui/ArtePintada';
 import { chuvaDeOuro } from '../ui/confete';
 import { Faiscas } from '../ui/Faiscas';
 import { Baforada } from '../ui/Particulas';
@@ -98,14 +98,19 @@ export function Consequencia({
       </AnimatePresence>
 
       <motion.div
-        className="relative flex h-[260px] w-[260px] shrink-0 items-center justify-center"
+        className="relative flex h-[260px] w-[260px] shrink-0 items-center justify-center [will-change:transform]"
         animate={revelado ? { rotate: 0, scale: [1.15, 1] } : { rotate: [0, 360] }}
         transition={revelado ? mola.impacto : { duration: 0.5, repeat: Infinity, ease: 'linear' }}
       >
-        <span className="absolute inset-0 drop-shadow-[0_10px_18px_rgb(0_0_0/0.8)]" style={{ color: revelado ? cor : 'var(--ouro-escuro)' }}>
-          <Icone nome="dice-twenty-faces-one" className="h-full w-full opacity-60" />
+        {/* O dado pintado; revelado, ganha um halo na cor da faixa (crítico, sucesso, falha). */}
+        <span
+          className="absolute inset-0"
+          style={{ filter: revelado ? `drop-shadow(0 0 22px ${cor}) drop-shadow(0 10px 18px rgb(0 0 0 / 0.8))` : 'drop-shadow(0 10px 18px rgb(0 0 0 / 0.8))' }}
+        >
+          <ArtePintada nome="dado" className="h-full w-full" />
         </span>
-        <span className="relative font-titulo text-[110px] font-bold text-pergaminho [text-shadow:0_4px_10px_rgb(0_0_0),0_0_4px_rgb(0_0_0)]">
+        {/* O número fica sobre a face da frente, que é um pouco abaixo do centro. */}
+        <span className="relative translate-y-[20px] font-titulo text-[110px] font-bold text-pergaminho [text-shadow:0_4px_10px_rgb(0_0_0),0_0_4px_rgb(0_0_0)]">
           {face}
         </span>
         {revelado && <Baforada largura={0.8} semente={dado.d20} />}

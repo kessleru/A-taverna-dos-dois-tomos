@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import type { Escolha, Etapa } from '../../data/rodada';
 import { briefing } from '../../data/rodada';
 import { retratosNarradores } from '../../data/artes';
-import { Icone } from '../ui/Icone';
+import { ArtePintada } from '../ui/ArtePintada';
 import { mola } from '../../styles/movimento';
 import { Impacto } from '../ui/Particulas';
 import { useSonsEmSequencia } from '../../engine/useSonsEmSequencia';
@@ -44,9 +44,9 @@ export function Cronica({ etapa, escolha }: { etapa: Etapa; escolha: Escolha }) 
         animate={{ scale: 1, opacity: 1, rotate: -6 }}
         transition={{ ...mola.impacto, delay: 0.8 }}
       >
-        <span className={`relative ${igual ? 'selo-cera' : 'text-dano'}`}>
+        <span className={`selo-pintado relative ${igual ? '' : '[&>img]:brightness-75 [&>img]:saturate-50'}`}>
           <Impacto cor={igual ? 'var(--cera)' : 'var(--dano)'} gotas onda={110} raio={80} quantidade={9} atraso={0.95} />
-          <Icone nome="wax-seal" className="h-24 w-24" />
+          <ArtePintada nome="selo" className="h-24 w-24" />
         </span>
         <span
           className={`max-w-[300px] font-titulo text-[28px] font-bold leading-tight [text-shadow:0_2px_4px_rgb(0_0_0/0.9)] ${igual ? 'text-ouro' : 'text-dano'}`}

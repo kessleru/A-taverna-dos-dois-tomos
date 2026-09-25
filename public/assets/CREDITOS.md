@@ -47,6 +47,23 @@ Geradas pela equipe com os prompts de o guia de assets da equipe; convertidas pa
 
 **PREENCHER:** ferramenta usada para gerar.
 
+## Peças pintadas (setembro/2026)
+
+Geradas pela equipe com os prompts de `ASSETS-A-GERAR.md`. Recortadas no
+contorno, reduzidas (Lanczos) e convertidas para WebP; os PNG originais ficam
+em `assets-originais/imagens/`.
+
+| Arquivo | Uso | Original |
+|---|---|---|
+| `ui/ampulheta.webp` | Passagem do Tempo | `hourglass_fantasy.png` |
+| `ui/dado-d20.webp` | Dado do Destino e Consequência | `d20_aged_gold.png` |
+| `ui/selo-cera.webp` | Selos de cera (missão, Crônica, fim da rodada, Confronto) | `dark_red_wax_seal.png` |
+| `ui/vela.webp` | Tela de carregamento | `candle_brass_holder.png` |
+| `ui/pergaminho-pena.webp` | "A crônica terminou" | `scroll_quill_inkwell.png` |
+| `cartas/verso-destino.webp` | Verso da Carta do Destino (cantos pretos viraram transparentes, 780×1080) | `tarot_card_back_2x.png` |
+
+**PREENCHER:** ferramenta usada para gerar.
+
 ## Verso, texturas e favicon
 
 Gerados pela equipe com os prompts de o guia de assets da equipe

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Icone } from './Icone';
+import { ArtePintada } from './ArtePintada';
 import { marcarVisto, naoVistos } from '../../engine/vistos';
 
 const idDica = (dica: string) => `carregamento:${dica}`;
@@ -51,8 +51,8 @@ export function TelaCarregamento({ progresso, aquecendo = false }: { progresso: 
       aria-label="Carregando o jogo"
     >
       {/* A vela da taverna, tremulando enquanto tudo carrega. */}
-      <span className="vela-carregando text-ouro" aria-hidden>
-        <Icone nome="candle-light" className="h-[120px] w-[120px]" />
+      <span className="vela-carregando" aria-hidden>
+        <ArtePintada nome="vela" className="h-[120px] w-[120px]" />
       </span>
       <h1 className="titulo-ouro font-titulo text-[72px] font-bold tracking-[0.04em]">A Taverna dos Dois Tomos</h1>
       <div className="filigrana text-[22px] text-ouro" aria-hidden>✦</div>
