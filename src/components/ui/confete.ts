@@ -22,6 +22,13 @@ function formasDaTaverna(): confetti.Shape[] {
   return formas;
 }
 
+// Na tela de carregamento: cria as formas e o Worker do confete (o canvas-confetti
+// monta os dois no primeiro disparo, que antes caía bem no crítico do dado).
+export function aquecerConfete() {
+  formasDaTaverna();
+  confetti({ particleCount: 0 });
+}
+
 export function chuvaDeOuro(opcoes: confetti.Options) {
   return confetti({ shapes: formasDaTaverna(), scalar: 1.3, colors: OURO, ticks: 260, gravity: 0.9, ...opcoes });
 }

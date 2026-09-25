@@ -11,6 +11,8 @@ import { TelaCarregamento } from './components/ui/TelaCarregamento';
 import { Tremor } from './components/ui/Tremor';
 import { PoeiraClique } from './components/ui/PoeiraClique';
 import { Ajuda } from './components/ui/Ajuda';
+import { Estufa } from './components/ui/Estufa';
+import { aquecerConfete } from './components/ui/confete';
 import { carregarTudo, type Tarefa } from './engine/carregamento';
 import { IMAGENS } from './data/assets';
 import { Hud } from './components/hud/Hud';
@@ -63,8 +65,11 @@ export default function App() {
   const som = useSom();
   const faseProps = { avancar, voltar, primeiraFase, ultimaFase };
 
-  // O jogo só aparece depois de imagens, fontes e sons carregados.
-  const [carregado, setCarregado] = useState(false);
+  // O jogo só aparece depois de imagens, fontes e sons carregados e de tudo
+  // passar uma vez pela estufa (components/ui/Estufa.tsx). A tela de
+  // carregamento pode demorar: o que pesa acontece nela, não na partida.
+  const [etapaCarga, setEtapaCarga] = useState<'arquivos' | 'aquecendo' | 'pronto'>('arquivos');
+  const carregado = etapaCarga === 'pronto';
   const [progresso, setProgresso] = useState(0);
   const tarefasDeSom = som.tarefasDeCarga;
   useEffect(() => {
@@ -77,22 +82,12 @@ export default function App() {
     carregarTudo(tarefas, (feitos, total) => {
       if (ativo) setProgresso(total ? feitos / total : 1);
     }).then(() => {
-      if (!ativo) return;
-      // Um quadro de folga para a barra chegar a 100% antes de montar o jogo.
-      requestAnimationFrame(() => {
-        if (ativo) setCarregado(true);
-      });
+      if (ativo) setEtapaCarga('aquecendo');
     });
     return () => {
       ativo = false;
     };
   }, [tarefasDeSom]);
-
-  // Música, lareira e murmúrio começam a baixar só com o jogo aberto.
-  const prepararFundo = som.prepararFundo;
-  useEffect(() => {
-    if (carregado) prepararFundo();
-  }, [carregado, prepararFundo]);
 
   // Falas de entrada de fase que não dependem do que acontece dentro dela.
   const falarRef = useRef(som.falar);
@@ -135,7 +130,15 @@ export default function App() {
 
   return (
     <Palco>
-      <AnimatePresence>{!carregado && <TelaCarregamento key="carregando" progresso={progresso} />}</AnimatePresence>
+      {etapaCarga === 'aquecendo' && (
+        <Estufa
+          aoAquecer={() => {
+            aquecerConfete();
+            setEtapaCarga('pronto');
+          }}
+        />
+      )}
+      <AnimatePresence>{!carregado && <TelaCarregamento key="carregando" progresso={progresso} aquecendo={etapaCarga === 'aquecendo'} />}</AnimatePresence>
       {carregado && (
         <SomContexto.Provider value={som}>
           <GrimorioProvider aoNotificar={() => som.tocar('ping')}>

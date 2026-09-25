@@ -4,6 +4,10 @@ import { ALTURA_AMPLIADA, fatorAmpliacao } from '../../engine/ampliacao';
 import { mola } from '../../styles/movimento';
 import { ESCALA_CARTA } from './escala';
 import type { PalavraChave } from '../../data/glossario';
+import { jaVisto, marcarVisto, naoVistos } from '../../engine/vistos';
+
+const AJUDA_FECHAR = 'ampliacao:fechar';
+const idTermo = (palavra: PalavraChave) => `termo:${palavra.termo}`;
 
 interface Ampliacao {
   // aoFechar avisa a carta que a ampliação dela saiu (clique, Esc ou outra carta).
@@ -23,7 +27,7 @@ export function useAmpliacao(): Ampliacao {
 // sem querer. Sem backdrop-filter: desfocar o palco inteiro a cada quadro,
 // com as brasas se mexendo atrás, pesava no projetor.
 export function AmpliacaoProvider({ children }: { children: ReactNode }) {
-  const [carta, setCarta] = useState<{ conteudo: ReactNode; fator: number; id: number; palavras: PalavraChave[] } | null>(null);
+  const [carta, setCarta] = useState<{ conteudo: ReactNode; fator: number; id: number; palavras: PalavraChave[]; dicaFechar: boolean } | null>(null);
   const aoFechar = useRef<(() => void) | undefined>(undefined);
   const contador = useRef(0);
 
@@ -38,7 +42,11 @@ export function AmpliacaoProvider({ children }: { children: ReactNode }) {
       mostrar: (conteudo, alturaBase, fechou, palavras = []) => {
         aoFechar.current?.();
         aoFechar.current = fechou;
-        setCarta({ conteudo, fator: fatorAmpliacao(alturaBase, ESCALA_CARTA, ALTURA_AMPLIADA), id: ++contador.current, palavras });
+        // Cada termo e o "clique para fechar" só na primeira vez da sessão.
+        const novas = naoVistos(palavras, idTermo);
+        const dicaFechar = !jaVisto(AJUDA_FECHAR);
+        marcarVisto(AJUDA_FECHAR, ...novas.map(idTermo));
+        setCarta({ conteudo, fator: fatorAmpliacao(alturaBase, ESCALA_CARTA, ALTURA_AMPLIADA), id: ++contador.current, palavras: novas, dicaFechar });
       },
       esconder,
     }),
@@ -108,7 +116,9 @@ export function AmpliacaoProvider({ children }: { children: ReactNode }) {
                 </ul>
               )}
             </div>
-            <p className="font-texto text-[24px] italic text-pergaminho/70 [text-shadow:0_2px_4px_rgb(0_0_0)]">clique para fechar</p>
+            {carta.dicaFechar && (
+              <p className="font-texto text-[24px] italic text-pergaminho/70 [text-shadow:0_2px_4px_rgb(0_0_0)]">clique para fechar</p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

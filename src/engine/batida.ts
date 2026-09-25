@@ -29,6 +29,11 @@ export function parametrosBatida(forca: number, sorteio: () => number): Parametr
 
 let ruidoCache: AudioBuffer | null = null;
 
+// Gera o ruído na tela de carregamento, e não no primeiro clique na mesa.
+export function prepararRuido(ctx: BaseAudioContext): void {
+  ruido(ctx);
+}
+
 function ruido(ctx: BaseAudioContext): AudioBuffer {
   if (ruidoCache && ruidoCache.sampleRate === ctx.sampleRate) return ruidoCache;
   const tamanho = Math.floor(ctx.sampleRate * 0.5);

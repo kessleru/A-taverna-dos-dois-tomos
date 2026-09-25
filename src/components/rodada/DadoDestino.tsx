@@ -4,6 +4,7 @@ import { dadoDoDestino, type Escolha, type Etapa } from '../../data/rodada';
 import { bonusDoContexto } from '../../engine/motor';
 import { Icone } from '../ui/Icone';
 import { ReguaDado, minimoNoDado } from './ReguaDado';
+import { usePrimeiraVez } from '../../engine/vistos';
 
 function comSinal(valor: number) {
   return valor > 0 ? `+${valor}` : `${valor}`;
@@ -21,6 +22,7 @@ export function DadoDestino({ etapa, etapaIndice, escolha, onRolar }: { etapa: E
   ] as const;
   const bonus = bonusDoContexto(etapaIndice, escolha);
   const { minimo, chance } = minimoNoDado(bonus);
+  const ensinarRolar = usePrimeiraVez('dado:rolar');
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
@@ -82,7 +84,7 @@ export function DadoDestino({ etapa, etapaIndice, escolha, onRolar }: { etapa: E
           <div className="mt-2">
             <ReguaDado bonus={bonus} claro />
           </div>
-          <p className="mt-4 font-texto text-[22px] italic text-tinta/75">Clique no dado ou aperte → para rolar.</p>
+          {ensinarRolar && <p className="mt-4 font-texto text-[22px] italic text-tinta/75">Clique no dado ou aperte → para rolar.</p>}
         </div>
       </div>
     </div>

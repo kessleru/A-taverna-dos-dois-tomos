@@ -101,7 +101,5 @@ anterior, "Fantasy RPG Exploration v2" de rubyzephyr, está em
 
 Toca em loop a 0,12 de volume. O som começa ligado: a música entra no primeiro
 clique ou tecla (o navegador não deixa tocar antes) e a tecla `M` ou o botão do
-HUD desligam. Efeitos e falas são carregados ao abrir o jogo, para não
-atrasarem na primeira vez que tocam; música, lareira e murmúrio só começam a
-baixar depois que o jogo abre (tocam em streaming e não seguram a tela de
-carregamento).
+HUD desligam. Tudo (efeitos, falas, música, lareira e murmúrio) é carregado
+na tela de carregamento, para nada baixar nem decodificar no meio da partida.

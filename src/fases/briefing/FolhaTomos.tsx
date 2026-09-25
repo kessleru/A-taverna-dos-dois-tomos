@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { briefing } from '../../data/rodada';
 import { conteudo } from '../../data/conteudo';
@@ -9,6 +9,7 @@ import { CartaArtigo } from '../../components/cartas/CartaArtigo';
 import { Pergaminho } from '../../components/ui/Pergaminho';
 import { useGrimorio } from '../../components/ui/NotificacoesGrimorio';
 import type { useSom } from '../../engine/useSom';
+import { usePrimeiraVez } from '../../engine/vistos';
 
 type IdTomo = 'A' | 'B';
 
@@ -27,6 +28,11 @@ export function FolhaTomos({ som }: { som: ReturnType<typeof useSom> }) {
   const { tomos } = briefing;
   const { notificar } = useGrimorio();
   const [estados, setEstados] = useState<Record<IdTomo, EstadoTomo>>({ A: 'fechado', B: 'fechado' });
+  // Como abrir os tomos: só na primeira visita à folha, e some quando a
+  // turma já chegou aos detalhes de um deles.
+  const primeiraVisita = usePrimeiraVez('briefing:tomos');
+  const viuDetalhes = useRef(false);
+  if (estados.A === 'detalhes' || estados.B === 'detalhes') viuDetalhes.current = true;
 
   const clicar = useCallback(
     (id: IdTomo) => {
@@ -107,7 +113,7 @@ export function FolhaTomos({ som }: { som: ReturnType<typeof useSom> }) {
       })}
 
       <p className="absolute bottom-6 left-0 right-0 text-center font-texto text-[24px] italic text-pergaminho/70">
-        {tomos.dica}
+        {primeiraVisita && !viuDetalhes.current && tomos.dica}
       </p>
 
       <AnimatePresence>

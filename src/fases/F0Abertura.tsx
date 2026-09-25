@@ -7,6 +7,7 @@ import { Poeira } from '../components/ui/Poeira';
 import { CartaArtigo } from '../components/cartas/CartaArtigo';
 import { mola } from '../styles/movimento';
 import { travar } from '../engine/trava';
+import { usePrimeiraVez } from '../engine/vistos';
 import type { FaseProps } from '../types';
 import type { useSom } from '../engine/useSom';
 
@@ -72,6 +73,7 @@ function TelaTitulo({ aoEntrar }: { aoEntrar: () => void }) {
   const reduzido = useReducedMotion();
   const [artigoA, artigoB] = conteudo.artigos;
   const entrada = (atraso: number) => ({ delay: reduzido ? 0 : atraso });
+  const lembrarAtalhos = usePrimeiraVez('titulo:atalhos');
 
   // O botão só aparece depois do brasão e da faixa: até lá, nada de pular.
   useEffect(() => {
@@ -151,14 +153,16 @@ function TelaTitulo({ aoEntrar }: { aoEntrar: () => void }) {
           </p>
         </motion.div>
 
-        <motion.p
-          className="absolute bottom-8 right-10 font-texto text-[24px] italic text-pergaminho/55"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={entrada(2.6)}
-        >
-          <span className="font-titulo not-italic text-ouro/70">?</span> mostra os atalhos
-        </motion.p>
+        {lembrarAtalhos && (
+          <motion.p
+            className="absolute bottom-8 right-10 font-texto text-[24px] italic text-pergaminho/55"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={entrada(2.6)}
+          >
+            <span className="font-titulo not-italic text-ouro/70">?</span> mostra os atalhos
+          </motion.p>
+        )}
 
         <motion.div className="mt-12" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={entrada(1.8)}>
           <div className="relative isolate rounded-md">

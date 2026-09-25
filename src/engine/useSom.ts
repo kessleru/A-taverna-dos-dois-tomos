@@ -4,7 +4,7 @@ import { CHAVE_MUDO, lerMudo } from './preferenciaSom';
 import { FALAS, TODAS_AS_FALAS, escolherFala, type Momento } from './falas';
 import type { Tarefa } from './carregamento';
 import { Murmurio } from './murmurio';
-import { parametrosBatida, tocarBatida } from './batida';
+import { parametrosBatida, prepararRuido, tocarBatida } from './batida';
 
 // Efeitos do Kenney Audio (CC0) e música de fundo em public/sfx/ (origem de
 // cada arquivo em public/sfx/CREDITOS.md). Se algum arquivo faltar, o Howler
@@ -118,10 +118,6 @@ export function useSom() {
   const falaAtual = useRef<{ id: string; som: Howl } | null>(null);
   // Até quando a fala interrompida ainda está sumindo (a próxima espera).
   const fimDaSaida = useRef(0);
-  // Música, lareira e murmúrio só começam a baixar depois do carregamento
-  // (prepararFundo): são 4,5 MB que disputavam a banda com as cartas e as
-  // falas, e tocam em streaming, então não precisam segurar a tela de carga.
-  const [fundoPronto, setFundoPronto] = useState(false);
 
   useEffect(() => {
     sessionStorage.setItem(CHAVE_MUDO, String(mudo));
@@ -136,6 +132,13 @@ export function useSom() {
     for (const id of TODAS_AS_FALAS) {
       falas.current[id] = new Howl({ src: [caminhoSom(`falas/${id}.mp3`)], volume: VOLUME_FALA });
     }
+    // Música, lareira e murmúrio também baixam na tela de carregamento: nada
+    // de download disputando a rede (e o processador) no meio da partida.
+    fundo.current = [
+      new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true }),
+      new Howl({ src: [caminhoSom('ambiente-taverna.mp3')], volume: VOLUME_AMBIENTE, loop: true, html5: true }),
+    ];
+    murmurio.current = new Murmurio([1, 2, 3].map((n) => caminhoSom(`murmurio-${n}.mp3`)));
     return () => {
       murmurio.current?.descarregar();
       for (const som of Object.values(sons.current)) som?.unload();
@@ -144,15 +147,6 @@ export function useSom() {
     };
   }, []);
 
-  const prepararFundo = useCallback(() => {
-    if (fundo.current.length > 0) return;
-    fundo.current = [
-      new Howl({ src: [caminhoSom('musica-fundo.mp3')], volume: VOLUME_MUSICA, loop: true, html5: true }),
-      new Howl({ src: [caminhoSom('ambiente-taverna.mp3')], volume: VOLUME_AMBIENTE, loop: true, html5: true }),
-    ];
-    murmurio.current = new Murmurio([1, 2, 3].map((n) => caminhoSom(`murmurio-${n}.mp3`)));
-    setFundoPronto(true);
-  }, []);
 
   useEffect(() => {
     function liberar() {
@@ -186,7 +180,7 @@ export function useSom() {
     }
     if (mudo) murmurio.current?.parar();
     else if (liberado) murmurio.current?.iniciar();
-  }, [mudo, liberado, fundoPronto]);
+  }, [mudo, liberado]);
 
   useEffect(() => {
     function aoTeclar(evento: KeyboardEvent) {
@@ -280,8 +274,15 @@ export function useSom() {
   // Uma tarefa por arquivo de som, para a tela de carregamento. Lê os Howls na
   // hora da chamada: o App chama depois que o efeito de pré-carga já rodou.
   const tarefasDeCarga = useCallback(
-    (): Tarefa[] =>
-      [...Object.values(sons.current), ...Object.values(falas.current)].flatMap((som) => (som ? [() => carregado(som)] : [])),
+    (): Tarefa[] => [
+      ...[...Object.values(sons.current), ...Object.values(falas.current), ...fundo.current, ...(murmurio.current?.clipes ?? [])].flatMap((som) =>
+        som ? [() => carregado(som)] : [],
+      ),
+      // Ruído do "toc" da mesa pronto antes do primeiro clique.
+      async () => {
+        if (Howler.ctx) prepararRuido(Howler.ctx);
+      },
+    ],
     [],
   );
 
@@ -290,7 +291,7 @@ export function useSom() {
   // Mesmo objeto enquanto o mudo não muda (useMemo): antes era um objeto novo
   // a cada render do App.
   return useMemo(
-    () => ({ mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga, prepararFundo }),
-    [mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga, prepararFundo],
+    () => ({ mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga }),
+    [mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga],
   );
 }

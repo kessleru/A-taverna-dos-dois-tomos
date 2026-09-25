@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { eventos } from '../../data/rodada';
 import type { Passo } from '../../engine/motor';
 import { mola } from '../../styles/movimento';
+import { usePrimeiraVez } from '../../engine/vistos';
 
 interface No {
   id: string;
@@ -47,6 +48,9 @@ export function TrilhaPassos({ passo, etapa, opcoes }: { passo: Passo; etapa: nu
   const temDestino = eventos.some((e) => e.depoisDaEtapa === etapa);
   const nos = [...(passo === 'forja' ? [FORJA] : []), ...CICLO, ...(temDestino ? [DESTINO] : [])];
   const atual = nos.findIndex((no) => no.passos.includes(passo));
+  // A dica de cada passo só na primeira vez que ele aparece: da segunda etapa
+  // em diante a turma já sabe o que fazer.
+  const mostrarDica = usePrimeiraVez(`trilha:${passo}`);
 
   return (
     <div className="flex flex-col items-center gap-3" aria-label="Passos da etapa">
@@ -91,17 +95,22 @@ export function TrilhaPassos({ passo, etapa, opcoes }: { passo: Passo; etapa: nu
           );
         })}
       </ol>
-      <AnimatePresence mode="wait">
-        <motion.p
-          key={passo}
-          className="max-w-[720px] text-center font-texto text-[24px] italic leading-tight text-pergaminho/90 [text-shadow:0_2px_4px_rgb(0_0_0/0.95)]"
-          initial={reduzido ? false : { opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6, transition: { duration: 0.15 } }}
-        >
-          {dica(passo, opcoes)}
-        </motion.p>
-      </AnimatePresence>
+      {/* Altura fixa: sem a dica, a trilha não sobe. */}
+      <div className="min-h-[30px]">
+        <AnimatePresence mode="wait">
+          {mostrarDica && (
+            <motion.p
+              key={passo}
+              className="max-w-[720px] text-center font-texto text-[24px] italic leading-tight text-pergaminho/90 [text-shadow:0_2px_4px_rgb(0_0_0/0.95)]"
+              initial={reduzido ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6, transition: { duration: 0.15 } }}
+            >
+              {dica(passo, opcoes)}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
