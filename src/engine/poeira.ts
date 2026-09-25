@@ -2,7 +2,7 @@
 // pó e solta pedrinhas). Lógica pura das partículas: quem desenha é o
 // PoeiraClique, num canvas por cima do palco. Tudo em px do palco de 1920×1080.
 
-export type TipoParticula = 'nuvem' | 'grao' | 'anel' | 'faisca' | 'aro';
+export type TipoParticula = 'nuvem' | 'terra' | 'grao' | 'anel' | 'faisca' | 'aro';
 
 export interface Particula {
   tipo: TipoParticula;
@@ -21,8 +21,15 @@ export interface Particula {
   chao: number;
   quicou: boolean;
   giro: number;
+  // Velocidade de giro (rad/s) e qual textura desenhar (nuvem e terra).
+  giroVel: number;
+  variante: number;
   cor: string;
 }
+
+// Quantas texturas de fumaça e de terra o desenho tem (Kenney Particle Pack).
+export const VARIANTES_NUVEM = 5;
+export const VARIANTES_TERRA = 2;
 
 const GRAVIDADE = 1500;
 const ARRASTO_NUVEM = 3.2;
@@ -33,7 +40,7 @@ const CORES_GRAO = ['#5a3f28', '#7a5a3c', '#3c2a1b', '#9c8062'];
 const CORES_FAISCA = ['#ffe39a', '#fff3c4', '#e8b64a'];
 
 function base(tipo: TipoParticula, x: number, y: number): Particula {
-  return { tipo, x, y, vx: 0, vy: 0, idade: 0, vida: 1, tamanho: 1, tamanhoFinal: 1, opacidade: 1, chao: y, quicou: false, giro: 0, cor: '#fff' };
+  return { tipo, x, y, vx: 0, vy: 0, idade: 0, vida: 1, tamanho: 1, tamanhoFinal: 1, opacidade: 1, chao: y, quicou: false, giro: 0, giroVel: 0, variante: 0, cor: '#fff' };
 }
 
 function escolher<T>(lista: readonly T[], sorteio: () => number): T {
@@ -74,6 +81,17 @@ export function emitirPoeira(x: number, y: number, forca: number, sorteio: () =>
   anel.cor = '#f3e6c8';
   lista.push(anel);
 
+  // O "puf" de terra no ponto do toque: uma textura de torrões que abre rápido.
+  const terra = base('terra', x, y);
+  terra.vida = 0.38;
+  terra.tamanho = 10;
+  terra.tamanhoFinal = (34 + sorteio() * 12) * forca;
+  terra.opacidade = 0.55;
+  terra.giro = sorteio() * Math.PI * 2;
+  terra.variante = Math.floor(sorteio() * VARIANTES_TERRA);
+  terra.cor = '#6b4a2e';
+  lista.push(terra);
+
   const nuvens = Math.round(7 + forca * 4);
   for (let i = 0; i < nuvens; i++) {
     const angulo = (i / nuvens) * Math.PI * 2 + sorteio() * 0.6;
@@ -88,8 +106,12 @@ export function emitirPoeira(x: number, y: number, forca: number, sorteio: () =>
     p.vida = 0.6 + sorteio() * 0.45;
     p.tamanho = 10 + sorteio() * 6;
     p.tamanhoFinal = (22 + sorteio() * 22) * (0.8 + forca * 0.25);
-    p.opacidade = 0.2 + sorteio() * 0.14;
+    p.opacidade = 0.3 + sorteio() * 0.18;
     p.cor = escolher(CORES_NUVEM, sorteio);
+    // Fumaça de verdade gira devagar enquanto abre.
+    p.giro = sorteio() * Math.PI * 2;
+    p.giroVel = (sorteio() * 2 - 1) * 1.6;
+    p.variante = Math.floor(sorteio() * VARIANTES_NUVEM);
     lista.push(p);
   }
 
@@ -148,6 +170,7 @@ export function atualizarParticulas(lista: Particula[], segundos: number): Parti
       const freio = Math.exp(-ARRASTO_NUVEM * dt);
       p.vx *= freio;
       p.vy = p.vy * freio - 6 * dt;
+      p.giro += p.giroVel * dt;
     } else if (p.tipo === 'grao') {
       p.vy += GRAVIDADE * dt;
       p.giro += p.vx * 0.02 * dt;

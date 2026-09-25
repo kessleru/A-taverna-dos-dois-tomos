@@ -21,6 +21,19 @@ const CLICAVEL = 'button, a[href], [role="button"], label, .cursor-pointer';
 // A partir do 4º clique seguido no mesmo lugar, a mesa inteira sente.
 const SEQUENCIA_QUE_TREME = 3;
 const TAMANHO_SPRITE = 64;
+const TAMANHO_TEXTURA = 128;
+// Texturas do Kenney Particle Pack (CC0), pré-carregadas na tela de carregamento.
+const base = `${import.meta.env.BASE_URL}assets/particulas/`;
+const FUMACAS = ['smoke-02', 'smoke-04', 'smoke-05', 'smoke-07', 'smoke-08'].map((nome) => `${base}${nome}.webp`);
+const TERRAS = ['dirt-01', 'dirt-02'].map((nome) => `${base}${nome}.webp`);
+
+function carregarTexturas(urls: string[]): HTMLImageElement[] {
+  return urls.map((url) => {
+    const imagem = new Image();
+    imagem.src = url;
+    return imagem;
+  });
+}
 
 // Nuvem macia pré-desenhada (um degradê só): desenhar o sprite com drawImage
 // é bem mais barato que montar um degradê por partícula a cada quadro.
@@ -38,22 +51,46 @@ function criarSprite(): HTMLCanvasElement {
   return sprite;
 }
 
-// Tinge o sprite branco com a cor da nuvem (um por cor, em cache).
-function spriteColorido(branco: HTMLCanvasElement, cor: string, cache: Map<string, HTMLCanvasElement>): HTMLCanvasElement {
-  const pronto = cache.get(cor);
+// Tinge uma textura branca com a cor da partícula (uma por textura e cor, em cache).
+function spriteColorido(fonte: CanvasImageSource, chave: string, lado: number, cor: string, cache: Map<string, HTMLCanvasElement>): HTMLCanvasElement {
+  const id = `${chave}|${cor}`;
+  const pronto = cache.get(id);
   if (pronto) return pronto;
   const sprite = document.createElement('canvas');
-  sprite.width = sprite.height = TAMANHO_SPRITE;
+  sprite.width = sprite.height = lado;
   const ctx = sprite.getContext('2d')!;
-  ctx.drawImage(branco, 0, 0);
+  ctx.drawImage(fonte, 0, 0, lado, lado);
   ctx.globalCompositeOperation = 'source-in';
   ctx.fillStyle = cor;
-  ctx.fillRect(0, 0, TAMANHO_SPRITE, TAMANHO_SPRITE);
-  cache.set(cor, sprite);
+  ctx.fillRect(0, 0, lado, lado);
+  cache.set(id, sprite);
   return sprite;
 }
 
-function desenhar(ctx: CanvasRenderingContext2D, particulas: Particula[], branco: HTMLCanvasElement, cache: Map<string, HTMLCanvasElement>) {
+interface Texturas {
+  branco: HTMLCanvasElement;
+  fumacas: HTMLImageElement[];
+  terras: HTMLImageElement[];
+}
+
+// A textura pedida, tingida; o círculo desfocado fica de reserva se ela não carregou.
+function sprite(t: Texturas, lista: HTMLImageElement[], nome: string, variante: number, cor: string, cache: Map<string, HTMLCanvasElement>) {
+  const imagem = lista[variante % lista.length];
+  if (imagem?.complete && imagem.naturalWidth > 0) return spriteColorido(imagem, `${nome}${variante}`, TAMANHO_TEXTURA, cor, cache);
+  return spriteColorido(t.branco, 'branco', TAMANHO_SPRITE, cor, cache);
+}
+
+// Desenha a textura girada e achatada (a mesa é vista de cima, inclinada).
+function desenharTextura(ctx: CanvasRenderingContext2D, imagem: HTMLCanvasElement, x: number, y: number, r: number, giro: number, achatado: number) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(1, achatado);
+  ctx.rotate(giro);
+  ctx.drawImage(imagem, -r, -r, r * 2, r * 2);
+  ctx.restore();
+}
+
+function desenhar(ctx: CanvasRenderingContext2D, particulas: Particula[], t: Texturas, cache: Map<string, HTMLCanvasElement>) {
   for (const p of particulas) {
     const alfa = opacidadeAtual(p);
     if (alfa <= 0.01) continue;
@@ -61,7 +98,10 @@ function desenhar(ctx: CanvasRenderingContext2D, particulas: Particula[], branco
     ctx.globalAlpha = alfa;
     if (p.tipo === 'nuvem') {
       ctx.globalCompositeOperation = 'source-over';
-      ctx.drawImage(spriteColorido(branco, p.cor, cache), p.x - r, p.y - r * 0.75, r * 2, r * 1.5);
+      desenharTextura(ctx, sprite(t, t.fumacas, 'fumaca', p.variante, p.cor, cache), p.x, p.y, r, p.giro, 0.75);
+    } else if (p.tipo === 'terra') {
+      ctx.globalCompositeOperation = 'source-over';
+      desenharTextura(ctx, sprite(t, t.terras, 'terra', p.variante, p.cor, cache), p.x, p.y, r, p.giro, 0.55);
     } else if (p.tipo === 'grao') {
       ctx.globalCompositeOperation = 'source-over';
       ctx.save();
@@ -116,7 +156,7 @@ export function PoeiraClique() {
     const elemento = canvas.current;
     const ctx = elemento?.getContext('2d');
     if (!elemento || !ctx) return;
-    const branco = criarSprite();
+    const texturas: Texturas = { branco: criarSprite(), fumacas: carregarTexturas(FUMACAS), terras: carregarTexturas(TERRAS) };
     const cache = new Map<string, HTMLCanvasElement>();
     let particulas: Particula[] = [];
     let quadro: number | null = null;
@@ -140,7 +180,7 @@ export function PoeiraClique() {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, elemento.width, elemento.height);
       ctx.setTransform(resolucao, 0, 0, resolucao, 0, 0);
-      desenhar(ctx, particulas, branco, cache);
+      desenhar(ctx, particulas, texturas, cache);
       quadro = particulas.length > 0 ? requestAnimationFrame(passo) : null;
     }
 

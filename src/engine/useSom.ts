@@ -39,6 +39,11 @@ export const EFEITOS = [
   'estandarte',
   'vitoria',
   'livro-abrir',
+  // Kenney Interface Sounds (CC0): a ampulheta, o relógio da passagem do
+  // tempo e o brilho da Carta do Destino.
+  'vidro',
+  'relogio',
+  'brilho',
 ] as const;
 
 export type Efeito = (typeof EFEITOS)[number];
@@ -57,6 +62,8 @@ const VARIAM_TOM: ReadonlySet<Efeito> = new Set([
   'dado',
   'selo',
   'metal',
+  'vidro',
+  'relogio',
 ]);
 const VARIACAO_TOM = 0.06;
 

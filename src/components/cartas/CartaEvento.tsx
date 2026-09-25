@@ -2,7 +2,17 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { arteEventos } from '../../data/artes';
 import { CenaArte } from './CenaArte';
 import { Icone } from '../ui/Icone';
-import { Chuva } from '../ui/Particulas';
+import { Chuva, Cintilas } from '../ui/Particulas';
+
+// Estrelas que piscam na moldura noturna depois que a carta vira.
+const BRILHOS_MOLDURA = [
+  { x: 4, y: 3, tamanho: 44, atraso: 0 },
+  { x: 96, y: 8, tamanho: 34, atraso: 0.6 },
+  { x: 97, y: 55, tamanho: 30, atraso: 1.2 },
+  { x: 3, y: 42, tamanho: 36, atraso: 0.9 },
+  { x: 6, y: 96, tamanho: 32, atraso: 1.5 },
+  { x: 94, y: 97, tamanho: 42, atraso: 0.3 },
+];
 
 interface CartaEventoProps {
   depoisDaEtapa: number;
@@ -76,6 +86,7 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
             })}
         </div>
       </div>
+      <Cintilas pontos={BRILHOS_MOLDURA} cor={sucesso ? 'var(--ouro-claro)' : '#b9a6ff'} atraso={0.7} />
       {/* Depois de virar: pó de ouro sobe no desfecho bom, cinzas caem no ruim. */}
       <Chuva tipo={sucesso ? 'ouro' : 'cinzas'} quantidade={sucesso ? 22 : 18} janela={1.4} atraso={0.7} semente={depoisDaEtapa + 40} />
     </motion.div>

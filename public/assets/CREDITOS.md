@@ -90,6 +90,22 @@ Seta de ouro com gema de cera desenhada para o jogo. A manopla é o ícone
 (game-icons.net, CC BY 3.0), girado e pintado em ouro. As versões
 `-apertando` aparecem enquanto o botão do mouse está pressionado.
 
+## Partículas (`particulas/`)
+
+Do [Kenney Particle Pack](https://kenney.nl/assets/particle-pack) (licença
+CC0, crédito opcional), baixadas do empacotamento de
+[Calinou/kenney-particle-pack](https://github.com/Calinou/kenney-particle-pack).
+Convertidas de PNG em tons de cinza para WebP branco com transparência (o
+brilho virou alfa), para serem tingidas no jogo.
+
+| Arquivo | Original | Uso |
+|---|---|---|
+| `smoke-02/04/05/07/08.webp` | `smoke_0X.png` | Nuvens da poeira do clique (tingidas de pó de madeira) |
+| `dirt-01/02.webp` | `dirt_0X.png` | Torrões de terra no ponto do clique |
+| `twirl-01/02/03.webp` | `twirl_0X.png` | Redemoinho dourado em volta da ampulheta |
+| `star-06/07/08.webp` | `star_0X.png` | Cintilas da passagem do tempo e da Carta do Destino |
+| `light-01.webp` | `light_01.png` | Aura atrás do ano na passagem do tempo |
+
 ## Ícones (`src/assets/icones/`)
 
 De [game-icons.net](https://game-icons.net), licença

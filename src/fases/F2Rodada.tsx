@@ -194,9 +194,14 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
     if (estado.passo === 'evento') {
       const evento = eventos.find((e) => e.depoisDaEtapa === estado.etapa);
       const sucesso = evento?.condicao(estado.escolhas, estado.ind);
-      // Espera a carta do destino virar antes de comentar.
+      // Destino bom cintila quando a carta termina de virar; o Taverneiro
+      // comenta depois.
+      const brilho = sucesso ? window.setTimeout(() => som.tocar('brilho', { volume: 0.7 }), 650) : undefined;
       const id = window.setTimeout(() => som.falar(sucesso ? 'evento-bom' : 'evento-ruim'), 1200);
-      return () => window.clearTimeout(id);
+      return () => {
+        window.clearTimeout(id);
+        window.clearTimeout(brilho);
+      };
     }
     return () => {
       window.clearTimeout(distribuir);

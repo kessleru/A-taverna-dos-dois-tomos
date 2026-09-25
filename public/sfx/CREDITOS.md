@@ -31,6 +31,18 @@ combinar.
 | `estandarte.ogg` | RPG Audio | `cloth1.ogg` |
 | `livro-abrir.ogg` | RPG Audio | `bookOpen.ogg` |
 
+## Kenney Interface Sounds
+
+Do [Interface Sounds](https://kenney.nl/assets/interface-sounds) (CC0),
+baixados de [Calinou/kenney-interface-sounds](https://github.com/Calinou/kenney-interface-sounds)
+e convertidos de WAV para OGG mono.
+
+| Arquivo | Original | Uso |
+|---|---|---|
+| `vidro.ogg` | `glass_001.wav` | A ampulheta virando na passagem do tempo |
+| `relogio.ogg` | `tick_002.wav` | O relógio correndo baixinho durante a passagem do tempo |
+| `brilho.ogg` | `glass_004.wav` | A Carta do Destino favorável cintilando ao virar |
+
 ## Gerados pela equipe
 
 Feitos num gerador de efeitos sonoros com os prompts de

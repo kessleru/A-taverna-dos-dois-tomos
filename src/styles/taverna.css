@@ -317,3 +317,64 @@
     animation: none;
   }
 }
+
+/* Cintilas (Particulas.tsx): a estrela acende girando um pouco e apaga, em
+   loop, cada uma no seu atraso. */
+.cintila {
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  opacity: 0;
+  transform: scale(0);
+  animation: cintila 2.2s ease-in-out infinite backwards;
+}
+
+@keyframes cintila {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1) rotate(20deg);
+  }
+  55%,
+  100% {
+    opacity: 0;
+    transform: scale(0.2) rotate(45deg);
+  }
+}
+
+/* Redemoinho da passagem do tempo (PassagemDoTempo.tsx): gira em volta da
+   ampulheta. A textura é máscara; a cor vem do fundo. */
+.redemoinho {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  background: radial-gradient(circle, var(--ouro-claro), var(--ouro) 55%, var(--ouro-escuro));
+  animation: redemoinho 1.6s linear infinite;
+  will-change: transform;
+}
+
+@keyframes redemoinho {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cintila,
+  .redemoinho {
+    animation: none;
+  }
+}
