@@ -378,3 +378,44 @@
     animation: none;
   }
 }
+
+/* Virada de página entre fases (TransicaoPagina.tsx), toda em CSS: gira em
+   volta da lombada no compositor, fluida mesmo com a fase nova montando. */
+.folha-virando {
+  animation: folha-virar var(--duracao) var(--curva) forwards;
+  will-change: transform;
+}
+
+@keyframes folha-virar {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(90deg);
+  }
+}
+
+.folha-sumindo {
+  animation: folha-sumir var(--duracao) ease forwards;
+}
+
+.folha-escurece {
+  opacity: 0;
+  animation: folha-surgir calc(var(--duracao, 0.9s) / 2) ease-in forwards;
+}
+
+.folha-sombra-clareia {
+  animation: folha-sumir calc(var(--duracao) * 0.9) ease-in forwards;
+}
+
+@keyframes folha-sumir {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes folha-surgir {
+  to {
+    opacity: 1;
+  }
+}
