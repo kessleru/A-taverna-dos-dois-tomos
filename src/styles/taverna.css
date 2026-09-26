@@ -33,8 +33,7 @@
   width: 900px;
   height: 900px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(255 170 80 / 0.22), transparent 65%);
-  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgb(255 170 80 / 0.2), transparent 65%);
   animation: taverna-vela 3.2s ease-in-out infinite alternate;
 }
 
@@ -186,36 +185,100 @@
 .vela-carregando {
   position: relative;
   display: inline-block;
-  transform-origin: 50% 90%;
-  filter: drop-shadow(0 0 18px rgb(255 170 80 / 0.7));
-  animation: vela-tremula 2.4s ease-in-out infinite;
 }
 
-.vela-carregando::before {
-  content: '';
+/* A sombra fica só no castiçal: no invólucro ela cairia também no halo. */
+.vela-carregando > img {
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.6));
+}
+
+/* Chama viva sobre a chama pintada (centro em 42% × 20% da imagem). */
+.vela-halo,
+.vela-lingua,
+.vela-fumaca {
   position: absolute;
-  inset: -60px;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 35%, rgb(255 170 80 / 0.35), transparent 60%);
-  animation: taverna-vela 1.7s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform, opacity;
 }
 
-@keyframes vela-tremula {
+.vela-halo {
+  left: 42%;
+  top: 20%;
+  width: 240px;
+  height: 240px;
+  margin: -120px 0 0 -120px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 200 110 / 0.5), rgb(255 150 60 / 0.14) 30%, rgb(255 130 40 / 0.04) 60%, transparent);
+  mix-blend-mode: screen;
+  animation: chama-a 2.3s ease-in-out infinite;
+}
+
+.vela-lingua {
+  left: 42%;
+  top: 20%;
+  width: 30px;
+  height: 52px;
+  margin: -34px 0 0 -15px;
+  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+  background: radial-gradient(ellipse at 50% 72%, #fffbe8 0%, #ffe08e 32%, rgb(255 150 50 / 0.75) 62%, transparent 76%);
+  mix-blend-mode: screen;
+  transform-origin: 50% 90%;
+  animation: vela-lingua 1.3s ease-in-out infinite;
+}
+
+.vela-fumaca {
+  left: 42%;
+  top: 4%;
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  background: rgb(150 130 115);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  opacity: 0;
+  animation: vela-fumaca 3.4s linear infinite;
+}
+
+@keyframes vela-lingua {
   0%,
   100% {
-    transform: scale(1) rotate(0deg);
+    transform: rotate(0deg) scale(1, 1);
+    opacity: 0.9;
   }
-  20% {
-    transform: scale(1.02, 0.98) rotate(-1deg);
+  18% {
+    transform: rotate(-5deg) scale(0.94, 1.1);
+    opacity: 1;
   }
-  45% {
-    transform: scale(0.99, 1.03) rotate(0.8deg);
+  40% {
+    transform: rotate(3deg) scale(1.05, 0.92);
+    opacity: 0.8;
   }
-  70% {
-    transform: scale(1.01, 0.99) rotate(-0.4deg);
+  63% {
+    transform: rotate(-2deg) scale(0.97, 1.14);
+    opacity: 1;
+  }
+  82% {
+    transform: rotate(4deg) scale(1.02, 0.96);
+    opacity: 0.85;
   }
 }
+
+@keyframes vela-fumaca {
+  0% {
+    transform: translate(0, 0) scale(0.4) rotate(0deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.22;
+  }
+  100% {
+    transform: translate(10px, -110px) scale(1.4) rotate(60deg);
+    opacity: 0;
+  }
+}
+
 
 /* Cartas da votação respiram na mesa (micro-movimento do Balatro): cada uma
    no seu tempo, para a mão parecer viva enquanto a turma decide. */
@@ -235,7 +298,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .vela-carregando,
-  .vela-carregando::before,
+  .vela-halo,
+  .vela-lingua,
+  .vela-fumaca,
   .carta-respira {
     animation: none;
   }
@@ -300,20 +365,91 @@
   }
 }
 
-/* Onda do líquido dos orbes (OrboIndicador): desliza um período em loop. */
+/* Líquido dos orbes (OrboIndicador). Cada onda desliza exatamente um
+   período (--periodo, em % da própria largura), em ritmo linear: o último
+   quadro é igual ao primeiro e o loop não tem emenda. */
 .orbe-onda {
   animation: orbe-onda 2.4s linear infinite;
   will-change: transform;
 }
 
 @keyframes orbe-onda {
+  from {
+    transform: translateX(0);
+  }
   to {
-    transform: translateX(-25%);
+    transform: translateX(var(--periodo, -25%));
+  }
+}
+
+/* O líquido inteiro sobe um pouco e inclina, em vaivém (alternate): ida e
+   volta com a mesma curva, sem salto na virada. */
+.orbe-balanco {
+  animation: orbe-balanco 4.6s ease-in-out infinite alternate;
+  transform-origin: 50% 60%;
+  will-change: transform;
+}
+
+@keyframes orbe-balanco {
+  from {
+    transform: translateY(1.5%) rotate(-2.5deg);
+  }
+  to {
+    transform: translateY(-1.5%) rotate(2.5deg);
+  }
+}
+
+/* Bolha: o trilho (da altura do líquido) sobe do fundo até a superfície
+   gingando para os lados, numa animação só (uma camada por bolha). Nasce e
+   some transparente. */
+.orbe-bolha-trilho {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  animation: orbe-bolha-sobe 3s linear infinite;
+  will-change: transform, opacity;
+}
+
+.orbe-bolha {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.85), rgb(255 255 255 / 0.25) 60%, transparent 72%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25);
+}
+
+@keyframes orbe-bolha-sobe {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    transform: translate(3px, -14%);
+    opacity: 0.9;
+  }
+  35% {
+    transform: translate(-3px, -34%);
+  }
+  55% {
+    transform: translate(3px, -53%);
+  }
+  75% {
+    transform: translate(-3px, -72%);
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(0, -96%);
+    opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .orbe-onda {
+  .orbe-onda,
+  .orbe-balanco,
+  .orbe-bolha-trilho {
     animation: none;
   }
 }
@@ -418,4 +554,312 @@
   to {
     opacity: 1;
   }
+}
+
+/* Número gravado na face do d20 (DadoRolando): ouro com luz em cima e
+   sombra embaixo, como metal cunhado, com um contorno escuro para ler de longe. */
+.dado-numero {
+  font-family: 'Cinzel', serif;
+  font-size: 66px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #fff6d2 0%, #f3cb62 42%, #c48a2a 70%, #8a5a16 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 0 #2a1606) drop-shadow(0 0 3px rgb(0 0 0 / 0.95));
+}
+
+/* Atmosfera da taverna (Atmosfera.tsx). Luzes em transparência comum sobre
+   a pintura (mix-blend-mode custava caro na composição de cada quadro); só
+   opacidade e transform animam. Cada keyframe começa e termina igual. */
+.luz {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, transform;
+}
+
+.luz-lareira-ambiente {
+  /* Brilho largo na parede (em cima) e o reflexo do fogo no chão (embaixo). */
+  background:
+    radial-gradient(closest-side, rgb(255 140 50 / 0.2), transparent) 0 0 / 100% 86.7% no-repeat,
+    radial-gradient(closest-side, rgb(255 140 60 / 0.2), transparent) 66% 78% / 82% 19% no-repeat;
+  animation-name: chama-b;
+  animation-duration: 3.7s;
+}
+
+.luz-lareira-nucleo {
+  background: radial-gradient(closest-side, rgb(255 175 80 / 0.5), rgb(255 110 30 / 0.16) 55%, transparent);
+  animation-name: chama-a;
+  animation-duration: 2.3s;
+}
+
+.luz-lareira-miolo {
+  background: radial-gradient(closest-side, rgb(255 225 150 / 0.5), transparent);
+  animation-name: chama-c;
+  animation-duration: 0.9s;
+}
+
+.luz-vela {
+  background: radial-gradient(closest-side, rgb(255 198 120 / 0.36), rgb(255 150 60 / 0.1) 50%, transparent);
+}
+
+.luz-vela-a {
+  animation-name: chama-a;
+}
+
+.luz-vela-b {
+  animation-name: chama-b;
+}
+
+@keyframes chama-a {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  27% {
+    opacity: 0.7;
+    transform: scale(0.97);
+  }
+  41% {
+    opacity: 0.93;
+  }
+  55% {
+    opacity: 0.76;
+    transform: scale(1.02);
+  }
+  68% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  82% {
+    opacity: 0.84;
+    transform: scale(0.99);
+  }
+}
+
+@keyframes chama-b {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  9% {
+    opacity: 0.66;
+  }
+  21% {
+    opacity: 1;
+  }
+  33% {
+    opacity: 0.8;
+  }
+  47% {
+    opacity: 0.97;
+  }
+  60% {
+    opacity: 0.72;
+  }
+  74% {
+    opacity: 0.94;
+  }
+  88% {
+    opacity: 0.78;
+  }
+}
+
+@keyframes chama-c {
+  0%,
+  100% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  35% {
+    opacity: 0.7;
+    transform: scale(0.94);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes chama-lenta {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Fumaça: sprite do Kenney (máscara) subindo, crescendo e sumindo. */
+.fumaca-lareira {
+  position: absolute;
+  background: rgb(125 100 84);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  opacity: 0;
+  animation-name: fumaca-sobe;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes fumaca-sobe {
+  0% {
+    transform: translateY(0) scale(0.45) rotate(0deg);
+    opacity: 0;
+  }
+  22% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-280px) scale(1.5) rotate(50deg);
+    opacity: 0;
+  }
+}
+
+.faisca-lareira {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  opacity: 0;
+  animation-name: faisca-sobe;
+  animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes faisca-sobe {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--sobe));
+    opacity: 0;
+  }
+}
+
+/* Fachos de luar: um grupo na janela que respira devagar (uma camada) com
+   as faixas paradas dentro, claras no alto e sumindo embaixo. */
+.fachos-luar {
+  position: absolute;
+  width: 0;
+  height: 0;
+  animation: facho-respira 9s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+.facho-luar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top center;
+  background: linear-gradient(to bottom, rgb(180 200 255 / 0.15), rgb(180 200 255 / 0.05) 60%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 30%, #000 70%, transparent);
+}
+
+@keyframes facho-respira {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Grão de poeira flutuando no facho: vai e volta ao mesmo ponto, piscando na luz. */
+.grao-poeira {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  opacity: 0;
+  animation-name: grao-flutua;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes grao-flutua {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0.3;
+  }
+  80% {
+    opacity: 0.8;
+  }
+}
+
+/* Vinheta de luz de vela que respira bem de leve (só opacidade). */
+.taverna-vinheta-respira {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 65% at 50% 45%, transparent 55%, rgb(12 7 3 / 0.5) 100%);
+  animation: vinheta-respira 7s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+@keyframes vinheta-respira {
+  from {
+    opacity: 0.65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Luz desfocada de primeiro plano (bokeh). */
+.bokeh {
+  animation: chama-lenta 5.3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luz,
+  .fachos-luar,
+  .taverna-vinheta-respira,
+  .bokeh {
+    animation: none;
+  }
+  .fumaca-lareira,
+  .faisca-lareira,
+  .grao-poeira {
+    display: none;
+  }
+}
+
+/* Estrela do rank (F3): ouro claro com contorno escuro sobre a medalha. */
+.estrela-rank {
+  color: #fff6d2;
+  text-shadow:
+    0 0 10px rgb(255 214 120 / 0.9),
+    0 2px 0 #5c3a0e;
 }

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
+import { animate, AnimatePresence, motion, useAnimationControls, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
 import { emAlerta, nivelLiquido } from '../../engine/indicador';
 import { Icone } from '../ui/Icone';
 import { Bolhas } from '../ui/Particulas';
@@ -11,6 +11,41 @@ const RAIO_VIDRO = 35.7;
 const FUNDO_VIDRO = 50 + RAIO_VIDRO;
 const ALTURA_VIDRO = RAIO_VIDRO * 2;
 const TOPO_VIDRO = 50 - RAIO_VIDRO;
+
+// Ondas do líquido, da de trás para a da frente. Períodos diferentes e
+// sentidos opostos fazem a superfície parecer viva sem nunca se repetir igual
+// ao olho; cada uma, sozinha, fecha o loop certinho (desliza um período).
+const ONDAS = [
+  { periodo: 62.5, amplitude: 5.5, fase: 0.35, duracao: 3.4, inverte: true, opacidade: 0.55, brilho: false },
+  { periodo: 50, amplitude: 3.8, fase: 0, duracao: 2.2, inverte: false, opacidade: 1, brilho: true },
+];
+// Largura do trecho desenhado (em % do vidro): cobre o vidro + um período.
+const ONDA_LARGURA = 200;
+// Folga acima da superfície para as cristas.
+const ONDA_TOPO = 8;
+const BOLHAS = [
+  { x: 24, lado: 7, duracao: 3.1, fase: 0 },
+  { x: 47, lado: 5, duracao: 2.4, fase: 0.55 },
+  { x: 63, lado: 8, duracao: 3.8, fase: 0.3 },
+  { x: 76, lado: 4, duracao: 2.7, fase: 0.8 },
+];
+
+// Crista em y = 0, vale em +A, período P: curvas quadráticas encadeadas (Q + T)
+// que desenham um seno. Começa em x = -P para a fase não abrir buraco.
+function pontosOnda(periodo: number, amplitude: number, fase: number): string {
+  const inicio = -periodo - fase * periodo;
+  let d = `M ${inicio} ${amplitude / 2} Q ${inicio + periodo / 4} ${-amplitude / 2} ${inicio + periodo / 2} ${amplitude / 2}`;
+  for (let x = inicio + periodo; x <= ONDA_LARGURA + periodo; x += periodo / 2) d += ` T ${x} ${amplitude / 2}`;
+  return d;
+}
+
+function caminhoOnda(periodo: number, amplitude: number, fase: number): string {
+  return `${pontosOnda(periodo, amplitude, fase)} V 100 H ${-periodo * 2} Z`;
+}
+
+function linhaOnda(periodo: number, amplitude: number, fase: number): string {
+  return pontosOnda(periodo, amplitude, fase);
+}
 
 interface OrboIndicadorProps {
   rotulo: string;
@@ -29,20 +64,43 @@ interface Flutuante {
 export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps) {
   const reduzido = useReducedMotion();
   const alerta = emAlerta(valor);
+  const idSombra = `sombra-liquido-${useId().replace(/:/g, '')}`;
   const topoLiquido = FUNDO_VIDRO - nivelLiquido(valor) * ALTURA_VIDRO;
 
   const valorAnterior = useRef(valor);
   const proximoId = useRef(0);
   const [flutuantes, setFlutuantes] = useState<Flutuante[]>([]);
 
+  // O número conta até o valor novo (odômetro), sem re-render: o texto é um
+  // MotionValue arredondado que o framer escreve direto no DOM.
+  const contagem = useMotionValue(valor);
+  const numero = useTransform(contagem, (v) => Math.round(v));
+  // O líquido chacoalha quando o valor muda: inclina para o lado do tranco e
+  // assenta balançando. Controle imperativo, para não remontar as ondas (o
+  // loop delas recomeçaria e daria um salto).
+  const chacoalho = useAnimationControls();
+
   useEffect(() => {
     const delta = valor - valorAnterior.current;
     valorAnterior.current = valor;
     if (delta === 0) return;
+    const conta = animate(contagem, valor, { duration: reduzido ? 0 : 0.9, ease: [0.2, 0.7, 0.3, 1] });
+    if (!reduzido) {
+      const lado = delta > 0 ? 1 : -1;
+      const forca = Math.min(1, Math.abs(delta) / 20);
+      chacoalho.start({
+        rotate: [0, lado * (6 + 8 * forca), -lado * (4 + 4 * forca), lado * 2, 0],
+        y: ['0%', `${-6 * forca * lado}%`, `${3 * forca * lado}%`, '0%', '0%'],
+        transition: { duration: 1.3, times: [0, 0.18, 0.45, 0.72, 1], ease: 'easeOut' },
+      });
+    }
     const id = proximoId.current++;
     setFlutuantes((f) => [...f, { id, delta }]);
     const tempo = setTimeout(() => setFlutuantes((f) => f.filter((x) => x.id !== id)), 1500);
-    return () => clearTimeout(tempo);
+    return () => {
+      clearTimeout(tempo);
+      conta.stop();
+    };
   }, [valor]);
 
   return (
@@ -67,21 +125,72 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
             animate={{ y: `${((topoLiquido - TOPO_VIDRO) / ALTURA_VIDRO) * 100}%` }}
             transition={{ type: 'spring', stiffness: 90, damping: 16 }}
           >
-            {/* Onda: um trecho de 200 de largura desliza 50 (um período) para a esquerda em loop. */}
-            <svg
-              className={`absolute ${reduzido ? '' : 'orbe-onda'}`}
-              viewBox="-50 -4 200 104"
-              preserveAspectRatio="none"
-              style={{
-                left: `${((-50 - TOPO_VIDRO) / ALTURA_VIDRO) * 100}%`,
-                top: `${(-4 / ALTURA_VIDRO) * 100}%`,
-                width: `${(200 / ALTURA_VIDRO) * 100}%`,
-                height: `${(104 / ALTURA_VIDRO) * 100}%`,
-              }}
-            >
-              <path d="M-50 0 Q -25 -4 0 0 T 50 0 T 100 0 T 150 0 V 100 H -50 Z" style={{ fill: alerta ? 'var(--dano)' : cor }} opacity="0.92" />
-            </svg>
+            {/* O líquido balança devagar (sobe/desce e inclina em vaivém), e cada
+                onda desliza exatamente um período em loop linear: o fim de um
+                ciclo é idêntico ao começo, então não há corte. Só transform,
+                no compositor. Unidades: 1 = 1% da largura do vidro. */}
+            <motion.div className="absolute inset-0 origin-[50%_60%]" animate={chacoalho}>
+              <div className={`absolute inset-0 ${reduzido ? '' : 'orbe-balanco'}`}>
+                {ONDAS.map((onda) => (
+                  <svg
+                    key={onda.periodo}
+                    className={`absolute left-0 ${reduzido ? '' : 'orbe-onda'}`}
+                    viewBox={`0 ${-ONDA_TOPO} ${ONDA_LARGURA} ${100 + ONDA_TOPO}`}
+                    style={
+                      {
+                        top: `${-ONDA_TOPO}%`,
+                        width: `${ONDA_LARGURA}%`,
+                        height: `${100 + ONDA_TOPO}%`,
+                        '--periodo': `${(-onda.periodo / ONDA_LARGURA) * 100}%`,
+                        animationDuration: `${onda.duracao}s`,
+                        animationDirection: onda.inverte ? 'reverse' : 'normal',
+                      } as CSSProperties
+                    }
+                  >
+                    <path d={caminhoOnda(onda.periodo, onda.amplitude, onda.fase)} style={{ fill: alerta ? 'var(--dano)' : cor }} opacity={onda.opacidade} />
+                    {onda.brilho && (
+                      <>
+                        {/* Luz na superfície e escuro no fundo: dá corpo ao líquido. */}
+                        <defs>
+                          <linearGradient id={idSombra} gradientUnits="userSpaceOnUse" x1="0" y1="-4" x2="0" y2="100">
+                            <stop offset="0" stopColor="#fff" stopOpacity="0.28" />
+                            <stop offset="0.22" stopColor="#fff" stopOpacity="0" />
+                            <stop offset="0.6" stopColor="#000" stopOpacity="0.08" />
+                            <stop offset="1" stopColor="#000" stopOpacity="0.4" />
+                          </linearGradient>
+                        </defs>
+                        <path d={caminhoOnda(onda.periodo, onda.amplitude, onda.fase)} fill={`url(#${idSombra})`} />
+                      </>
+                    )}
+                    {onda.brilho && (
+                      <path
+                        d={linhaOnda(onda.periodo, onda.amplitude, onda.fase)}
+                        fill="none"
+                        stroke="#fff"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        opacity="0.35"
+                      />
+                    )}
+                  </svg>
+                ))}
+                {/* Bolhas subindo sem parar, cada uma no seu ritmo; nascem e
+                  somem transparentes, então o recomeço não aparece. */}
+                {!reduzido &&
+                  BOLHAS.map((b, i) => (
+                    <span
+                      key={i}
+                      className="orbe-bolha-trilho"
+                      style={{ left: `${b.x}%`, animationDuration: `${b.duracao}s`, animationDelay: `${-b.duracao * b.fase}s` }}
+                    >
+                      <span className="orbe-bolha" style={{ width: b.lado, height: b.lado }} />
+                    </span>
+                  ))}
+              </div>
+            </motion.div>
           </motion.div>
+          {/* Volume de esfera: luz no alto à esquerda, sombra na borda. Fixo. */}
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_36%_30%,transparent_38%,rgb(0_0_0/0.5)_100%)]" />
           {/* Reflexo do vidro. */}
           <svg className="absolute inset-0 h-full w-full" viewBox={`${TOPO_VIDRO} ${TOPO_VIDRO} ${ALTURA_VIDRO} ${ALTURA_VIDRO}`}>
             <ellipse cx="40" cy="30" rx="17" ry="8" fill="#fff" opacity="0.28" transform="rotate(-25 40 30)" />
@@ -93,15 +202,11 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
           <motion.span
             key={valor}
             className="font-titulo text-[44px] font-bold tabular-nums text-pergaminho [text-shadow:0_2px_4px_rgb(0_0_0/0.95),0_0_2px_rgb(0_0_0)]"
-            initial={
-              valorAnterior.current !== valor && !reduzido
-                ? { scale: 1.45, color: valor > valorAnterior.current ? '#5ed17a' : '#e0374a' }
-                : false
-            }
+            initial={valorAnterior.current !== valor && !reduzido ? { scale: 1.45, color: valor > valorAnterior.current ? '#5ed17a' : '#e0374a' } : false}
             animate={{ scale: 1, color: '#f3e6c8' }}
             transition={{ scale: mola.impacto, color: { duration: 0.9, ease: 'easeOut' } }}
           >
-            {valor}
+            <motion.span>{numero}</motion.span>
           </motion.span>
         </span>
 

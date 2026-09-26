@@ -148,8 +148,33 @@
   }
 }
 
+/* Reflexo ocioso: numa camada própria (a animação infinita tomaria o
+   transform do brilho do hover). Passa rápido no começo de cada ciclo de 7 s
+   e descansa fora da placa o resto do tempo; o primeiro vem depois de 6 s. */
+.botao-placa > .botao-brilho-ocioso {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, transparent 40%, rgb(255 252 235 / 0.4) 50%, transparent 60%);
+  transform: translateX(-130%);
+  animation: botao-brilho-ocioso 7s ease-in-out 6s infinite;
+  pointer-events: none;
+  will-change: transform;
+}
+
+@keyframes botao-brilho-ocioso {
+  0% {
+    transform: translateX(-130%);
+  }
+  14%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .botao-placa > .botao-brilho {
+  .botao-placa > .botao-brilho,
+  .botao-placa > .botao-brilho-ocioso {
     animation: none;
   }
 }

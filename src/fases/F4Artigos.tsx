@@ -108,10 +108,13 @@ function Veredito({ som }: { som: ReturnType<typeof useSom> }) {
   useEffect(() => {
     const id = window.setTimeout(() => tocar('selo'), reduzido ? 0 : 350);
     // Depois do "frente a frente" da entrada da fase.
-    const fala = window.setTimeout(() => falar('veredito'), 6400);
+    // Espera a vez: se o "frente a frente" ainda estiver sendo dito, não corta.
+    let cancelarFala = () => {};
+    const fala = window.setTimeout(() => (cancelarFala = falar('veredito', { esperarVez: true })), 6400);
     return () => {
       window.clearTimeout(id);
       window.clearTimeout(fala);
+      cancelarFala();
     };
     // Só as funções (estáveis): ligar/desligar o som não repete o selo.
   }, [tocar, falar, reduzido]);

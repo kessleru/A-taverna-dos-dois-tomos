@@ -33,6 +33,38 @@ function pintura(logicas: Logica[]): string | undefined {
   return `repeating-linear-gradient(135deg, ${faixas})`;
 }
 
+// Os quatro lados na ordem da costura: cima, direita, baixo, esquerda.
+const LADOS = [
+  { classe: 'left-0 right-0 top-0 h-[2px] origin-left', eixo: 'scaleX' },
+  { classe: 'bottom-0 right-0 top-0 w-[2px] origin-top', eixo: 'scaleY' },
+  { classe: 'bottom-0 left-0 right-0 h-[2px] origin-right', eixo: 'scaleX' },
+  { classe: 'bottom-0 left-0 top-0 w-[2px] origin-bottom', eixo: 'scaleY' },
+] as const;
+const INICIO_FIO_S = 0.45;
+const POR_LADO_S = 0.22;
+
+function FioDeOuro() {
+  return (
+    <motion.span
+      className="pointer-events-none absolute inset-[3px]"
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 0 }}
+      transition={{ delay: INICIO_FIO_S + POR_LADO_S * 4 + 0.5, duration: 0.6 }}
+      aria-hidden
+    >
+      {LADOS.map((lado, i) => (
+        <motion.span
+          key={i}
+          className={`absolute bg-[#f7d27a] shadow-[0_0_6px_rgb(247_210_122/0.9)] ${lado.classe}`}
+          initial={{ [lado.eixo]: 0 }}
+          animate={{ [lado.eixo]: 1 }}
+          transition={{ delay: INICIO_FIO_S + i * POR_LADO_S, duration: POR_LADO_S, ease: 'linear' }}
+        />
+      ))}
+    </motion.span>
+  );
+}
+
 interface TapecariaProps {
   canvas: Partial<Record<Bloco, Logica[]>>;
   // Blocos acesos agora (animação de tinta se espalhando).
@@ -74,6 +106,9 @@ export function Tapecaria({ canvas, destaque = [], largura = LARGURA_BASE, titul
                   transition={{ duration: 0.9, ease: 'easeOut' }}
                 />
               )}
+              {/* Um fio de ouro costura a volta do bloco novo, lado por lado, e some
+                  deixando a costura tracejada. */}
+              {aceso && fundo && !reduzido && <FioDeOuro />}
               {/* A tinta chega ao bloco com um brilho curto na cor da lógica. */}
               {aceso && fundo && <Impacto cor={COR[logicas[logicas.length - 1]]} onda={46} raio={34} quantidade={6} atraso={0.35} />}
               {/* Trama do linho por cima da tinta e, no bloco pintado, a costura à mão. */}

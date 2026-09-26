@@ -19,6 +19,9 @@ interface F3ResultadoProps extends FaseProps {
 }
 
 const PERFIS_COM_CONFETE = ['lendario', 'camaleao'];
+// As estrelas do rank batem na medalha uma a uma, depois de ela ser forjada.
+const ESTRELA_INICIO_S = 0.75;
+const ESTRELA_INTERVALO_S = 0.3;
 const METAL_DO_RANK: Record<number, [string, string, string]> = {
   3: ['#fff3c4', '#e8b64a', '#8a5a12'],
   2: ['#f4f6f8', '#b9c0c8', '#5d646c'],
@@ -55,6 +58,7 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
   useSonsEmSequencia([
     ['metal', 150],
     ['moedas', 500],
+    ...Array.from({ length: estrelas }, (_, i) => ['brilho', (ESTRELA_INICIO_S + i * ESTRELA_INTERVALO_S) * 1000 + 120] as const),
     ['estandarte', 1250],
     ...(estrelas >= 2 ? ([['vitoria', 1000]] as const) : []),
     ...etapas.flatMap((etapa, i) => (escolhas[i] === etapa.ideal ? ([['ping', 1800 + i * 250]] as const) : [])),
@@ -92,12 +96,23 @@ export function F3Resultado({ estadoRodada, ...props }: F3ResultadoProps) {
           <Impacto cor="var(--brasa)" onda={300} raio={240} quantidade={16} atraso={0.25} />
           <span className="font-titulo text-[20px] font-bold uppercase tracking-[0.2em] text-tinta/80">Rank</span>
           <span className="px-6 text-center font-titulo text-[34px] font-bold leading-tight text-tinta">{rank}</span>
-          <span className="mt-1 flex gap-1 text-tinta">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <span key={i} className={i < estrelas ? 'opacity-100' : 'opacity-25'}>
-                ✦
-              </span>
-            ))}
+          <span className="mt-2 flex gap-2">
+            {Array.from({ length: 3 }).map((_, i) => {
+              const ganhou = i < estrelas;
+              const atraso = ESTRELA_INICIO_S + i * ESTRELA_INTERVALO_S;
+              return (
+                <motion.span
+                  key={i}
+                  className={`relative font-titulo text-[40px] leading-none ${ganhou ? 'estrela-rank' : 'text-tinta/25'}`}
+                  // Ganha: cai grande e girando, bate e assenta, com faíscas.
+                  initial={reduzido || !ganhou ? false : { scale: 3.2, rotate: -140, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 15, delay: atraso }}
+                >
+                  ✦{ganhou && !reduzido && <Impacto cor="var(--ouro-claro)" onda={60} raio={46} quantidade={7} atraso={atraso + 0.12} />}
+                </motion.span>
+              );
+            })}
           </span>
         </motion.div>
 

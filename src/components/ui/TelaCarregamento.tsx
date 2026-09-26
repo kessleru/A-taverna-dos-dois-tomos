@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArtePintada } from './ArtePintada';
 import { marcarVisto, naoVistos } from '../../engine/vistos';
 
+const FUMACA = `${import.meta.env.BASE_URL}assets/particulas/smoke-07.webp`;
+
 const idDica = (dica: string) => `carregamento:${dica}`;
 
 // Enquanto a taverna prepara as mesas, o Taverneiro dá umas dicas. Só o que
@@ -50,9 +52,14 @@ export function TelaCarregamento({ progresso, aquecendo = false }: { progresso: 
       aria-valuenow={porcento}
       aria-label="Carregando o jogo"
     >
-      {/* A vela da taverna, tremulando enquanto tudo carrega. */}
+      {/* A vela da taverna acesa enquanto tudo carrega: o castiçal fica
+          parado e só a chama vive (halo, língua de fogo e um fio de fumaça,
+          por cima da chama pintada). */}
       <span className="vela-carregando" aria-hidden>
-        <ArtePintada nome="vela" className="h-[120px] w-[120px]" />
+        <ArtePintada nome="vela" className="h-[170px] w-[122px]" />
+        <span className="vela-halo" />
+        <span className="vela-lingua" />
+        <span className="vela-fumaca" style={{ WebkitMaskImage: `url(${FUMACA})`, maskImage: `url(${FUMACA})` }} />
       </span>
       <h1 className="titulo-ouro font-titulo text-[72px] font-bold tracking-[0.04em]">A Taverna dos Dois Tomos</h1>
       <div className="filigrana text-[22px] text-ouro" aria-hidden>✦</div>

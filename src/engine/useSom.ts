@@ -95,6 +95,14 @@ const VOLUME_FALA = 0.9;
 const VOLUME_MUSICA_SOB_FALA = 0.04;
 // Uma fala interrompida (por outra fala ou pelo mudo) some aos poucos em vez de cortar.
 const SAIDA_FALA_MS = 350;
+// Respiro entre uma fala que termina e a próxima que esperava a vez.
+const FOLGA_ENTRE_FALAS_MS = 300;
+
+export interface OpcoesFala {
+  // Fala que entra sozinha (atraso, tutorial): espera a atual terminar em vez
+  // de cortá-la. Só o que a turma faz (avançar, votar, rolar) interrompe.
+  esperarVez?: boolean;
+}
 
 function silenciarAosPoucos(som: Howl, ms = SAIDA_FALA_MS) {
   if (!som.playing()) return;
@@ -125,6 +133,14 @@ export function useSom() {
   const falaAtual = useRef<{ id: string; som: Howl } | null>(null);
   // Até quando a fala interrompida ainda está sumindo (a próxima espera).
   const fimDaSaida = useRef(0);
+  // Fala esperando a vez (esperarVez): cancelada por qualquer fala nova, pelo
+  // calar ou por quem pediu (a função que falar devolve). `vez` identifica o
+  // pedido mesmo se ele precisar esperar de novo.
+  const falaNaFila = useRef<{ id: number; vez: object } | null>(null);
+  const cancelarFila = () => {
+    if (falaNaFila.current) window.clearTimeout(falaNaFila.current.id);
+    falaNaFila.current = null;
+  };
 
   useEffect(() => {
     sessionStorage.setItem(CHAVE_MUDO, String(mudo));
@@ -160,16 +176,19 @@ export function useSom() {
       setLiberado(true);
     }
     // click (e não pointerdown): é no click que o Howler destrava o áudio.
-    window.addEventListener('click', liberar, { once: true });
-    window.addEventListener('keydown', liberar, { once: true });
+    // Na captura: a trava do palco para a propagação de cliques durante as
+    // animações, e um clique engolido deixava o som preso até o próximo.
+    window.addEventListener('click', liberar, { once: true, capture: true });
+    window.addEventListener('keydown', liberar, { once: true, capture: true });
     return () => {
-      window.removeEventListener('click', liberar);
-      window.removeEventListener('keydown', liberar);
+      window.removeEventListener('click', liberar, { capture: true });
+      window.removeEventListener('keydown', liberar, { capture: true });
     };
   }, []);
 
   // O mudo pausa em vez de parar, para música e lareira retomarem do mesmo ponto.
   useEffect(() => {
+    if (mudo) cancelarFila();
     if (mudo && falaAtual.current) {
       silenciarAosPoucos(falaAtual.current.som);
       falaAtual.current = null;
@@ -222,6 +241,7 @@ export function useSom() {
   // Cala o Taverneiro (fala some em `ms`) e devolve a música. O tutorial usa
   // ao passar de balão: a fala do passo anterior não fica por cima do próximo.
   const calar = useCallback((ms = SAIDA_FALA_MS) => {
+    cancelarFila();
     const atual = falaAtual.current;
     if (!atual) return;
     falaAtual.current = null;
@@ -236,19 +256,40 @@ export function useSom() {
     if (musica && !mudoRef.current) musica.fade(musica.volume(), VOLUME_MUSICA, 600);
   }, []);
 
+  // Quanto falta (ms) para o Taverneiro terminar o que está dizendo, contando
+  // a fala que espera a anterior sumir. 0 se está calado.
+  const restanteDaFala = useCallback((): number => {
+    const atual = falaAtual.current;
+    if (!atual) return 0;
+    const duracao = atual.som.duration() * 1000;
+    if (atual.som.playing()) return Math.max(0, duracao - Number(atual.som.seek()) * 1000);
+    const saida = fimDaSaida.current - Date.now();
+    return saida > 0 ? saida + duracao : 0;
+  }, []);
+
   // Uma fala do Taverneiro para o momento (sorteada no grupo, sem repetir a
-  // última). Uma fala nova interrompe a anterior.
+  // última). Uma fala nova interrompe a anterior, a não ser que peça para
+  // esperar a vez (esperarVez).
   const falar = useCallback(
-    (momento: Momento) => {
+    function falar(momento: Momento, opcoes?: OpcoesFala, vez: object = {}): () => void {
+      const cancelar = () => {
+        if (falaNaFila.current?.vez === vez) cancelarFila();
+      };
       // Antes do primeiro clique o navegador seguraria a fala e a soltaria
       // depois, por cima da próxima; melhor não falar.
-      if (mudoRef.current || !liberadoRef.current) return;
+      if (mudoRef.current || !liberadoRef.current) return cancelar;
+      cancelarFila();
+      const falta = opcoes?.esperarVez ? restanteDaFala() : 0;
+      if (falta > 0) {
+        falaNaFila.current = { id: window.setTimeout(() => falar(momento, opcoes, vez), falta + FOLGA_ENTRE_FALAS_MS), vez };
+        return cancelar;
+      }
       const id = escolherFala(FALAS[momento], Math.random(), falaAtual.current?.id);
       const som = id ? falas.current[id] : undefined;
       // Arquivo que não carregou: não fala (e não abaixa a música à toa).
-      if (!id || !som || som.state() !== 'loaded') return;
+      if (!id || !som || som.state() !== 'loaded') return cancelar;
       // A mesma fala já está tocando (grupo de uma fala só): deixa terminar.
-      if (som.playing()) return;
+      if (som.playing()) return cancelar;
       const anterior = falaAtual.current?.som;
       falaAtual.current = { id, som };
       const musica = fundo.current[0];
@@ -274,6 +315,7 @@ export function useSom() {
       } else {
         som.play();
       }
+      return cancelar;
     },
     [],
   );
@@ -298,7 +340,7 @@ export function useSom() {
   // Mesmo objeto enquanto o mudo não muda (useMemo): antes era um objeto novo
   // a cada render do App.
   return useMemo(
-    () => ({ mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga }),
-    [mudo, alternarMudo, tocar, falar, calar, batida, tarefasDeCarga],
+    () => ({ mudo, alternarMudo, tocar, falar, calar, restanteDaFala, batida, tarefasDeCarga }),
+    [mudo, alternarMudo, tocar, falar, calar, restanteDaFala, batida, tarefasDeCarga],
   );
 }
