@@ -18,7 +18,7 @@ import { DadoDestino } from '../components/rodada/DadoDestino';
 import { Consequencia } from '../components/rodada/Consequencia';
 import { Cronica } from '../components/rodada/Cronica';
 import { Forja } from '../components/rodada/Forja';
-import { CartaEvento, VIRA_EM } from '../components/cartas/CartaEvento';
+import { CartaEvento, FRENTE_EM } from '../components/cartas/CartaEvento';
 import { RevelacaoBricolagem, VIRADA_BRICOLAGEM_MS } from '../components/rodada/RevelacaoBricolagem';
 import { Botao } from '../components/ui/Botao';
 import { Guia } from '../components/guia/Guia';
@@ -201,8 +201,8 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
       const sucesso = evento?.condicao(estado.escolhas, estado.ind);
       // Destino bom cintila quando a carta termina de virar; o Taverneiro
       // comenta depois.
-      const brilho = sucesso ? window.setTimeout(() => som.tocar('brilho', { volume: 0.7 }), VIRA_EM * 1000 + 650) : undefined;
-      const id = window.setTimeout(() => (cancelarFala = som.falar(sucesso ? 'evento-bom' : 'evento-ruim', { esperarVez: true })), VIRA_EM * 1000 + 1200);
+      const brilho = sucesso ? window.setTimeout(() => som.tocar('brilho', { volume: 0.7 }), FRENTE_EM * 1000 + 250) : undefined;
+      const id = window.setTimeout(() => (cancelarFala = som.falar(sucesso ? 'evento-bom' : 'evento-ruim', { esperarVez: true })), FRENTE_EM * 1000 + 900);
       return () => {
         window.clearTimeout(id);
         window.clearTimeout(brilho);
@@ -357,7 +357,7 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
                     className="flex w-[560px] flex-col gap-6"
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: VIRA_EM + 0.8, duration: 0.5 }}
+                    transition={{ delay: FRENTE_EM + 0.5, duration: 0.5 }}
                   >
                     <div className="placa-ferro px-8 py-6">
                       <p className="font-titulo text-[22px] font-bold uppercase tracking-[0.14em] text-ouro">Por causa de</p>
