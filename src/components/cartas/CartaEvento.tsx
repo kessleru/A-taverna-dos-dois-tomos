@@ -52,6 +52,18 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
       animate={{ scale: 1, opacity: 1 }}
       transition={{ scale: { duration: 0.4, ease: 'easeOut' }, opacity: { duration: 0.3 } }}
     >
+      {/* Clarão atrás da carta quando ela passa de perfil (≈ 90°) e mostra a
+          frente: ouro no destino bom, violeta no ruim. */}
+      {!reduzido && (
+        <motion.span
+          className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -ml-[480px] -mt-[480px] h-[960px] w-[960px] rounded-full"
+          style={{ background: `radial-gradient(closest-side, ${sucesso ? 'rgb(255 214 120 / 0.75)' : 'rgb(170 140 255 / 0.65)'}, transparent)` }}
+          initial={{ opacity: 0, scale: 0.4 }}
+          animate={{ opacity: [0, 1, 0], scale: [0.4, 1.1, 1.4] }}
+          transition={{ delay: VIRA_EM + 0.22, duration: 1, times: [0, 0.22, 1], ease: 'easeOut' }}
+          aria-hidden
+        />
+      )}
       <motion.div
         className="absolute inset-0 [transform-style:preserve-3d]"
         style={{ transformPerspective: 1600 }}
@@ -109,7 +121,18 @@ export function CartaEvento({ depoisDaEtapa, nome, desfecho, sucesso }: CartaEve
                 })}
             </div>
           </div>
-          <Cintilas pontos={BRILHOS_MOLDURA} cor={sucesso ? 'var(--ouro-claro)' : '#b9a6ff'} atraso={VIRA_EM + 0.7} />
+          {/* Faixa de luz varrendo a frente logo depois da virada. */}
+        {!reduzido && (
+          <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[18px]" aria-hidden>
+            <motion.span
+              className="absolute -inset-y-12 left-0 w-[38%] skew-x-[-16deg] bg-gradient-to-r from-transparent via-white/40 to-transparent [will-change:transform]"
+              initial={{ x: '-160%' }}
+              animate={{ x: '360%' }}
+              transition={{ delay: VIRA_EM + 0.42, duration: 0.85, ease: [0.45, 0, 0.25, 1] }}
+            />
+          </span>
+        )}
+        <Cintilas pontos={BRILHOS_MOLDURA} cor={sucesso ? 'var(--ouro-claro)' : '#b9a6ff'} atraso={VIRA_EM + 0.7} />
           {/* Depois de virar: pó de ouro sobe no desfecho bom, cinzas caem no ruim. */}
           <Chuva tipo={sucesso ? 'ouro' : 'cinzas'} quantidade={sucesso ? 22 : 18} janela={1.4} atraso={VIRA_EM + 0.7} semente={depoisDaEtapa + 40} />
         </div>

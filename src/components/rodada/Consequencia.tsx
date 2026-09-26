@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { dadoDoDestino } from '../../data/rodada';
 import type { ResultadoDado } from '../../engine/motor';
-import { ArtePintada } from '../ui/ArtePintada';
+import { DadoRolando } from './DadoRolando';
 import { chuvaDeOuro } from '../ui/confete';
 import { Faiscas } from '../ui/Faiscas';
 import { Baforada } from '../ui/Particulas';
@@ -22,37 +22,19 @@ export function Consequencia({
   resultado,
   aoRevelar,
   aoGirar,
+  aoQuicar,
 }: {
   dado: ResultadoDado;
   resultado: string;
   aoRevelar?: () => void;
-  // Chamado a cada duas faces sorteadas (tic da contagem).
+  // Cada face nova que o dado mostra rolando (tic da contagem).
   aoGirar?: () => void;
+  // Cada quique do dado na mesa, com a força.
+  aoQuicar?: (forca: number) => void;
 }) {
-  const reduzido = useReducedMotion();
+  const reduzido = !!useReducedMotion();
   const tremer = useTremor();
-  const [face, setFace] = useState(reduzido ? dado.d20 : 1);
-  const [revelado, setRevelado] = useState(!!reduzido);
-
-  const aoGirarRef = useRef(aoGirar);
-  aoGirarRef.current = aoGirar;
-
-  useEffect(() => {
-    if (reduzido) return;
-    let passos = 0;
-    const id = window.setInterval(() => {
-      passos++;
-      if (passos >= 14) {
-        window.clearInterval(id);
-        setFace(dado.d20);
-        setRevelado(true);
-        return;
-      }
-      setFace(1 + Math.floor(Math.random() * 20));
-      if (passos % 2 === 0) aoGirarRef.current?.();
-    }, 70);
-    return () => window.clearInterval(id);
-  }, [dado.d20, reduzido]);
+  const [revelado, setRevelado] = useState(reduzido);
 
   // aoRevelar dispara uma vez, na revelação (ref para não depender da identidade).
   const aoRevelarRef = useRef(aoRevelar);
@@ -97,25 +79,24 @@ export function Consequencia({
         )}
       </AnimatePresence>
 
-      <motion.div
-        className="relative flex h-[260px] w-[260px] shrink-0 items-center justify-center [will-change:transform]"
-        animate={revelado ? { rotate: 0, scale: [1.15, 1] } : { rotate: [0, 360] }}
-        transition={revelado ? mola.impacto : { duration: 0.5, repeat: Infinity, ease: 'linear' }}
-      >
-        {/* O dado pintado; revelado, ganha um halo na cor da faixa (crítico, sucesso, falha). */}
-        <span
-          className="absolute inset-0"
-          style={{ filter: revelado ? `drop-shadow(0 0 22px ${cor}) drop-shadow(0 10px 18px rgb(0 0 0 / 0.8))` : 'drop-shadow(0 10px 18px rgb(0 0 0 / 0.8))' }}
-        >
-          <ArtePintada nome="dado" className="h-full w-full" />
-        </span>
-        {/* O número fica sobre a face da frente, que é um pouco abaixo do centro. */}
-        <span className="relative translate-y-[20px] font-titulo text-[110px] font-bold text-pergaminho [text-shadow:0_4px_10px_rgb(0_0_0),0_0_4px_rgb(0_0_0)]">
-          {face}
-        </span>
+      {/* O d20 lançado na mesa: voa, quica três vezes e assenta no resultado. */}
+      <div className="relative flex items-center justify-center">
+        <DadoRolando
+          resultado={dado.d20}
+          cor={cor}
+          revelado={revelado}
+          reduzido={reduzido}
+          aoTrocarFace={aoGirar}
+          aoQuicar={(forca) => {
+            aoQuicar?.(forca);
+            // O primeiro baque é o mais forte: a mesa sente.
+            if (forca > 1.5) tremer(TREMOR.leve * 0.6);
+          }}
+          aoAssentar={() => setRevelado(true)}
+        />
         {revelado && <Baforada largura={0.8} semente={dado.d20} />}
         {revelado && dado.faixa !== 'falha' && <Faiscas cor={cor} quantidade={dado.faixa === 'critico' ? 18 : 10} raio={dado.faixa === 'critico' ? 300 : 200} />}
-      </motion.div>
+      </div>
 
       <div className="relative flex w-[820px] flex-col gap-5">
         <AnimatePresence>

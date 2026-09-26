@@ -335,7 +335,9 @@ export function F2Rodada({ avancar: avancarFase, voltar: voltarFase, rodada, som
           )}
 
           {passoVisivel === 'consequencia' && opcaoAtual && estado.ultimoDado && (
-            <Consequencia dado={estado.ultimoDado} resultado={opcaoAtual.resultado} aoRevelar={aoRevelarDado} aoGirar={() => som.tocar('tic')} />
+            <Consequencia dado={estado.ultimoDado} resultado={opcaoAtual.resultado} aoRevelar={aoRevelarDado} aoGirar={() => som.tocar('tic', { volume: 0.6 })}
+              aoQuicar={(forca) => som.batida(forca)}
+            />
           )}
 
           {passoVisivel === 'bricolagem' && <RevelacaoBricolagem descoberta={estado.bricolagem} />}

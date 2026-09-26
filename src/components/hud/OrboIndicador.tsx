@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { animate, AnimatePresence, motion, useAnimationControls, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
 import { emAlerta, nivelLiquido } from '../../engine/indicador';
 import { Icone } from '../ui/Icone';
 import { Bolhas } from '../ui/Particulas';
@@ -71,14 +71,36 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
   const proximoId = useRef(0);
   const [flutuantes, setFlutuantes] = useState<Flutuante[]>([]);
 
+  // O número conta até o valor novo (odômetro), sem re-render: o texto é um
+  // MotionValue arredondado que o framer escreve direto no DOM.
+  const contagem = useMotionValue(valor);
+  const numero = useTransform(contagem, (v) => Math.round(v));
+  // O líquido chacoalha quando o valor muda: inclina para o lado do tranco e
+  // assenta balançando. Controle imperativo, para não remontar as ondas (o
+  // loop delas recomeçaria e daria um salto).
+  const chacoalho = useAnimationControls();
+
   useEffect(() => {
     const delta = valor - valorAnterior.current;
     valorAnterior.current = valor;
     if (delta === 0) return;
+    const conta = animate(contagem, valor, { duration: reduzido ? 0 : 0.9, ease: [0.2, 0.7, 0.3, 1] });
+    if (!reduzido) {
+      const lado = delta > 0 ? 1 : -1;
+      const forca = Math.min(1, Math.abs(delta) / 20);
+      chacoalho.start({
+        rotate: [0, lado * (6 + 8 * forca), -lado * (4 + 4 * forca), lado * 2, 0],
+        y: ['0%', `${-6 * forca * lado}%`, `${3 * forca * lado}%`, '0%', '0%'],
+        transition: { duration: 1.3, times: [0, 0.18, 0.45, 0.72, 1], ease: 'easeOut' },
+      });
+    }
     const id = proximoId.current++;
     setFlutuantes((f) => [...f, { id, delta }]);
     const tempo = setTimeout(() => setFlutuantes((f) => f.filter((x) => x.id !== id)), 1500);
-    return () => clearTimeout(tempo);
+    return () => {
+      clearTimeout(tempo);
+      conta.stop();
+    };
   }, [valor]);
 
   return (
@@ -107,63 +129,65 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
                 onda desliza exatamente um período em loop linear: o fim de um
                 ciclo é idêntico ao começo, então não há corte. Só transform,
                 no compositor. Unidades: 1 = 1% da largura do vidro. */}
-            <div className={`absolute inset-0 ${reduzido ? '' : 'orbe-balanco'}`}>
-              {ONDAS.map((onda) => (
-                <svg
-                  key={onda.periodo}
-                  className={`absolute left-0 ${reduzido ? '' : 'orbe-onda'}`}
-                  viewBox={`0 ${-ONDA_TOPO} ${ONDA_LARGURA} ${100 + ONDA_TOPO}`}
-                  style={
-                    {
-                      top: `${-ONDA_TOPO}%`,
-                      width: `${ONDA_LARGURA}%`,
-                      height: `${100 + ONDA_TOPO}%`,
-                      '--periodo': `${(-onda.periodo / ONDA_LARGURA) * 100}%`,
-                      animationDuration: `${onda.duracao}s`,
-                      animationDirection: onda.inverte ? 'reverse' : 'normal',
-                    } as CSSProperties
-                  }
-                >
-                  <path d={caminhoOnda(onda.periodo, onda.amplitude, onda.fase)} style={{ fill: alerta ? 'var(--dano)' : cor }} opacity={onda.opacidade} />
-                  {onda.brilho && (
-                    <>
-                      {/* Luz na superfície e escuro no fundo: dá corpo ao líquido. */}
-                      <defs>
-                        <linearGradient id={idSombra} gradientUnits="userSpaceOnUse" x1="0" y1="-4" x2="0" y2="100">
-                          <stop offset="0" stopColor="#fff" stopOpacity="0.28" />
-                          <stop offset="0.22" stopColor="#fff" stopOpacity="0" />
-                          <stop offset="0.6" stopColor="#000" stopOpacity="0.08" />
-                          <stop offset="1" stopColor="#000" stopOpacity="0.4" />
-                        </linearGradient>
-                      </defs>
-                      <path d={caminhoOnda(onda.periodo, onda.amplitude, onda.fase)} fill={`url(#${idSombra})`} />
-                    </>
-                  )}
-                  {onda.brilho && (
-                    <path
-                      d={linhaOnda(onda.periodo, onda.amplitude, onda.fase)}
-                      fill="none"
-                      stroke="#fff"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      opacity="0.35"
-                    />
-                  )}
-                </svg>
-              ))}
-              {/* Bolhas subindo sem parar, cada uma no seu ritmo; nascem e
-                  somem transparentes, então o recomeço não aparece. */}
-              {!reduzido &&
-                BOLHAS.map((b, i) => (
-                  <span
-                    key={i}
-                    className="orbe-bolha-trilho"
-                    style={{ left: `${b.x}%`, animationDuration: `${b.duracao}s`, animationDelay: `${-b.duracao * b.fase}s` }}
+            <motion.div className="absolute inset-0 origin-[50%_60%]" animate={chacoalho}>
+              <div className={`absolute inset-0 ${reduzido ? '' : 'orbe-balanco'}`}>
+                {ONDAS.map((onda) => (
+                  <svg
+                    key={onda.periodo}
+                    className={`absolute left-0 ${reduzido ? '' : 'orbe-onda'}`}
+                    viewBox={`0 ${-ONDA_TOPO} ${ONDA_LARGURA} ${100 + ONDA_TOPO}`}
+                    style={
+                      {
+                        top: `${-ONDA_TOPO}%`,
+                        width: `${ONDA_LARGURA}%`,
+                        height: `${100 + ONDA_TOPO}%`,
+                        '--periodo': `${(-onda.periodo / ONDA_LARGURA) * 100}%`,
+                        animationDuration: `${onda.duracao}s`,
+                        animationDirection: onda.inverte ? 'reverse' : 'normal',
+                      } as CSSProperties
+                    }
                   >
-                    <span className="orbe-bolha" style={{ width: b.lado, height: b.lado, animationDuration: `${b.duracao / 3}s` }} />
-                  </span>
+                    <path d={caminhoOnda(onda.periodo, onda.amplitude, onda.fase)} style={{ fill: alerta ? 'var(--dano)' : cor }} opacity={onda.opacidade} />
+                    {onda.brilho && (
+                      <>
+                        {/* Luz na superfície e escuro no fundo: dá corpo ao líquido. */}
+                        <defs>
+                          <linearGradient id={idSombra} gradientUnits="userSpaceOnUse" x1="0" y1="-4" x2="0" y2="100">
+                            <stop offset="0" stopColor="#fff" stopOpacity="0.28" />
+                            <stop offset="0.22" stopColor="#fff" stopOpacity="0" />
+                            <stop offset="0.6" stopColor="#000" stopOpacity="0.08" />
+                            <stop offset="1" stopColor="#000" stopOpacity="0.4" />
+                          </linearGradient>
+                        </defs>
+                        <path d={caminhoOnda(onda.periodo, onda.amplitude, onda.fase)} fill={`url(#${idSombra})`} />
+                      </>
+                    )}
+                    {onda.brilho && (
+                      <path
+                        d={linhaOnda(onda.periodo, onda.amplitude, onda.fase)}
+                        fill="none"
+                        stroke="#fff"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        opacity="0.35"
+                      />
+                    )}
+                  </svg>
                 ))}
-            </div>
+                {/* Bolhas subindo sem parar, cada uma no seu ritmo; nascem e
+                  somem transparentes, então o recomeço não aparece. */}
+                {!reduzido &&
+                  BOLHAS.map((b, i) => (
+                    <span
+                      key={i}
+                      className="orbe-bolha-trilho"
+                      style={{ left: `${b.x}%`, animationDuration: `${b.duracao}s`, animationDelay: `${-b.duracao * b.fase}s` }}
+                    >
+                      <span className="orbe-bolha" style={{ width: b.lado, height: b.lado }} />
+                    </span>
+                  ))}
+              </div>
+            </motion.div>
           </motion.div>
           {/* Volume de esfera: luz no alto à esquerda, sombra na borda. Fixo. */}
           <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_36%_30%,transparent_38%,rgb(0_0_0/0.5)_100%)]" />
@@ -178,15 +202,11 @@ export function OrboIndicador({ rotulo, icone, valor, cor }: OrboIndicadorProps)
           <motion.span
             key={valor}
             className="font-titulo text-[44px] font-bold tabular-nums text-pergaminho [text-shadow:0_2px_4px_rgb(0_0_0/0.95),0_0_2px_rgb(0_0_0)]"
-            initial={
-              valorAnterior.current !== valor && !reduzido
-                ? { scale: 1.45, color: valor > valorAnterior.current ? '#5ed17a' : '#e0374a' }
-                : false
-            }
+            initial={valorAnterior.current !== valor && !reduzido ? { scale: 1.45, color: valor > valorAnterior.current ? '#5ed17a' : '#e0374a' } : false}
             animate={{ scale: 1, color: '#f3e6c8' }}
             transition={{ scale: mola.impacto, color: { duration: 0.9, ease: 'easeOut' } }}
           >
-            {valor}
+            <motion.span>{numero}</motion.span>
           </motion.span>
         </span>
 

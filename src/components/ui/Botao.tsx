@@ -22,6 +22,8 @@ export function Botao({ variante = 'primario', className = '', onClick, children
         {...props}
       >
         {primario && <span className="botao-brilho" aria-hidden />}
+        {/* Reflexo que passa de vez em quando enquanto o botão espera o clique. */}
+        {primario && <span className="botao-brilho-ocioso" aria-hidden />}
         <span className="relative z-[2] flex items-center gap-4">
           <span className="text-[0.45em] opacity-70" aria-hidden>
             ◆
